@@ -1,0 +1,13 @@
+# To ensure all text files use LF line endings in the repository
+* text=auto eol=lf
+
+# Force the specific files to use LF
+*.js text eol=lf
+*.ts text eol=lf
+*.vue text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.md text eol=lf
+
+# Shell scripts should always use LF
+*.sh text eol=lf
