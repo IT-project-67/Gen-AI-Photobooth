@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "genai-photobooth",
   "type": "module",
   "private": true,
   "scripts": {
