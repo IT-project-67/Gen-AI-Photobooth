@@ -1,3 +1,3 @@
 export default defineEventHandler(() => {
-  return { message: "Welcome to IT Project, guys!" }
-})
+  return { message: "Welcome to IT Project, guys!" };
+});

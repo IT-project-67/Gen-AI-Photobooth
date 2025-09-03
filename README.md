@@ -3,6 +3,7 @@
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 ## Preview of main branch
+
 https://gen-ai-photobooth.vercel.app/
 
 ## Setup
