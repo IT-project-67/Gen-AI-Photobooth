@@ -73,7 +73,7 @@ export default defineComponent({
     },
     startAutoPlay() {
       if (!this.autoplay || !this.slides.length) return;
-      this.stopAutoPlay;
+      this.stopAutoPlay();
       this.intervalId = setInterval(this.nextSlide, this.interval);
     },
     stopAutoPlay() {

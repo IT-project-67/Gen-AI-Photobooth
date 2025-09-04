@@ -6,8 +6,6 @@
 </template>
 
 <script lang="ts">
-import HomePageCarousel from "~/components/HomePageCarousel.vue";
-
 export default {
   name: "HomePage",
   layout: "default",
