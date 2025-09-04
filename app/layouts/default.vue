@@ -26,7 +26,7 @@ export default {
   max-width: 768px;
   margin: 0 auto;
   min-height: 100vh;
-  background-color: white;
+  background: linear-gradient(to top left, white, #c27aad);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;

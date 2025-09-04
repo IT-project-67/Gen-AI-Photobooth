@@ -93,7 +93,7 @@ export default defineComponent({
 
 <style scoped>
 .carousel {
-  background-color: rgba(196, 74, 203, 0.5);
+  background-color: rgba(230, 185, 233, 0.7);
   width: calc(100% - 50px);
   height: 35vh;
   position: relative;
@@ -121,7 +121,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 5px solid rgba(196, 74, 203, 0.5);
+  border: 5px solid rgba(230, 185, 233, 0.7);
   border-radius: 50px;
   background-color: white;
   font-size: 1.2rem;
