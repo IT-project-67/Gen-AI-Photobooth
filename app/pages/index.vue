@@ -7,7 +7,10 @@
     <AppTextbox :title="'About Us'" :paragraphs="introParagraphs" />
 
     <!-- Announcer textbox (Tutorial) -->
-    <AppTextbox :title="'Quick Start Guide!'" :paragraphs="tutorialParagraphs" />
+    <AppTextbox
+      :title="'Quick Start Guide!'"
+      :paragraphs="tutorialParagraphs"
+    />
   </div>
 </template>
 
@@ -24,14 +27,14 @@ export default {
       ],
       introParagraphs: [
         "Welcome to (*App Name here*), where you can have fun with creating different styles AI generated pictures and share with your friends!",
-        "↓↓↓ Try it out RIGHT NOW ↓↓↓"
+        "↓↓↓ Try it out RIGHT NOW ↓↓↓",
       ],
       tutorialParagraphs: [
         "1. Select your event logo or just skip if you don't have one!",
         "2. Take a selfie with your friends with the photobooth!",
         "3. Wait for the AI to generate several different style pictures!",
-        "4. Pick one and share it with your friends!"
-      ]
+        "4. Pick one and share it with your friends!",
+      ],
     };
   },
   methods: {
