@@ -6,10 +6,11 @@
 </template>
 
 <style>
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   background-color: #f5f5f5;
 }
 
@@ -18,13 +19,14 @@ html {
   scroll-behavior: smooth;
 }
 
-/* responsive design for phones */
+/* responsive design for tablets */
 @media (max-width: 786px) {
   html {
     font-size: 14px;
   }
 }
 
+/* responsive design for phones */
 @media (max-width: 480px) {
   html {
     font-size: 12px;
