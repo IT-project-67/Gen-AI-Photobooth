@@ -2,7 +2,7 @@
     <div class="navbar">
         <div class="navbar-logo">
             <!-- app icon -->
-            <img class="icon" src="/assets/images/icon_shiro.png" alt="icon" width="50" height="50" @click="goToHomePage">
+            <img class="icon" src="/assets/images/icon_shiro.PNG" alt="icon" width="50" height="50" @click="goToHomePage">
         </div>
         <div class="navbar-user">
             <!-- login and signup button -->
@@ -16,7 +16,7 @@
 
 <script lang="ts">
 export default {
-    name: 'Navbar',
+    name: 'AppNavbar',
     methods: {
         goToLogIn() {
             this.$router.push('/')

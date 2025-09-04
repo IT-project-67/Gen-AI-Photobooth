@@ -1,22 +1,22 @@
 <template>
     <div class="app-container">
-        <Navbar />
+        <AppNavbar />
 
         <slot />
 
-        <Footer />
+        <AppFooter />
     </div>
 </template>
 
 <script lang="ts">
-import Navbar from '~/components/Navbar.vue'
-import Footer from '~/components/Footer.vue'
+import AppFooter from '~/components/AppFooter.vue';
+import AppNavbar from '~/components/AppNavbar.vue';
 
 export default {
     name: 'DefaultLayout',
     components: {
-        Navbar,
-        Footer
+        AppNavbar,
+        AppFooter
     }
 }
 </script>
