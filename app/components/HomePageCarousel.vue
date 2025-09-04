@@ -4,7 +4,7 @@
       class="carousel-track"
       :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
     >
-      <div class="carousel-slide" v-for="(slide, index) in slides" :key="index">
+      <div :key="index" v-for="(slide, index) in slides" class="carousel-slide">
         <div class="carousel-content">
           <img
             v-if="slide.img"
@@ -22,7 +22,7 @@
         :key="index"
         :class="{ active: currentSlide === index }"
         @click="goToSlide(index)"
-      ></span>
+      />
     </div>
     <div class="carousel-button">
       <button @click="prevSlide">◀</button>
@@ -59,6 +59,13 @@ export default defineComponent({
     };
   },
 
+  mounted() {
+    this.startAutoPlay();
+  },
+  beforeUnmount() {
+    this.stopAutoPlay();
+  },
+
   // auto scrolling feature
   methods: {
     nextSlide() {
@@ -81,12 +88,6 @@ export default defineComponent({
         clearInterval(this.intervalId);
       }
     },
-  },
-  mounted() {
-    this.startAutoPlay();
-  },
-  beforeUnmount() {
-    this.stopAutoPlay();
   },
 });
 </script>
