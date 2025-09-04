@@ -6,6 +6,9 @@
     <!-- Announcer textbox (About Us) -->
     <AppTextbox :title="'About Us'" :paragraphs="introParagraphs" />
 
+    <!-- Start Button -->
+    <AppButton text="Start Now!" @click="clickStart" />
+
     <!-- Announcer textbox (Tutorial) -->
     <AppTextbox
       :title="'Quick Start Guide!'"
@@ -38,7 +41,9 @@ export default {
     };
   },
   methods: {
-    // methods
+    clickStart() {
+      this.$router.push("/");
+    },
   },
 };
 </script>

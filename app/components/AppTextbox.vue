@@ -46,7 +46,7 @@ export default {
 .text-title {
   margin-bottom: 15px;
   text-decoration: underline;
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: bold;
   color: white;
   text-align: center;
@@ -69,10 +69,6 @@ export default {
   .textbox {
     padding: 15px;
     margin: 0 15px 15px;
-  }
-
-  .text-title {
-    font-size: 2.5rem;
   }
 }
 
