@@ -33,7 +33,7 @@ export default defineNuxtConfig({
     },
   },
 
-  // css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css'],
   app: {
     head: {
       title: "Gen-AI Photobooth",

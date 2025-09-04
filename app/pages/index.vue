@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <h1>Welcome to IT Project</h1>
-    <p>Let's start coding!</p>
+  <div class="home-page">
+    <h1>
+      welcome to Gen-AI photobooth
+    </h1>
   </div>
 </template>
