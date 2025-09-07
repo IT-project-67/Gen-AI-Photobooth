@@ -72,3 +72,28 @@ export const validateRegisterRequest = (
 ): ValidationError | null => {
   return validateLoginRequest(email, password); // Same validation for now
 };
+
+// Validate forgot password request
+export const validateForgotPasswordRequest = (
+  email: string,
+): ValidationError | null => {
+  return validateEmail(email);
+};
+
+// Validate reset password request
+export const validateResetPasswordRequest = (
+  token: string,
+  password: string,
+): ValidationError | null => {
+  if (!token) {
+    return {
+      type: "VALIDATION_ERROR",
+      code: "TOKEN_REQUIRED",
+      message: "Reset token is required",
+      field: "token",
+      statusCode: 400,
+    };
+  }
+
+  return validatePassword(password);
+};

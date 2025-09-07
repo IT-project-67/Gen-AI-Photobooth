@@ -22,3 +22,22 @@ export type LoginResponse = AuthResponse;
 export interface RegisterResponse extends AuthResponse {
   emailSent?: boolean;
 }
+
+// Forgot Password Types
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ForgotPasswordResponse {
+  message: string;
+}
+
+// Reset Password Types
+export interface ResetPasswordRequest {
+  token: string;
+  password: string;
+}
+
+export interface ResetPasswordResponse {
+  message: string;
+}

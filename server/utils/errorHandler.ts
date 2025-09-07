@@ -74,6 +74,22 @@ export const handleAuthError = (
           "This email is already registered. Please try logging in instead.",
         statusCode: 409,
       };
+    case "invalid_token":
+    case "token_expired":
+      return {
+        ...baseError,
+        code: "INVALID_RESET_TOKEN",
+        message:
+          "Invalid or expired reset token. Please request a new password reset.",
+        statusCode: 400,
+      };
+    case "email_not_found":
+      return {
+        ...baseError,
+        code: "EMAIL_NOT_FOUND",
+        message: "No account found with this email address.",
+        statusCode: 404,
+      };
     default:
       return baseError;
   }

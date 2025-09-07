@@ -103,7 +103,6 @@ export default defineEventHandler(
       const message = data.session
         ? "Registration successful"
         : "Registration successful. Please check your email to confirm your account.";
-
       return createSuccessResponse(registerResponse, message);
     } catch (error) {
       const apiError = handleApiError(error);
