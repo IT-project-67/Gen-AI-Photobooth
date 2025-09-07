@@ -1,18 +1,15 @@
-import { createAuthClient } from "../../../../utils/authClient";
-import {
-  handleAuthError,
-  handleApiError,
-} from "../../../../utils/errorHandler";
-import { validateForgotPasswordRequest } from "../../../../utils/validation";
+import { createAuthClient } from "../../../utils/authClient";
+import { handleAuthError, handleApiError } from "../../../utils/errorHandler";
+import { validateForgotPasswordRequest } from "../../../utils/validation";
 import {
   createSuccessResponse,
   createErrorResponse,
-} from "../../../../utils/response";
+} from "../../../utils/response";
 import type {
   ForgotPasswordRequest,
   ForgotPasswordResponse,
-} from "../../../../types/auth";
-import type { ApiResponse } from "../../../../types/api";
+} from "../../../types/auth";
+import type { ApiResponse } from "../../../types/api";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<ForgotPasswordResponse>> => {

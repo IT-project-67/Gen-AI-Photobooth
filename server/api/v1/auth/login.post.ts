@@ -1,15 +1,12 @@
-import { createAuthClient } from "../../../../utils/authClient";
-import {
-  handleAuthError,
-  handleApiError,
-} from "../../../../utils/errorHandler";
-import { validateLoginRequest } from "../../../../utils/validation";
+import { createAuthClient } from "../../../utils/authClient";
+import { handleAuthError, handleApiError } from "../../../utils/errorHandler";
+import { validateLoginRequest } from "../../../utils/validation";
 import {
   createSuccessResponse,
   createErrorResponse,
-} from "../../../../utils/response";
-import type { LoginRequest, LoginResponse } from "../../../../types/auth";
-import type { ApiResponse } from "../../../../types/api";
+} from "../../../utils/response";
+import type { LoginRequest, LoginResponse } from "../../../types/auth";
+import type { ApiResponse } from "../../../types/api";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<LoginResponse>> => {

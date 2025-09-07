@@ -1,18 +1,12 @@
-import {
-  createAuthClient,
-  createAdminClient,
-} from "../../../../utils/authClient";
-import {
-  handleAuthError,
-  handleApiError,
-} from "../../../../utils/errorHandler";
-import { validateRegisterRequest } from "../../../../utils/validation";
+import { createAuthClient, createAdminClient } from "../../../utils/authClient";
+import { handleAuthError, handleApiError } from "../../../utils/errorHandler";
+import { validateRegisterRequest } from "../../../utils/validation";
 import {
   createSuccessResponse,
   createErrorResponse,
-} from "../../../../utils/response";
-import type { RegisterRequest, RegisterResponse } from "../../../../types/auth";
-import type { ApiResponse } from "../../../../types/api";
+} from "../../../utils/response";
+import type { RegisterRequest, RegisterResponse } from "../../../types/auth";
+import type { ApiResponse } from "../../../types/api";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<RegisterResponse>> => {
