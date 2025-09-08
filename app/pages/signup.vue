@@ -1,16 +1,15 @@
 <template>
   <div class="auth-page">
     <AuthForm
-    title="Create an Account"
-    buttonText="Sign Up"
-    socialLoginText="sign up"
-    :showConfirmPassword="true"
-    @submit="handleSignUp"
-    @social-login="handleSocialLogin"
-  />
+      title="Create an Account"
+      button-text="Sign Up"
+      social-login-text="sign up"
+      :show-confirm-password="true"
+      @submit="handleSignUp"
+      @social-login="handleSocialLogin"
+    />
   </div>
 </template>
-
 
 <script lang="ts">
 import { defineComponent } from "vue";
@@ -33,19 +32,20 @@ export default defineComponent({
 </script>
 
 <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-  }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
 
-  .auth-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 50vh;
-    overflow: hidden; /* prevent scrollbars */
-    box-sizing: border-box;
-    padding: 0 16px; /* horizontal padding only */
-  }
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  overflow: hidden; /* prevent scrollbars */
+  box-sizing: border-box;
+  padding: 0 16px; /* horizontal padding only */
+}
 </style>
