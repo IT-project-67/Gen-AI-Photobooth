@@ -3,8 +3,9 @@
     <AuthForm
       title="Log in to Your Account"
       button-text="Log in"
-      social-login-text="sign up"
       :show-confirm-password="false"
+      :show-forgot-password="true"
+      :switch-to-sign-up="true"
     />
   </div>
 </template>

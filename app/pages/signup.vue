@@ -3,8 +3,8 @@
     <AuthForm
       title="Create an Account"
       button-text="Sign Up"
-      social-login-text="sign up"
       :show-confirm-password="true"
+      :switch-to-log-in="true"
       @submit="handleSignUp"
       @social-login="handleSocialLogin"
     />

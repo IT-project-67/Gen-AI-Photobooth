@@ -6,7 +6,7 @@
       <div class="form-group">
         <label for="email">Email</label>
         <input
-          id="email"
+            id="email"
           v-model="email"
           type="email"
           placeholder="Enter your email"
@@ -38,15 +38,35 @@
         />
       </div>
 
+      <!-- forget password (Optional)--> 
+      <div v-if="showForgotPassword" class="extra-links">
+        <a href="#" @click="$emit('forgot')">Forgot Password?</a>
+      </div>
+
       <!-- Submit Button -->
       <button type="submit" class="auth-button">{{ buttonText }}</button>
+
+      <!-- switch to log in (Optional)-->
+      <div v-if="switchToLogIn" class="extra-links">
+        <span>Already have an account? </span>
+        <NuxtLink to="/login">Log in</NuxtLink>
+      </div>
+
+      <!-- switch to sign up (Optional) -->
+      <div v-if="switchToSignUp" class="extra-links">
+        <span>Don't have an account? </span>
+        <NuxtLink to="/signup">Sign up</NuxtLink>
+      </div>
     </form>
 
+
     <!-- Social Media Login -->
+    <div class="divider">
+      <span>Or</span>
+    </div>
     <div class="social-login">
-      <p>Or {{ socialLoginText }} using:</p>
-      <button class="social-button google">Log In with Google</button>
-      <button class="social-button instagram">Log In with Instagram</button>
+      <button class="social-button google">Google</button>
+      <button class="social-button instagram">Instagram</button>
     </div>
   </div>
 </template>
@@ -65,11 +85,19 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    socialLoginText: {
-      type: String,
-      required: true,
-    },
     showConfirmPassword: {
+      type: Boolean,
+      default: false,
+    },
+    showForgotPassword: {
+      type: Boolean,
+      default: false,
+    },
+    switchToLogIn: {
+      type: Boolean,
+      default: false,
+    },
+    switchToSignUp: {
       type: Boolean,
       default: false,
     },
@@ -165,6 +193,36 @@ button {
 .instagram {
   background: linear-gradient(to right, #8a2be2, #ff69b4);
   color: white;
+}
+
+.extra-links {
+  margin-top: 15px;
+  font-size: 1rem;
+}
+
+.divider {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #ccc;
+}
+
+.divider:not(:empty)::before {
+  margin-right: .75em;
+}
+.divider:not(:empty)::after {
+  margin-left: .75em;
+}
+.divider span {
+  font-size: 0.9rem;
+  color: #666;
 }
 
 /* Tablet and small desktops: adjust spacing and font-sizes */
