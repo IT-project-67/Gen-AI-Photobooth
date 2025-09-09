@@ -6,7 +6,7 @@
       <div class="form-group">
         <label for="email">Email</label>
         <input
-            id="email"
+          id="email"
           v-model="email"
           type="email"
           placeholder="Enter your email"
@@ -38,7 +38,7 @@
         />
       </div>
 
-      <!-- forget password (Optional)--> 
+      <!-- forget password (Optional)-->
       <div v-if="showForgotPassword" class="extra-links">
         <a href="#" @click="$emit('forgot')">Forgot Password?</a>
       </div>
@@ -58,7 +58,6 @@
         <NuxtLink to="/signup">Sign up</NuxtLink>
       </div>
     </form>
-
 
     <!-- Social Media Login -->
     <div class="divider">
@@ -215,10 +214,10 @@ button {
 }
 
 .divider:not(:empty)::before {
-  margin-right: .75em;
+  margin-right: 0.75em;
 }
 .divider:not(:empty)::after {
-  margin-left: .75em;
+  margin-left: 0.75em;
 }
 .divider span {
   font-size: 0.9rem;
