@@ -32,7 +32,7 @@ export default defineComponent({
         return this.modelValue;
       },
 
-      set(value: String) {
+      set(value: string) {
         this.$emit("update:modelValue", value);
       },
     },
