@@ -65,6 +65,14 @@ export default defineComponent({
       this.isSubmitting = true;
       this.message = "";
 
+      if (this.newPassword !== this.confirmPassword) {
+        this.newPassword = "";
+        this.confirmPassword = "";
+        this.isSubmitting = false;
+        this.message = "Passwords do not match!";
+        return;
+      }
+
       setTimeout(() => {
         this.newPassword = "";
         this.confirmPassword = "";
