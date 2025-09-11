@@ -40,7 +40,7 @@
 
       <!-- forget password (Optional)-->
       <div v-if="showForgotPassword" class="extra-links">
-        <a href="#" @click="$emit('forgot')">Forgot Password?</a>
+        <NuxtLink to="/forgotPassword">Forgot Password?</NuxtLink>
       </div>
 
       <!-- Submit Button -->
