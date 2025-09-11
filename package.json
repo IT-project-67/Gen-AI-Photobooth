@@ -21,13 +21,15 @@
     "@nuxt/ui": "^3.3.2",
     "@nuxtjs/supabase": "^1.6.1",
     "@supabase/supabase-js": "^2.57.0",
-    "eslint": "^9.34.0",
     "nuxt": "^4.0.3",
     "typescript": "^5.9.2",
     "vue": "^3.5.20",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@nuxt/eslint-config": "^1.9.0",
+    "eslint": "^9.34.0",
+    "eslint-plugin-vue": "^10.4.0",
     "prettier": "^3.6.2"
   }
 }
