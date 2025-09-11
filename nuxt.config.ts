@@ -8,30 +8,26 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxt/test-utils",
     "@nuxt/ui",
-    // "@nuxtjs/supabase",
+    "@nuxtjs/supabase",
   ],
 
-  // supabase: {
-  //   url: process.env.SUPABASE_URL,
-  //   key: process.env.SUPABASE_ANON_KEY,
-  //   redirectOptions: {
-  //     login: "/login",
-  //     callback: "/confirm",
-  //     exclude: ["/"],
-  //   },
-  // },
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_ANON_KEY,
+    redirectOptions: {
+      login: "/login",
+      callback: "/confirm",
+      exclude: ["/"],
+    },
+  },
 
-  // runtimeConfig: {
-  //   supabase: {
-  //     serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
-  //   },
-  //   public: {
-  //     supabase: {
-  //       url: process.env.SUPABASE_URL,
-  //       key: process.env.SUPABASE_ANON_KEY,
-  //     },
-  //   },
-  // },
+  runtimeConfig: {
+    supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    public: {
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+    },
+  },
 
   css: ["~/assets/css/main.css"],
   app: {
