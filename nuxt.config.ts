@@ -22,14 +22,10 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    supabase: {
-      serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
-    },
+    supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
     public: {
-      supabase: {
-        url: process.env.SUPABASE_URL,
-        key: process.env.SUPABASE_ANON_KEY,
-      },
-    },
-  },
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+    }
+  }
 });
