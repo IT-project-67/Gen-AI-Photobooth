@@ -1,5 +1,5 @@
 <template>
-  <div class="input-box">
+  <div class="AppInputBox">
     <label :for="id">{{ label }}</label>
     <input
       :id="id"

@@ -1,15 +1,24 @@
 <template>
-  <div class="forgot-password-page">
-    <div class="forgot-password-form">
-      <h1>Forget Password</h1>
+  <div class="reset-password-page">
+    <div class="reset-password-form">
+      <h1>Reset Password</h1>
 
       <form @submit.prevent="handleSubmit">
         <AppInputBox
-          v-model="email"
-          label="Email"
-          placeholder="Enter your email address"
-          type="email"
-          id="email"
+          v-model="newPassword"
+          label="New Password"
+          placeholder="Enter your new password"
+          type="Password"
+          id="newPassword"
+          :required="true"
+        />
+
+        <AppInputBox
+          v-model="confirmPassword"
+          label="Confirm New Password"
+          placeholder="Confirm your new password"
+          type="Password"
+          id="confirmPassword"
           :required="true"
         />
 
@@ -20,17 +29,12 @@
 
         <div class="submit">
           <button type="submit" class="reset-button" :disabled="isSubmitting">
-            {{ isSubmitting ? "Sending..." : "Send Reset Email" }}
+            {{ isSubmitting ? "Resetting..." : "Reset Password" }}
           </button>
         </div>
 
         <div class="back-to-login">
-          <span>Remember your password? </span>
-          <NuxtLink to="/login">Login Here</NuxtLink>
-        </div>
-
-        <div class="reset">
-          <NuxtLink to="/resetPassword">reset</NuxtLink>
+          <NuxtLink to="/login">Back to Login</NuxtLink>
         </div>
       </form>
     </div>
@@ -42,14 +46,15 @@ import { defineComponent } from "vue";
 import AppInputBox from "~/components/AppInputBox.vue";
 
 export default defineComponent({
-  name: "ForgetPasswordPage",
+  name: "ResetPasswordPage",
   components: {
     AppInputBox,
   },
 
   data() {
     return {
-      email: "",
+      newPassword: "",
+      confirmPassword: "",
       isSubmitting: false,
       message: "",
     };
@@ -61,18 +66,19 @@ export default defineComponent({
       this.message = "";
 
       setTimeout(() => {
-        this.email = "";
+        this.newPassword = "";
+        this.confirmPassword = "";
         this.isSubmitting = false;
         this.message =
-          "If an account with this email exists, you will receive a password reset link.";
-      }, 1000);
+          "Password has been successfully reset. You can now log in with your new password.";
+      }, 500);
     },
   },
 });
 </script>
 
 <style scoped>
-.forgot-password-page {
+.reset-password-page {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -82,7 +88,7 @@ export default defineComponent({
   padding: 0 16px;
 }
 
-.forgot-password-form {
+.reset-password-form {
   width: 90%;
   max-width: 400px;
   margin: 0 auto;
@@ -134,14 +140,14 @@ h1 {
 
 /* Responsive styles */
 @media (min-width: 768px) {
-  .forgot-password-form {
+  .reset-password-form {
     margin: 28px auto;
     max-width: 500px;
   }
 }
 
 @media (min-width: 1024px) {
-  .forgot-password-form {
+  .reset-password-form {
     max-width: 600px;
   }
 }
