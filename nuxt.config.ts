@@ -20,7 +20,7 @@ export default defineNuxtConfig({
       exclude: ["/"],
     },
   },
-  
+
   runtimeConfig: {
     supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
     public: {
@@ -28,7 +28,6 @@ export default defineNuxtConfig({
       supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
     },
   },
-
 
   css: ["~/assets/css/main.css"],
   app: {
