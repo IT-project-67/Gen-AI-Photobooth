@@ -38,87 +38,84 @@
         />
       </div>
 
+      <!-- password don't match error message -->
+      <p
+        v-if="errorMessage === 'Passwords do not match!'"
+        class="error-message"
+      >
+        Passwords don't match. Try again.
+      </p>
+
       <!-- forget password (Optional)-->
       <div v-if="showForgotPassword" class="extra-links">
-        <a href="#" @click="$emit('forgot')">Forgot Password?</a>
+        <NuxtLink to="/forgotPassword">Forgot Password?</NuxtLink>
       </div>
 
       <!-- Submit Button -->
       <button type="submit" class="auth-button">{{ buttonText }}</button>
-
-      <!-- switch to log in (Optional)-->
-      <div v-if="switchToLogIn" class="extra-links">
-        <span>Already have an account? </span>
-        <NuxtLink to="/login">Log in</NuxtLink>
-      </div>
-
-      <!-- switch to sign up (Optional) -->
-      <div v-if="switchToSignUp" class="extra-links">
-        <span>Don't have an account? </span>
-        <NuxtLink to="/signup">Sign up</NuxtLink>
-      </div>
     </form>
+    <!-- switch to log in (Optional)-->
+    <div v-if="switchToLogIn" class="extra-links">
+      <span>Already have an account? </span>
+      <NuxtLink to="/login">Log in</NuxtLink>
+    </div>
 
-    <!-- Social Media Login -->
+    <!-- switch to sign up (Optional) -->
+    <div v-if="switchToSignUp" class="extra-links">
+      <span>Don't have an account? </span>
+      <NuxtLink to="/signup">Sign up</NuxtLink>
+    </div>
+
+    <!-- divider -->
     <div class="divider">
       <span>Or</span>
     </div>
+
+    <!-- Social Media Login -->
     <div class="social-login">
-      <button class="social-button google">Google</button>
+      <button class="social-button google">
+        <span>Google</span>
+      </button>
+
       <button class="social-button instagram">Instagram</button>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref } from "vue";
 
-export default defineComponent({
-  name: "AuthForm",
-  props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    buttonText: {
-      type: String,
-      required: true,
-    },
-    showConfirmPassword: {
-      type: Boolean,
-      default: false,
-    },
-    showForgotPassword: {
-      type: Boolean,
-      default: false,
-    },
-    switchToLogIn: {
-      type: Boolean,
-      default: false,
-    },
-    switchToSignUp: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  data() {
-    return {
-      email: "",
-      password: "",
-      confirmPassword: "",
-    };
-  },
-  methods: {
-    handleSubmit() {
-      if (this.showConfirmPassword && this.password !== this.confirmPassword) {
-        alert("Passwords do not match!");
-        return;
-      }
-      // Emit the form data to the parent component
-      this.$emit("submit", { email: this.email, password: this.password });
-    },
-  },
-});
+// props
+const props = defineProps<{
+  title: string;
+  buttonText: string;
+  errorMessage?: string;
+  showConfirmPassword?: boolean;
+  showForgotPassword?: boolean;
+  switchToLogIn?: boolean;
+  switchToSignUp?: boolean;
+}>();
+
+//emits
+const emit = defineEmits<{
+  (e: "submit", payload: { email: string; password: string }): void;
+  (e: "error", msg: string): void;
+}>();
+
+// local state
+const email = ref("");
+const password = ref("");
+const confirmPassword = ref("");
+
+// methods
+const handleSubmit = () => {
+  if (props.showConfirmPassword && password.value !== confirmPassword.value) {
+    emit("error", "Passwords do not match!");
+    console.log("emitting errror!!!!!!!!!");
+    return;
+  }
+  emit("submit", { email: email.value, password: password.value });
+};
 </script>
 
 <style scoped>
@@ -141,7 +138,7 @@ h1 {
 .form-group {
   width: 100%;
   box-sizing: border-box;
-  margin-bottom: 15px;
+  margin-top: 15px;
   text-align: left;
 }
 
@@ -170,7 +167,7 @@ button {
 .auth-button {
   background: linear-gradient(to right, #8a2be2, #ff69b4);
   color: white;
-  margin-top: 10px;
+  margin-top: 15px;
   width: 100%;
 }
 
@@ -222,6 +219,12 @@ button {
 .divider span {
   font-size: 0.9rem;
   color: #666;
+}
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 7px;
+  text-align: left;
 }
 
 /* Tablet and small desktops: adjust spacing and font-sizes */

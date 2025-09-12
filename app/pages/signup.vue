@@ -5,30 +5,53 @@
       button-text="Sign Up"
       :show-confirm-password="true"
       :switch-to-log-in="true"
+      :error-message="formErrorMessage"
       @submit="handleSignUp"
+      @error="handleSignUpError"
       @social-login="handleSocialLogin"
     />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import AuthForm from "@/components/AuthForm.vue";
 
-export default defineComponent({
-  name: "SignUpPage",
-  components: { AuthForm },
-  methods: {
-    handleSignUp(formData: { email: string; password: string }) {
-      // Handle sign-up logic here
-      alert(`Sign up successful for ${formData.email}`);
-    },
-    handleSocialLogin(platform: string) {
-      // Handle social login logic here
-      alert(`Log in with ${platform} clicked`);
-    },
-  },
-});
+const { registerWithEmail } = useAuth()
+const { loginWithGoogle } = useOAuth()
+
+const formErrorMessage = ref("")
+
+const handleSignUpError = (msg: string) => {
+  console.log("Signup error:", msg)
+  formErrorMessage.value = msg
+}
+
+const handleSignUp = () => {
+  // reset form error message
+  formErrorMessage.value = ""
+  try{
+    const { data, error: registerError } = await registerWithEmail(form.email, form.password)
+
+  if (registerError) {
+    // registerError is already a string, use it directly
+    error.value = registerError
+    return
+  }
+  } catch (err: any){
+    errorMessage.value = err.message
+  } catch (err: any){
+    errorMessage.value = err.message
+  }
+}
+
+const handleSocialLogin = () => {
+  // auth-form emits submit event
+}
+
+const handleSignUp = async ({email, password}:{email: string; password: string}) => {
+  auth-form emits error
+
+  auth-form emits submit event
 </script>
 
 <style>
