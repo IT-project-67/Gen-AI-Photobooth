@@ -8,50 +8,96 @@
       :error-message="formErrorMessage"
       @submit="handleSignUp"
       @error="handleSignUpError"
-      @social-login="handleSocialLogin"
+      @social-login="handleGoogleLogin"
     />
   </div>
+
+  <!-- Modal for informing messages -->
+  <!-- <Modal v-if = "success === 'Waiting for verfication'">
+    <h2>
+      Verify Your Email
+    </h2>
+    <p>
+      You're almost there! We have sent you a verification email. Please check your inbox and click the link to verify your email address.
+    </p>
+   </Modal> -->
 </template>
 
 <script setup lang="ts">
 import AuthForm from "@/components/AuthForm.vue";
+// import InformModal from "@/components/InformModal.vue";
 
-const { registerWithEmail } = useAuth()
-const { loginWithGoogle } = useOAuth()
+const { registerWithEmail } = useAuth();
+const { loginWithGoogle } = useOAuth();
 
-const formErrorMessage = ref("")
+const formErrorMessage = ref("");
+const registerErrorMessage = ref("");
+const oauthError = ref("");
+const success = ref("");
 
+// Signing up with email
 const handleSignUpError = (msg: string) => {
-  console.log("Signup error:", msg)
-  formErrorMessage.value = msg
-}
+  console.log("Signup error:", msg);
+  formErrorMessage.value = msg;
+};
 
-const handleSignUp = () => {
-  // reset form error message
-  formErrorMessage.value = ""
-  try{
-    const { data, error: registerError } = await registerWithEmail(form.email, form.password)
+const handleSignUp = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
+  // reset error message
+  formErrorMessage.value = "";
 
-  if (registerError) {
-    // registerError is already a string, use it directly
-    error.value = registerError
-    return
+  try {
+    const { data, error: registerError } = await registerWithEmail(
+      email,
+      password,
+    );
+
+    if (registerError) {
+      // registerError is already a string, use it directly
+      registerErrorMessage.value = registerError;
+      return;
+    }
+
+    if (data) {
+      if (data.emailSent) {
+        success.value = "Waiting for verification.";
+      } else if (data.session) {
+        success.value = "Registration successful";
+        // Redirect to home page after a short delay
+        setTimeout(() => {
+          navigateTo("/");
+        }, 2000);
+      }
+    }
+  } catch (err: unknown) {
+    console.error("Registration error:", err);
+    const errorMessage =
+      err instanceof Error
+        ? err.message
+        : "An error occurred during registration";
+    registerErrorMessage.value = errorMessage;
   }
-  } catch (err: any){
-    errorMessage.value = err.message
-  } catch (err: any){
-    errorMessage.value = err.message
+};
+
+const handleGoogleLogin = async () => {
+  try {
+    const { error } = await loginWithGoogle();
+
+    if (error) {
+      oauthError.value = error;
+    }
+    // If successful, user will be redirected to Google OAuth page
+  } catch (err: unknown) {
+    const errorMessage =
+      err instanceof Error ? err.message : "Google OAuth registration failed";
+    oauthError.value = errorMessage;
   }
-}
-
-const handleSocialLogin = () => {
-  // auth-form emits submit event
-}
-
-const handleSignUp = async ({email, password}:{email: string; password: string}) => {
-  auth-form emits error
-
-  auth-form emits submit event
+};
 </script>
 
 <style>
