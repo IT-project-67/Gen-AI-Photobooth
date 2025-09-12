@@ -6,7 +6,7 @@
       :show-confirm-password="false"
       :show-forgot-password="true"
       :switch-to-sign-up="true"
-      @submite="handleSubmit"
+      @submit="handleSubmit"
       @social-login="handleGoogleLogin"
     />
   </div>
@@ -21,7 +21,13 @@ const { loginWithGoogle } = useOAuth();
 
 const error = ref("");
 
-const handleSubmit = async (email: string, password: string) => {
+const handleSubmit = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
   error.value = "";
 
   try {
