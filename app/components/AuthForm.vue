@@ -73,11 +73,13 @@
 
     <!-- Social Media Login -->
     <div class="social-login">
-      <button class="social-button google">
-        <span>Google</span>
+      <button class="social-button google" @click="emit('social-login', 'google')">
+        <span>Continue with Google</span>
       </button>
 
-      <button class="social-button instagram">Instagram</button>
+      <button class="social-button discord" @click="emit('social-login', 'google')">
+        <span>Continue with Discord</span>
+      </button>
     </div>
   </div>
 </template>
@@ -99,7 +101,7 @@ const props = defineProps<{
 //emits
 const emit = defineEmits<{
   (e: "submit", payload: { email: string; password: string }): void;
-  (e: "error", msg: string): void;
+  (e: "error" | "social-login", payload: string): void
 }>();
 
 // local state
@@ -111,7 +113,6 @@ const confirmPassword = ref("");
 const handleSubmit = () => {
   if (props.showConfirmPassword && password.value !== confirmPassword.value) {
     emit("error", "Passwords do not match!");
-    console.log("emitting errror!!!!!!!!!");
     return;
   }
   emit("submit", { email: email.value, password: password.value });
@@ -185,10 +186,19 @@ button {
   cursor: pointer;
 }
 
-.google,
-.instagram {
-  background: linear-gradient(to right, #8a2be2, #ff69b4);
-  color: white;
+.social-button.google {
+  background: white;
+  color: black;
+  border: 1px solid #ccc; 
+}
+
+.social-button.discord {
+  background: #5865F2;  
+  color: white;   
+  border: none; 
+}
+.social-button.discord:hover {
+  background: #4752C4;   /* darker blurple on hover */
 }
 
 .extra-links {
@@ -222,7 +232,7 @@ button {
 }
 .error-message {
   color: red;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   margin-top: 7px;
   text-align: left;
 }
