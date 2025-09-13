@@ -21,14 +21,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-// // Nuxt3 里 layout 可以用 definePageMeta
-// defineOptions({
-//   name: "HomePage",
-// })
-
-// definePageMeta({
-//   layout: "default",
-// })
+const user = useSupabaseUser();
 
 const router = useRouter();
 
@@ -40,7 +33,7 @@ const slides = ref([
 ]);
 
 const introParagraphs = ref([
-  "Welcome to (*App Name here*), where you can have fun with creating different styles AI generated pictures and share with your friends!",
+  "Welcome to Gen-AI Photobooth, where you can have fun with creating different styles AI generated pictures and share with your friends!",
   "↓↓↓ Try it out RIGHT NOW ↓↓↓",
 ]);
 
@@ -53,7 +46,12 @@ const tutorialParagraphs = ref([
 
 // methods
 const clickStart = () => {
-  router.push("/login");
+  if (!user) {
+    router.push("/login");
+  } else {
+    // waiting for further development
+    alert("Function not available yet, please wait for further development");
+  }
 };
 </script>
 
