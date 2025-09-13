@@ -8,12 +8,10 @@ datasource db {
 }
 
 model Profile {
-  id           String   @id @default(cuid())
   userId       String   @map("user_id")
   displayName  String?  @map("display_name")
   organization String?
   phone        String?
-  logoUrl      String?
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
   Event        Event[]
@@ -27,12 +25,13 @@ model Event {
   profileId          String           @map("profile_id")
   name               String
   description        String?
+  logoUrl            String?
   startDate          DateTime?        @map("start_date")
   endDate            DateTime?        @map("end_date")
   location           String?
   createdAt          DateTime         @default(now()) @map("created_at")
   updatedAt          DateTime         @updatedAt @map("updated_at")
-  profile            Profile          @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profile            Profile          @relation(fields: [profileId], references: [userId], onDelete: Cascade)
   Session            Session[]
   SharedPhoto        SharedPhoto[]
 
