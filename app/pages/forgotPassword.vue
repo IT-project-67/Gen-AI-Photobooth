@@ -33,10 +33,6 @@
           <span>Remember your password? </span>
           <NuxtLink to="/login">Login Here</NuxtLink>
         </div>
-
-        <div class="reset">
-          <NuxtLink to="/resetPassword">reset</NuxtLink>
-        </div>
       </form>
     </div>
   </div>
@@ -131,8 +127,6 @@ h1 {
   color: white;
   width: 100%;
 }
-
-/* .reset-button:hover { background: linear-gradient(to right, #9932cc, #ff1493); } */
 
 .back-to-login {
   margin-top: 15px;
