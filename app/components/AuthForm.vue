@@ -38,12 +38,15 @@
         />
       </div>
 
+      <!-- Confirmation message-->
+      <p v-if="verify" class="verification-message">
+        We've sent you a verification email. Please check your inbox and click
+        the link to verify your email address.
+      </p>
+
       <!-- password don't match error message -->
-      <p
-        v-if="errorMessage === 'Passwords do not match!'"
-        class="error-message"
-      >
-        Passwords don't match. Try again.
+      <p v-if="errorMessage !== ''" class="error-message">
+        {{ errorMessage }}
       </p>
 
       <!-- forget password (Optional)-->
@@ -73,11 +76,27 @@
 
     <!-- Social Media Login -->
     <div class="social-login">
-      <button class="social-button google" @click="emit('social-login', 'google')">
+      <button
+        class="social-button google"
+        @click="emit('social-login', 'google')"
+      >
+        <img
+          src="/assets/images/googleLoco.png"
+          alt="Google"
+          class="social-icon"
+        />
         <span>Continue with Google</span>
       </button>
 
-      <button class="social-button discord" @click="emit('social-login', 'google')">
+      <button
+        class="social-button discord"
+        @click="emit('social-login', 'discord')"
+      >
+        <img
+          src="/assets/images/discordLogo.svg"
+          alt="Discord"
+          class="social-icon"
+        />
         <span>Continue with Discord</span>
       </button>
     </div>
@@ -92,6 +111,7 @@ const props = defineProps<{
   title: string;
   buttonText: string;
   errorMessage?: string;
+  verify?: boolean;
   showConfirmPassword?: boolean;
   showForgotPassword?: boolean;
   switchToLogIn?: boolean;
@@ -101,7 +121,7 @@ const props = defineProps<{
 //emits
 const emit = defineEmits<{
   (e: "submit", payload: { email: string; password: string }): void;
-  (e: "error" | "social-login", payload: string): void
+  (e: "error" | "social-login", payload: string): void;
 }>();
 
 // local state
@@ -157,6 +177,18 @@ input {
   border-radius: 4px;
 }
 
+.verification-message {
+  margin: 15px 0;
+  font-size: 0.95rem;
+  color: #555;
+  background: #f9f9ff;
+  border: 1px solid #e0dfff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  line-height: 1.4;
+  text-align: left;
+}
+
 button {
   padding: 10px 20px;
   font-size: 1rem;
@@ -170,6 +202,11 @@ button {
   color: white;
   margin-top: 15px;
   width: 100%;
+}
+
+.auth-button:hover {
+  background: linear-gradient(to right, #9b30ff, #ff85c1); /* brighter colors */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* subtle shadow */
 }
 
 .social-login {
@@ -189,16 +226,21 @@ button {
 .social-button.google {
   background: white;
   color: black;
-  border: 1px solid #ccc; 
+  border: 1px solid #ccc;
+}
+
+.social-button.google:hover {
+  background: #f7f7f7; /* light grey */
+  border-color: #bbb; /* slightly darker border */
 }
 
 .social-button.discord {
-  background: #5865F2;  
-  color: white;   
-  border: none; 
+  background: #5865f2;
+  color: white;
+  border: none;
 }
 .social-button.discord:hover {
-  background: #4752C4;   /* darker blurple on hover */
+  background: #4752c4; /* darker blurple on hover */
 }
 
 .extra-links {
@@ -235,6 +277,13 @@ button {
   font-size: 0.9rem;
   margin-top: 7px;
   text-align: left;
+}
+
+.social-icon {
+  width: 20px; /* adjust size */
+  height: 20px;
+  margin-right: 8px; /* spacing from text */
+  vertical-align: middle; /* align with text */
 }
 
 /* Tablet and small desktops: adjust spacing and font-sizes */

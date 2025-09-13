@@ -6,20 +6,20 @@
       :show-confirm-password="false"
       :show-forgot-password="true"
       :switch-to-sign-up="true"
+      :error-message="loginError"
       @submit="handleSubmit"
-      @social-login="handleGoogleLogin"
+      @social-login="handleSocialLogin"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import AuthForm from "@/components/AuthForm.vue";
+import { useOAuth } from "@/composables/useOAuth";
 
+const { loginWithProvider } = useOAuth();
 const { loginWithEmail } = useAuth();
-const { getUserFriendlyMessage } = useApiError();
-const { loginWithGoogle } = useOAuth();
-
-const error = ref("");
+const loginError = ref("");
 
 const handleSubmit = async ({
   email,
@@ -28,22 +28,16 @@ const handleSubmit = async ({
   email: string;
   password: string;
 }) => {
-  error.value = "";
+  loginError.value = "";
 
   try {
-    const { data, error: loginError } = await loginWithEmail(email, password);
-
-    if (loginError) {
-      // Try to parse error for user-friendly message
-      try {
-        const errorObj = JSON.parse(loginError);
-        error.value = getUserFriendlyMessage(errorObj);
-      } catch {
-        error.value = loginError;
-      }
+    const { data, error: err } = await loginWithEmail(email, password);
+    if (err) {
+      // display the error
+      console.log("Login error:", err);
+      loginError.value = err;
       return;
     }
-
     if (data) {
       // Redirect to home page on success
       await navigateTo("/");
@@ -52,24 +46,14 @@ const handleSubmit = async ({
     console.error("Login error:", err);
     const errorMessage =
       err instanceof Error ? err.message : "An error occurred during sign in";
-    error.value = errorMessage;
+    loginError.value = errorMessage;
   }
 };
 
-const oauthError = ref("");
-const handleGoogleLogin = async () => {
-  try {
-    const { error } = await loginWithGoogle();
-
-    if (error) {
-      oauthError.value = error;
-    }
-    // If successful, user will be redirected to Google OAuth page
-  } catch (err: unknown) {
-    const errorMessage =
-      err instanceof Error ? err.message : "Google OAuth registration failed";
-    oauthError.value = errorMessage;
-  }
+// provider login
+const handleSocialLogin = async (provider: string) => {
+  const { error } = await loginWithProvider(provider);
+  if (error) loginError.value = error;
 };
 </script>
 

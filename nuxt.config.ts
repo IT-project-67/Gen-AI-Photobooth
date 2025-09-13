@@ -29,7 +29,11 @@ export default defineNuxtConfig({
     },
   },
 
-  css: ["~/assets/css/main.css"],
+  css: [
+    "~/assets/css/main.css",
+    "@fortawesome/fontawesome-free/css/all.min.css",
+  ],
+
   app: {
     head: {
       title: "Gen-AI Photobooth",

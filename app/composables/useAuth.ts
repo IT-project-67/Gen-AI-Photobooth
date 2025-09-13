@@ -72,6 +72,8 @@ export const useAuth = () => {
       if (isFetchError(error)) {
         if (error.data?.error?.message) {
           errorMessage = error.data.error.message;
+        } else if (error.data?.message) {
+          errorMessage = error.data.message;
         }
       } else if (error instanceof Error) {
         errorMessage = error.message;

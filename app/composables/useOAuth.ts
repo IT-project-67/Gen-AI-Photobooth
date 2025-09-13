@@ -45,9 +45,17 @@ export const useOAuth = () => {
     }
   };
 
+  const loginWithProvider = async (provider: string) => {
+    if (provider === "google") {
+      return await loginWithGoogle();
+    } else if (provider === "discord") {
+      return await loginWithDiscord();
+    }
+    return { error: `Unsupported provider: ${provider}` };
+  };
+
   return {
     user: readonly(user),
-    loginWithGoogle,
-    loginWithDiscord,
+    loginWithProvider,
   };
 };
