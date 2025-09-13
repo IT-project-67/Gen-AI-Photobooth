@@ -1,7 +1,7 @@
 <template>
   <div class="forgot-password-page">
     <div class="forgot-password-form">
-      <h1>Forget Password</h1>
+      <h1>Forgot Password</h1>
 
       <form @submit.prevent="handleSubmit">
         <AppInputBox
@@ -21,11 +21,6 @@
         <!-- Success message -->
         <p v-if="success" class="success_message">
           {{ success }}
-        </p>
-
-        <!-- Confirmation message-->
-        <p v-if="message" class="confirmation_message">
-          {{ message }}
         </p>
 
         <div class="submit">
@@ -53,7 +48,7 @@ import AppInputBox from "~/components/AppInputBox.vue";
 import { useAuth } from "~/composables/useAuth";
 
 export default defineComponent({
-  name: "ForgetPasswordPage",
+  name: "ForgotPasswordPage",
   components: {
     AppInputBox,
   },
@@ -62,7 +57,6 @@ export default defineComponent({
     return {
       email: "",
       isSubmitting: false,
-      message: "",
       error: "",
       success: "",
     };
@@ -78,10 +72,9 @@ export default defineComponent({
       }
       this.isSubmitting = true;
       this.error = "";
-      this.message = "";
 
       try {
-        const { forgetPassword } = useAuth();
+        const { forgotPassword } = useAuth();
         const { data, error: forgotError } = await forgotPassword(this.email);
 
         if (forgotError) {
@@ -103,8 +96,6 @@ export default defineComponent({
         this.error = errorMessage;
       } finally {
         this.isSubmitting = false;
-        this.message =
-          "If an account with this email exists, you will receive a password reset link.";
       }
     },
   },
@@ -160,7 +151,7 @@ h1 {
   font-size: 1rem;
 }
 
-.confirmation_message {
+.success_message {
   margin: 15px 0;
   font-size: 0.95rem;
   color: #555;
@@ -179,12 +170,12 @@ h1 {
   text-align: left;
 }
 
-.success_message {
+/* .success_message {
   color: green;
   font-size: 0.9rem;
   margin-top: 7px;
   text-align: left;
-}
+} */
 
 /* Responsive styles */
 @media (min-width: 768px) {
