@@ -87,7 +87,7 @@ const handleLogout = async () => {
   }
   showUserMenu.value = false;
   router.push("/");
-  console.log("success");
+  // console.log("success");
 };
 
 // when clicking outside the dropdown menu, close the dropdown menu

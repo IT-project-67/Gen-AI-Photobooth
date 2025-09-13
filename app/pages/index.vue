@@ -46,7 +46,7 @@ const tutorialParagraphs = ref([
 
 // methods
 const clickStart = () => {
-  if (!user) {
+  if (!user.value) {
     router.push("/login");
   } else {
     // waiting for further development
