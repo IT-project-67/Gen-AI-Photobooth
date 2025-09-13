@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import AppInputBox from "~/components/AppInputBox.vue";
 import { useAuth } from "~/composables/useAuth";
 

@@ -8,7 +8,7 @@
           v-model="newPassword"
           label="New Password"
           placeholder="Enter your new password"
-          type="Password"
+          type="password"
           id="newPassword"
           :required="true"
         />
@@ -17,7 +17,7 @@
           v-model="confirmPassword"
           label="Confirm New Password"
           placeholder="Confirm your new password"
-          type="Password"
+          type="password"
           id="confirmPassword"
           :required="true"
         />
