@@ -56,8 +56,8 @@ import { ref } from "vue";
 
 const { logout } = useAuth();
 const user = useSupabaseUser();
-const username = ref("");
 
+// const username = ref("");
 // const email = computed(() => user.value?.email)
 
 const showUserMenu = ref(false);
