@@ -22,9 +22,14 @@
           :required="true"
         />
 
-        <!-- Confirmation message-->
-        <p v-if="message" class="confirmation_message">
-          {{ message }}
+        <!-- Error message -->
+        <p v-if="error" class="error_message">
+          {{ error }}
+        </p>
+
+        <!-- Success message -->
+        <p v-if="success" class="success_message">
+          {{ success }}
         </p>
 
         <div class="submit">
@@ -44,6 +49,9 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import AppInputBox from "~/components/AppInputBox.vue";
+import { useAuth } from "~/composables/useAuth";
+import { useRoute } from "#app";
+import { navigateTo } from "#imports";
 
 export default defineComponent({
   name: "ResetPasswordPage",
@@ -56,30 +64,105 @@ export default defineComponent({
       newPassword: "",
       confirmPassword: "",
       isSubmitting: false,
-      message: "",
+      error: "",
+      success: "",
+      accessToken: "",
+      refreshToken: "",
     };
   },
 
-  methods: {
-    handleSubmit() {
-      this.isSubmitting = true;
-      this.message = "";
+  mounted() {
+    const route = useRoute();
 
-      if (this.newPassword !== this.confirmPassword) {
-        this.newPassword = "";
-        this.confirmPassword = "";
-        this.isSubmitting = false;
-        this.message = "Passwords do not match!";
+    // Try to extract from hash first
+    if (window.location.hash) {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+
+      const accessTokenParam = hashParams.get("access_token");
+      const refreshTokenParam = hashParams.get("refresh_token");
+
+      if (accessTokenParam && refreshTokenParam) {
+        this.accessToken = accessTokenParam;
+        this.refreshToken = refreshTokenParam;
+      } else {
+        this.error =
+          "Invalid or missing reset tokens. Please request a new password reset.";
+      }
+    } else {
+      // Fallback to query parameters
+      const accessTokenParam =
+        (route.query.access_token as string) || (route.query.token as string);
+      const refreshTokenParam = route.query.refresh_token as string;
+
+      if (accessTokenParam) {
+        this.accessToken = accessTokenParam;
+        this.refreshToken = refreshTokenParam || accessTokenParam;
+      } else {
+        this.error =
+          "Invalid or missing reset tokens. Please request a new password reset.";
+      }
+    }
+  },
+
+  methods: {
+    async handleSubmit(event: Event) {
+      event.preventDefault();
+
+      if (!this.accessToken) {
+        this.error = "Invalid or missing reset tokens";
         return;
       }
 
-      setTimeout(() => {
-        this.newPassword = "";
-        this.confirmPassword = "";
+      if (!this.newPassword || !this.confirmPassword) {
+        this.error = "Please fill in all fields";
+        return;
+      }
+
+      if (this.newPassword !== this.confirmPassword) {
+        this.error = "Passwords do not match";
+        return;
+      }
+
+      if (this.newPassword.length < 6) {
+        this.error = "Password must be at least 6 characters long";
+        return;
+      }
+
+      this.isSubmitting = true;
+      this.error = "";
+      this.success = "";
+
+      try {
+        const { resetPassword } = useAuth();
+        const { data, error: resetError } = await resetPassword(
+          this.accessToken,
+          this.refreshToken,
+          this.newPassword,
+        );
+
+        if (resetError) {
+          this.error = resetError;
+          return;
+        }
+
+        if (data) {
+          this.success = data.message;
+          this.newPassword = "";
+          this.confirmPassword = "";
+          setTimeout(() => {
+            navigateTo("/login");
+          }, 3000);
+        }
+      } catch (err: unknown) {
+        console.error("Reset password error:", err);
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : "An error occurred while resetting password";
+        this.error = errorMessage;
+      } finally {
         this.isSubmitting = false;
-        this.message =
-          "Password has been successfully reset. You can now log in with your new password.";
-      }, 500);
+      }
     },
   },
 });
@@ -134,7 +217,7 @@ h1 {
   font-size: 1rem;
 }
 
-.confirmation_message {
+.success_message {
   margin: 15px 0;
   font-size: 0.95rem;
   color: #555;
@@ -143,6 +226,13 @@ h1 {
   padding: 10px 14px;
   border-radius: 6px;
   line-height: 1.4;
+  text-align: left;
+}
+
+.error_message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 7px;
   text-align: left;
 }
 
