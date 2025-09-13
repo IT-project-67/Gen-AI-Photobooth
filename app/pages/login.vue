@@ -9,6 +9,7 @@
       :error-message="loginError"
       @submit="handleSubmit"
       @social-login="handleSocialLogin"
+      v-model:isSubmitting="isSubmitting"
     />
   </div>
 </template>
@@ -16,10 +17,12 @@
 <script setup lang="ts">
 import AuthForm from "@/components/AuthForm.vue";
 import { useOAuth } from "@/composables/useOAuth";
+import { ref } from "vue";
 
 const { loginWithProvider } = useOAuth();
 const { loginWithEmail } = useAuth();
 const loginError = ref("");
+const isSubmitting = ref(false);
 
 const handleSubmit = async ({
   email,
@@ -28,6 +31,7 @@ const handleSubmit = async ({
   email: string;
   password: string;
 }) => {
+  isSubmitting.value = true;
   loginError.value = "";
 
   try {
@@ -47,6 +51,8 @@ const handleSubmit = async ({
     const errorMessage =
       err instanceof Error ? err.message : "An error occurred during sign in";
     loginError.value = errorMessage;
+  } finally {
+    isSubmitting.value = false;
   }
 };
 

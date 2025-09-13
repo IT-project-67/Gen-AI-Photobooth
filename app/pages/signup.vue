@@ -10,6 +10,7 @@
       @submit="handleSignUp"
       @error="handleSignUpError"
       @social-login="handleSocialLogin"
+      v-model:isSubmitting="isSubmitting"
     />
   </div>
 
@@ -32,6 +33,7 @@ const { loginWithProvider } = useOAuth();
 const { registerWithEmail } = useAuth();
 const signupError = ref("");
 const success = ref("");
+const isSubmitting = ref(false);
 
 // Signing up with email
 const handleSignUpError = (msg: string) => {
@@ -45,6 +47,8 @@ const handleSignUp = async ({
   email: string;
   password: string;
 }) => {
+  isSubmitting.value = true;
+
   // reset error message
   signupError.value = "";
 
@@ -79,6 +83,8 @@ const handleSignUp = async ({
         ? err.message
         : "An error occurred during registration";
     signupError.value = errorMessage;
+  } finally {
+    isSubmitting.value = false;
   }
 };
 

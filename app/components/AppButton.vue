@@ -6,17 +6,14 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: "AppButton",
-  props: {
-    text: {
-      type: String,
-      default: "A Button",
-    },
-  },
-  emits: ["click"],
-};
+<script setup lang="ts">
+defineProps<{
+  text?: string;
+}>();
+
+defineEmits<{
+  (e: "click"): void;
+}>();
 </script>
 
 <style scoped>

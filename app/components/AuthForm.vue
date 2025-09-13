@@ -55,7 +55,9 @@
       </div>
 
       <!-- Submit Button -->
-      <button type="submit" class="auth-button">{{ buttonText }}</button>
+      <button type="submit" class="auth-button" :disabled="props.isSubmitting">
+        {{ props.isSubmitting ? "Processing..." : buttonText }}
+      </button>
     </form>
     <!-- switch to log in (Optional)-->
     <div v-if="switchToLogIn" class="extra-links">
@@ -116,10 +118,12 @@ const props = defineProps<{
   showForgotPassword?: boolean;
   switchToLogIn?: boolean;
   switchToSignUp?: boolean;
+  isSubmitting: boolean;
 }>();
 
 //emits
 const emit = defineEmits<{
+  (e: "update:isSubmitting", value: boolean): void;
   (e: "submit", payload: { email: string; password: string }): void;
   (e: "error" | "social-login", payload: string): void;
 }>();
@@ -135,6 +139,7 @@ const handleSubmit = () => {
     emit("error", "Passwords do not match!");
     return;
   }
+
   emit("submit", { email: email.value, password: password.value });
 };
 </script>
