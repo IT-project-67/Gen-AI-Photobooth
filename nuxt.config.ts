@@ -12,24 +12,28 @@ export default defineNuxtConfig({
   ],
 
   supabase: {
-    url: process.env.SUPABASE_URL,
-    key: process.env.SUPABASE_ANON_KEY,
+    url: process.env.NUXT_PUBLIC_SUPABASE_URL,
+    key: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
     redirectOptions: {
       login: "/login",
-      callback: "/confirm",
-      exclude: ["/"],
+      callback: "/",
+      exclude: ["/", "/signup", "/forgotPassword", "/resetPassword"],
     },
   },
 
   runtimeConfig: {
     supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
     public: {
-      supabaseUrl: process.env.SUPABASE_URL,
-      supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+      supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
+      supabaseAnonKey: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
     },
   },
 
-  css: ["~/assets/css/main.css"],
+  css: [
+    "~/assets/css/main.css",
+    "@fortawesome/fontawesome-free/css/all.min.css",
+  ],
+
   app: {
     head: {
       title: "Gen-AI Photobooth",

@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     clickStart() {
-      this.$router.push("/");
+      this.$router.push("/login");
     },
   },
 };

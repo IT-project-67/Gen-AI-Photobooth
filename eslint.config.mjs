@@ -1,5 +1,16 @@
 // @ts-check
 import withNuxt from "./.nuxt/eslint.config.mjs";
 
-export default withNuxt();
-// Your custom configs here
+export default (async () => {
+  const NuxtConfig = await withNuxt();
+
+  return [
+    ...NuxtConfig,
+    {
+      files: ["**/*.vue"],
+      rules: {
+        "vue/html-self-closing": "off",
+      },
+    },
+  ];
+})();
