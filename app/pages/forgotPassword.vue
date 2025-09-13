@@ -13,6 +13,16 @@
           :required="true"
         />
 
+        <!-- Error message -->
+        <p v-if="error" class="error_message">
+          {{ error }}
+        </p>
+
+        <!-- Success message -->
+        <p v-if="success" class="success_message">
+          {{ success }}
+        </p>
+
         <!-- Confirmation message-->
         <p v-if="message" class="confirmation_message">
           {{ message }}
@@ -38,8 +48,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import AppInputBox from "~/components/AppInputBox.vue";
+import { useAuth } from "~/composables/useAuth";
 
 export default defineComponent({
   name: "ForgetPasswordPage",
@@ -52,20 +63,49 @@ export default defineComponent({
       email: "",
       isSubmitting: false,
       message: "",
+      error: "",
+      success: "",
     };
   },
 
   methods: {
-    handleSubmit() {
+    async handleSubmit(event: Event) {
+      event.preventDefault();
+
+      if (!this.email) {
+        this.error = "Please enter your email address";
+        return;
+      }
       this.isSubmitting = true;
+      this.error = "";
       this.message = "";
 
-      setTimeout(() => {
-        this.email = "";
+      try {
+        const { forgetPassword } = useAuth();
+        const { data, error: forgotError } = await forgotPassword(this.email);
+
+        if (forgotError) {
+          this.error = forgotError;
+          return;
+        }
+
+        if (data) {
+          this.success = data.message;
+          // Clear form
+          this.email = "";
+        }
+      } catch (err: unknown) {
+        console.error("Forgot password error:", err);
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : "An error occurred while sending reset email";
+        this.error = errorMessage;
+      } finally {
         this.isSubmitting = false;
         this.message =
           "If an account with this email exists, you will receive a password reset link.";
-      }, 1000);
+      }
     },
   },
 });
@@ -129,6 +169,20 @@ h1 {
   padding: 10px 14px;
   border-radius: 6px;
   line-height: 1.4;
+  text-align: left;
+}
+
+.error_message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 7px;
+  text-align: left;
+}
+
+.success_message {
+  color: green;
+  font-size: 0.9rem;
+  margin-top: 7px;
   text-align: left;
 }
 
