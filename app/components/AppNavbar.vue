@@ -10,37 +10,78 @@
       />
     </div>
     <div class="navbar-user">
-      <!-- login and signup button -->
-      <span class="auth-button login" @click="goToLogIn">Log In</span>
-      <span class="user-separator">|</span>
-      <span class="auth-button signup" @click="goToSignUp">Sign Up</span>
-      <img
-        class="user-icon"
-        src="/assets/images/user-icon.png"
-        alt="user-icon"
-        @click="goToLogIn"
-      />
+      <!-- User not logged in -->
+      <template v-if="!isLoggedIn">
+        <span class="auth-button login" @click="goToLogIn">Log In</span>
+        <span class="user-separator">|</span>
+        <span class="auth-button signup" @click="goToSignUp">Sign Up</span>
+        <img
+          class="user-icon"
+          src="/assets/images/user-icon.png"
+          alt="user-icon"
+          @click="goToLogIn"
+        />
+      </template>
+
+      <!-- User already logged in -->
+      <template v-else>
+        <span class="auth-button">Welcome back, {{ username }}</span>
+        <div class="user-menu" @click="openUserMenu">
+          <img
+            class="user-icon"
+            src="/assets/images/user-icon.png"
+            alt="user-icon"
+          />
+          <span class="down-arrow">▼</span>
+        </div>
+
+        <div v-if="showUserMenu" class="user-menu">
+          <div class="menu-dropdown" @click="goToProfile">
+            <span class="menu-item">👤</span>
+            <span>Profile</span>
+          </div>
+          <div class="menu-dropdown" @click="goToSettings">
+            <span class="menu-item">⚙️</span>
+            <span>Settings</span>
+          </div>
+          <div class="menu-dropdown" @click="handleLogout">
+            <span class="menu-item">🚪</span>
+            <span>Log Out</span>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: "AppNavbar",
-  methods: {
-    goToLogIn() {
-      this.$router.push("/login");
-    },
-    goToSignUp() {
-      this.$router.push("/signup");
-    },
-    goToUserPage() {
-      this.$router.push("/");
-    },
-    goToHomePage() {
-      this.$router.push("/");
-    },
-  },
+<script setup lang="ts">
+import { ref } from "vue";
+
+const isLoggedIn = ref(false);
+const username = ref("");
+const showUserMenu = ref(false);
+const router = useRouter();
+
+const goToLogIn = () => {
+  router.push("/login");
+};
+const goToSignUp = () => {
+  router.push("/signup");
+};
+const goToHomePage = () => {
+  router.push("/");
+};
+const goToProfile = () => {
+  router.push("/");
+};
+const goToSettings = () => {
+  router.push("/");
+};
+const openUserMenu = () => {
+  showUserMenu.value = !showUserMenu.value;
+};
+const handleLogout = async () => {
+  await router.push("/");
 };
 </script>
 

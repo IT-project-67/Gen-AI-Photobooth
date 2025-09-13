@@ -16,20 +16,17 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: "AppTextbox",
-  props: {
-    title: {
-      type: String,
-      default: "Default Title",
-    },
-    paragraphs: {
-      type: Array,
-      default: () => [],
-    },
+<script setup lang="ts">
+const props = withDefaults(
+  defineProps<{
+    title?: string;
+    paragraphs?: string[];
+  }>(),
+  {
+    title: "Default Title",
+    paragraphs: () => [],
   },
-};
+);
 </script>
 
 <style scoped>

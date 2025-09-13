@@ -11,32 +11,35 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 
-export default defineComponent({
-  name: "AppInputBox",
-  props: {
-    label: { type: String, default: "Label" },
-    placeholder: { type: String, default: "" },
-    modelValue: { type: String, default: "" },
-    type: { type: String, default: "text" },
-    id: { type: String, default: "input" },
-    required: { type: Boolean, default: false },
+const props = withDefaults(
+  defineProps<{
+    label?: string;
+    placeholder?: string;
+    modelValue?: string;
+    type?: string;
+    id?: string;
+    required?: boolean;
+  }>(),
+  {
+    label: "Label",
+    placeholder: "",
+    modelValue: "",
+    type: "text",
+    id: "input",
+    required: false,
   },
-  emits: ["update:modelValue"],
+);
 
-  computed: {
-    inputValue: {
-      get() {
-        return this.modelValue;
-      },
+const emit = defineEmits<{
+  (e: "update:modelValue", value: string): void;
+}>();
 
-      set(value: string) {
-        this.$emit("update:modelValue", value);
-      },
-    },
-  },
+const inputValue = computed({
+  get: () => props.modelValue,
+  set: (value: string) => emit("update:modelValue", value),
 });
 </script>
 

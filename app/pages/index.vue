@@ -17,34 +17,43 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: "HomePage",
-  layout: "default",
-  data() {
-    return {
-      slides: [
-        { img: "/assets/images/banner1.jpg" },
-        { img: "/assets/images/banner2.jpg" },
-        { img: "/assets/images/banner3.jpg" },
-      ],
-      introParagraphs: [
-        "Welcome to (*App Name here*), where you can have fun with creating different styles AI generated pictures and share with your friends!",
-        "↓↓↓ Try it out RIGHT NOW ↓↓↓",
-      ],
-      tutorialParagraphs: [
-        "1. Select your event logo or just skip if you don't have one!",
-        "2. Take a selfie with your friends with the photobooth!",
-        "3. Wait for the AI to generate several different style pictures!",
-        "4. Pick one and share it with your friends!",
-      ],
-    };
-  },
-  methods: {
-    clickStart() {
-      this.$router.push("/login");
-    },
-  },
+<script setup lang="ts">
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+// // Nuxt3 里 layout 可以用 definePageMeta
+// defineOptions({
+//   name: "HomePage",
+// })
+
+// definePageMeta({
+//   layout: "default",
+// })
+
+const router = useRouter();
+
+// state
+const slides = ref([
+  { img: "/assets/images/banner1.jpg" },
+  { img: "/assets/images/banner2.jpg" },
+  { img: "/assets/images/banner3.jpg" },
+]);
+
+const introParagraphs = ref([
+  "Welcome to (*App Name here*), where you can have fun with creating different styles AI generated pictures and share with your friends!",
+  "↓↓↓ Try it out RIGHT NOW ↓↓↓",
+]);
+
+const tutorialParagraphs = ref([
+  "1. Select your event logo or just skip if you don't have one!",
+  "2. Take a selfie with your friends with the photobooth!",
+  "3. Wait for the AI to generate several different style pictures!",
+  "4. Pick one and share it with your friends!",
+]);
+
+// methods
+const clickStart = () => {
+  router.push("/login");
 };
 </script>
 

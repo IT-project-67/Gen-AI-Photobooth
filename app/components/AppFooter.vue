@@ -2,9 +2,11 @@
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-links">
-        <a href="#" class="footer-link">About Us</a>
-        <a href="#" class="footer-link">Contact Us</a>
-        <a href="#" class="footer-link">Privacy Policy</a>
+        <a href="#" class="footer-link" @click="goToAboutUs">About Us</a>
+        <a href="#" class="footer-link" @click="goToContactUs">Contact Us</a>
+        <a href="#" class="footer-link" @click="goToPrivacyPolicy"
+          >Privacy Policy</a
+        >
       </div>
       <div class="footer-extra-infos">
         Created by unimelb IT Project Group67.
@@ -13,9 +15,17 @@
   </footer>
 </template>
 
-<script lang="ts">
-export default {
-  name: "AppFooter",
+<script setup lang="ts">
+const router = useRouter();
+
+const goToAboutUs = () => {
+  router.push("/");
+};
+const goToContactUs = () => {
+  router.push("/");
+};
+const goToPrivacyPolicy = () => {
+  router.push("/");
 };
 </script>
 

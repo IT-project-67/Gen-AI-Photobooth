@@ -31,64 +31,64 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount, withDefaults } from "vue";
 
-type slide = { img?: string; content?: string };
+type Slide = { img?: string; content?: string };
 
-export default defineComponent({
-  name: "HomePageCarousel",
-  props: {
-    slides: {
-      type: Array as PropType<slide[]>,
-      default: () => [{ img: "img1" }, { img: "img2" }, { img: "img3" }],
-    },
-    autoplay: {
-      type: Boolean,
-      default: true,
-    },
-    interval: {
-      type: Number,
-      default: 5000,
-    },
+const props = withDefaults(
+  defineProps<{
+    slides?: Slide[];
+    autoplay?: boolean;
+    interval?: number;
+  }>(),
+  {
+    slides: () => [{ img: "img1" }, { img: "img2" }, { img: "img3" }],
+    autoplay: true,
+    interval: 5000,
   },
-  data() {
-    return {
-      currentSlide: 0,
-      intervalId: null as ReturnType<typeof setInterval> | null,
-    };
-  },
+);
 
-  mounted() {
-    this.startAutoPlay();
-  },
-  beforeUnmount() {
-    this.stopAutoPlay();
-  },
+// state
+const currentSlide = ref(0);
+const intervalId = ref<ReturnType<typeof setInterval> | null>(null);
 
-  // auto scrolling feature
-  methods: {
-    nextSlide() {
-      this.currentSlide = (this.currentSlide + 1) % this.slides.length;
-    },
-    prevSlide() {
-      this.currentSlide =
-        (this.currentSlide - 1 + this.slides.length) % this.slides.length;
-    },
-    goToSlide(index: number) {
-      this.currentSlide = index;
-    },
-    startAutoPlay() {
-      if (!this.autoplay || !this.slides.length) return;
-      this.stopAutoPlay();
-      this.intervalId = setInterval(this.nextSlide, this.interval);
-    },
-    stopAutoPlay() {
-      if (this.intervalId) {
-        clearInterval(this.intervalId);
-      }
-    },
-  },
+// methods
+const nextSlide = () => {
+  if (!props.slides.length) return;
+  currentSlide.value = (currentSlide.value + 1) % props.slides.length;
+};
+
+const prevSlide = () => {
+  if (!props.slides.length) return;
+  currentSlide.value =
+    (currentSlide.value - 1 + props.slides.length) % props.slides.length;
+};
+
+const goToSlide = (index: number) => {
+  currentSlide.value = index;
+};
+
+const startAutoPlay = () => {
+  if (!props.autoplay || !props.slides.length) return;
+  stopAutoPlay();
+  intervalId.value = setInterval(nextSlide, props.interval);
+};
+
+const stopAutoPlay = () => {
+  if (intervalId.value) {
+    clearInterval(intervalId.value);
+    intervalId.value = null;
+  }
+};
+
+// lifecycle
+onMounted(() => {
+  startAutoPlay();
+});
+
+onBeforeUnmount(() => {
+  stopAutoPlay();
 });
 </script>
 
