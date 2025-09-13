@@ -5,20 +5,20 @@
 
       <form @submit.prevent="handleSubmit">
         <AppInputBox
+          id="newPassword"
           v-model="newPassword"
           label="New Password"
           placeholder="Enter your new password"
           type="password"
-          id="newPassword"
           :required="true"
         />
 
         <AppInputBox
+          id="confirmPassword"
           v-model="confirmPassword"
           label="Confirm New Password"
           placeholder="Confirm your new password"
           type="password"
-          id="confirmPassword"
           :required="true"
         />
 

@@ -35,7 +35,7 @@ export default defineEventHandler(
 
       // Send password reset email
       const { error } = await supabase.auth.resetPasswordForEmail(body.email, {
-        redirectTo: `${getRequestURL(event).origin}/reset-password`,
+        redirectTo: `${getRequestURL(event).origin}/resetPassword`,
       });
 
       if (error) {

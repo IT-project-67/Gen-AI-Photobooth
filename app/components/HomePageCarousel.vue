@@ -4,7 +4,7 @@
       class="carousel-track"
       :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
     >
-      <div :key="index" v-for="(slide, index) in slides" class="carousel-slide">
+      <div v-for="(slide, index) in slides" :key="index" class="carousel-slide">
         <div class="carousel-content">
           <img
             v-if="slide.img"

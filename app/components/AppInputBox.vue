@@ -16,7 +16,6 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "AppInputBox",
-
   props: {
     label: { type: String, default: "Label" },
     placeholder: { type: String, default: "" },
@@ -25,6 +24,7 @@ export default defineComponent({
     id: { type: String, default: "input" },
     required: { type: Boolean, default: false },
   },
+  emits: ["update:modelValue"],
 
   computed: {
     inputValue: {

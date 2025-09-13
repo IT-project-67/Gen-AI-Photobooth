@@ -5,11 +5,11 @@
 
       <form @submit.prevent="handleSubmit">
         <AppInputBox
+          id="email"
           v-model="email"
           label="Email"
           placeholder="Enter your email address"
           type="email"
-          id="email"
           :required="true"
         />
 
