@@ -46,126 +46,112 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import AppInputBox from "~/components/AppInputBox.vue";
-import { useAuth } from "~/composables/useAuth";
 import { useRoute } from "#app";
 import { navigateTo } from "#imports";
 
-export default defineComponent({
-  name: "ResetPasswordPage",
-  components: {
-    AppInputBox,
-  },
+const newPassword = ref("");
+const confirmPassword = ref("");
+const isSubmitting = ref(false);
+const error = ref("");
+const success = ref("");
+const accessToken = ref("");
+const refreshToken = ref("");
 
-  data() {
-    return {
-      newPassword: "",
-      confirmPassword: "",
-      isSubmitting: false,
-      error: "",
-      success: "",
-      accessToken: "",
-      refreshToken: "",
-    };
-  },
+const route = useRoute();
+const { resetPassword } = useAuth();
 
-  mounted() {
-    const route = useRoute();
+onMounted(() => {
+  if (window.location.hash) {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessTokenParam = hashParams.get("access_token");
+    const refreshTokenParam = hashParams.get("refresh_token");
 
-    // Try to extract from hash first
-    if (window.location.hash) {
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-
-      const accessTokenParam = hashParams.get("access_token");
-      const refreshTokenParam = hashParams.get("refresh_token");
-
-      if (accessTokenParam && refreshTokenParam) {
-        this.accessToken = accessTokenParam;
-        this.refreshToken = refreshTokenParam;
-      } else {
-        this.error =
-          "Invalid or missing reset tokens. Please request a new password reset.";
-      }
+    if (accessTokenParam && refreshTokenParam) {
+      accessToken.value = accessTokenParam;
+      refreshToken.value = refreshTokenParam;
     } else {
-      // Fallback to query parameters
-      const accessTokenParam =
-        (route.query.access_token as string) || (route.query.token as string);
-      const refreshTokenParam = route.query.refresh_token as string;
-
-      if (accessTokenParam) {
-        this.accessToken = accessTokenParam;
-        this.refreshToken = refreshTokenParam || accessTokenParam;
-      } else {
-        this.error =
-          "Invalid or missing reset tokens. Please request a new password reset.";
-      }
+      error.value =
+        "Invalid or missing reset tokens. Please request a new password reset.";
     }
-  },
+  } else {
+    // Fallback to query parameters
+    const accessTokenParam =
+      (route.query.access_token as string) || (route.query.token as string);
+    const refreshTokenParam = route.query.refresh_token as string;
 
-  methods: {
-    async handleSubmit(event: Event) {
-      event.preventDefault();
-
-      if (!this.accessToken) {
-        this.error = "Invalid or missing reset tokens";
-        return;
-      }
-
-      if (!this.newPassword || !this.confirmPassword) {
-        this.error = "Please fill in all fields";
-        return;
-      }
-
-      if (this.newPassword !== this.confirmPassword) {
-        this.error = "Passwords do not match";
-        return;
-      }
-
-      if (this.newPassword.length < 6) {
-        this.error = "Password must be at least 6 characters long";
-        return;
-      }
-
-      this.isSubmitting = true;
-      this.error = "";
-      this.success = "";
-
-      try {
-        const { resetPassword } = useAuth();
-        const { data, error: resetError } = await resetPassword(
-          this.accessToken,
-          this.refreshToken,
-          this.newPassword,
-        );
-
-        if (resetError) {
-          this.error = resetError;
-          return;
-        }
-
-        if (data) {
-          this.success = data.message;
-          this.newPassword = "";
-          this.confirmPassword = "";
-          setTimeout(() => {
-            navigateTo("/login");
-          }, 3000);
-        }
-      } catch (err: unknown) {
-        console.error("Reset password error:", err);
-        const errorMessage =
-          err instanceof Error
-            ? err.message
-            : "An error occurred while resetting password";
-        this.error = errorMessage;
-      } finally {
-        this.isSubmitting = false;
-      }
-    },
-  },
+    if (accessTokenParam && typeof accessTokenParam === "string") {
+      accessToken.value = accessTokenParam;
+      refreshToken.value = (refreshTokenParam as string) || accessTokenParam;
+    } else {
+      error.value =
+        "Invalid or missing reset tokens. Please request a new password reset.";
+    }
+  }
 });
+
+const handleSubmit = async (event: Event) => {
+  event.preventDefault();
+
+  if (!accessToken.value) {
+    error.value = "Invalid or missing reset tokens";
+    return;
+  }
+
+  if (!newPassword.value || !confirmPassword.value) {
+    error.value = "Please fill in all fields";
+    return;
+  }
+
+  if (newPassword.value !== confirmPassword.value) {
+    error.value = "Passwords do not match";
+    return;
+  }
+
+  if (newPassword.value.length < 6) {
+    error.value = "Password must be at least 6 characters long";
+    return;
+  }
+
+  isSubmitting.value = true;
+  error.value = "";
+  success.value = "";
+
+  try {
+    const { data, error: resetError } = await resetPassword(
+      accessToken.value,
+      refreshToken.value,
+      newPassword.value,
+    );
+
+    if (resetError) {
+      error.value = resetError;
+      return;
+    }
+
+    if (data) {
+      success.value = data.message;
+      // Clear form
+      newPassword.value = "";
+      confirmPassword.value = "";
+
+      // Redirect to login page after 3 seconds
+      setTimeout(() => {
+        navigateTo("/login");
+      }, 3000);
+    }
+  } catch (err: unknown) {
+    console.error("Reset password error:", err);
+    const errorMessage =
+      err instanceof Error
+        ? err.message
+        : "An error occurred while resetting password";
+    error.value = errorMessage;
+  } finally {
+    isSubmitting.value = false;
+  }
+};
 </script>
 
 <style scoped>

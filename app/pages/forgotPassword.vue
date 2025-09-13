@@ -42,64 +42,52 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import AppInputBox from "~/components/AppInputBox.vue";
-import { useAuth } from "~/composables/useAuth";
 
-export default defineComponent({
-  name: "ForgotPasswordPage",
-  components: {
-    AppInputBox,
-  },
+const email = ref("");
+const isSubmitting = ref(false);
+const error = ref("");
+const success = ref("");
 
-  data() {
-    return {
-      email: "",
-      isSubmitting: false,
-      error: "",
-      success: "",
-    };
-  },
+const { forgotPassword } = useAuth();
 
-  methods: {
-    async handleSubmit(event: Event) {
-      event.preventDefault();
+const handleSubmit = async (event: Event) => {
+  event.preventDefault();
 
-      if (!this.email) {
-        this.error = "Please enter your email address";
-        return;
-      }
-      this.isSubmitting = true;
-      this.error = "";
+  if (!email.value) {
+    error.value = "Please enter your email address";
+    return;
+  }
 
-      try {
-        const { forgotPassword } = useAuth();
-        const { data, error: forgotError } = await forgotPassword(this.email);
+  isSubmitting.value = true;
+  error.value = "";
+  success.value = "";
 
-        if (forgotError) {
-          this.error = forgotError;
-          return;
-        }
+  try {
+    const { data, error: forgotError } = await forgotPassword(email.value);
 
-        if (data) {
-          this.success = data.message;
-          // Clear form
-          this.email = "";
-        }
-      } catch (err: unknown) {
-        console.error("Forgot password error:", err);
-        const errorMessage =
-          err instanceof Error
-            ? err.message
-            : "An error occurred while sending reset email";
-        this.error = errorMessage;
-      } finally {
-        this.isSubmitting = false;
-      }
-    },
-  },
-});
+    if (forgotError) {
+      error.value = forgotError;
+      return;
+    }
+
+    if (data) {
+      success.value = data.message;
+      // Clear form
+      email.value = "";
+    }
+  } catch (err: unknown) {
+    console.error("Forgot password error:", err);
+    const errorMessage =
+      err instanceof Error
+        ? err.message
+        : "An error occurred while sending reset email";
+    error.value = errorMessage;
+  } finally {
+    isSubmitting.value = false;
+  }
+};
 </script>
 
 <style scoped>
