@@ -22,8 +22,10 @@
     "@nuxt/test-utils": "^3.19.2",
     "@nuxt/ui": "^3.3.2",
     "@nuxtjs/supabase": "^1.6.1",
+    "@prisma/client": "^6.16.1",
     "@supabase/supabase-js": "^2.57.0",
     "nuxt": "^4.0.3",
+    "prisma": "^6.16.1",
     "typescript": "^5.9.2",
     "vue": "^3.5.20",
     "vue-router": "^4.5.1"
