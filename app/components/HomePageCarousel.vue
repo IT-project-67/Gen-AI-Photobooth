@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, withDefaults } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
 type Slide = { img?: string; content?: string };
 

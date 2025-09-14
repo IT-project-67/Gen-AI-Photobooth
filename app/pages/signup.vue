@@ -1,6 +1,7 @@
 <template>
   <div class="auth-page">
     <AuthForm
+      v-model:is-submitting="isSubmitting"
       title="Create an Account"
       button-text="Sign Up"
       :show-confirm-password="true"
@@ -10,7 +11,6 @@
       @submit="handleSignUp"
       @error="handleSignUpError"
       @social-login="handleSocialLogin"
-      v-model:isSubmitting="isSubmitting"
     />
   </div>
 

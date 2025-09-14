@@ -1,6 +1,7 @@
 <template>
   <div class="login-page">
     <AuthForm
+      v-model:is-submitting="isSubmitting"
       title="Log in to Your Account"
       button-text="Log in"
       :show-confirm-password="false"
@@ -9,7 +10,6 @@
       :error-message="loginError"
       @submit="handleSubmit"
       @social-login="handleSocialLogin"
-      v-model:isSubmitting="isSubmitting"
     />
   </div>
 </template>
