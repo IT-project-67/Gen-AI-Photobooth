@@ -1,6 +1,7 @@
 <template>
   <div class="auth-page">
     <AuthForm
+      ref="authFormRef"
       v-model:is-submitting="isSubmitting"
       title="Create an Account"
       button-text="Sign Up"
@@ -28,6 +29,7 @@
 <script setup lang="ts">
 import AuthForm from "@/components/AuthForm.vue";
 import { useOAuth } from "@/composables/useOAuth";
+const authFormRef = ref<InstanceType<typeof AuthForm> | null>(null);
 
 const { loginWithProvider } = useOAuth();
 const { registerWithEmail } = useAuth();
@@ -68,6 +70,8 @@ const handleSignUp = async ({
     if (data) {
       if (data.emailSent) {
         success.value = "Waiting for verification.";
+        await nextTick();
+        authFormRef.value?.resetForm();
       } else if (data.session) {
         success.value = "Registration successful";
         // Redirect to home page after a short delay

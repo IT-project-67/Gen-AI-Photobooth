@@ -133,6 +133,14 @@ const email = ref("");
 const password = ref("");
 const confirmPassword = ref("");
 
+// Reset
+const resetForm = () => {
+  email.value = "";
+  password.value = "";
+  confirmPassword.value = "";
+};
+defineExpose({ resetForm });
+
 // methods
 const handleSubmit = () => {
   if (props.showConfirmPassword && password.value !== confirmPassword.value) {
