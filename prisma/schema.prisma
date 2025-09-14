@@ -11,9 +11,9 @@ model Profile {
   userId       String   @map("user_id")
   displayName  String?  @map("display_name")
   organization String?
-  phone        String?
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
+  isDeleted    Boolean  @default(false) @map("is_deleted")
   Event        Event[]
 
   @@map("profiles")
@@ -22,16 +22,15 @@ model Profile {
 
 model Event {
   id                 String           @id @default(cuid())
-  profileId          String           @map("profile_id")
+  userId             String           @map("user_id")
   name               String
   description        String?
   logoUrl            String?
-  startDate          DateTime?        @map("start_date")
-  endDate            DateTime?        @map("end_date")
   location           String?
   createdAt          DateTime         @default(now()) @map("created_at")
   updatedAt          DateTime         @updatedAt @map("updated_at")
-  profile            Profile          @relation(fields: [profileId], references: [userId], onDelete: Cascade)
+  isDeleted          Boolean          @default(false) @map("is_deleted")
+  profile            Profile          @relation(fields: [userId], references: [userId], onDelete: Cascade)
   Session            Session[]
   SharedPhoto        SharedPhoto[]
 
@@ -42,6 +41,7 @@ model Session {
   id               String             @id @default(cuid())
   eventId          String             @map("event_id")
   photoUrl         String?            @map("photo_url")
+  status           String?            @default("active")
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @updatedAt @map("updated_at")
   AIPhoto          AIPhoto[]
@@ -68,7 +68,6 @@ model SharedPhoto {
   eventId            String           @map("event_id")
   selectedUrl        String           @map("selected_url")
   qrCodeUrl          String           @map("qr_code_url")
-  sharedAt           DateTime         @default(now()) @map("shared_at")
   qrExpiresAt        DateTime         @map("qr_expires_at")
   createdAt          DateTime         @default(now()) @map("created_at")
   AIPhoto            AIPhoto          @relation(fields: [aiPhotoId], references: [id], onDelete: Cascade)
