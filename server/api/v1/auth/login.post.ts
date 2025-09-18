@@ -12,6 +12,7 @@ import type { LoginResponse } from "../../../types/auth/response.types";
 import { ERROR_STATUS_MAP } from "../../../types/auth/auth-error.types";
 import type { LoginRequest } from "../../../types/auth/request.types";
 import { createAuthClient } from "../../../clients/supabase.client";
+import { createProfile, getProfileByUserId } from "../../../model/profile.model"
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<LoginResponse>> => {
@@ -59,6 +60,31 @@ export default defineEventHandler(
             statusCode: ERROR_STATUS_MAP.LOGIN_FAILED,
           }),
         });
+      }
+      
+      try { 
+        const existingProfile = await getProfileByUserId(data.user.id)
+        if (!existingProfile) {
+          await createProfile(data.user.id)
+        } else if (existingProfile.isDeleted) {
+          throw createError({
+            statusCode: 403,
+            statusMessage: "Invalid Email or password",
+            data: createErrorResponse({
+              code: "INVALID_CREDENTIALS",
+              message: "Invalid Email or password",
+              statusCode: 403,
+            }),
+          });
+        }
+      } catch (err) {
+        const error = handleApiError(err)
+        if (error.statusCode === 403) {
+          throw error
+        }
+        if (error.code !== "P2002") {
+          console.error("fail:", data.user.id)
+        }
       }
 
       // Prepare response

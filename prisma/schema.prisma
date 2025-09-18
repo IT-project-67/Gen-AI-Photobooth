@@ -8,12 +8,12 @@ datasource db {
 }
 
 model Profile {
-  userId       String   @id @map("user_id") @db.Uuid
   displayName  String?  @map("display_name")
   organization String?
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
   isDeleted    Boolean  @default(false) @map("is_deleted")
+  userId       String   @id @map("user_id") @db.Uuid
   Event        Event[]
 
   @@map("profiles")
@@ -21,16 +21,16 @@ model Profile {
 
 model Event {
   id          String        @id @default(cuid())
-  userId      String        @map("user_id") @db.Uuid
   name        String
   description String?
   location    String?
-  logoUrl     String?
-  startDate   DateTime
-  endDate     DateTime
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
+  logoUrl     String?
   isDeleted   Boolean       @default(false) @map("is_deleted")
+  endDate     DateTime?
+  startDate   DateTime?
+  userId      String        @map("user_id") @db.Uuid
   profile     Profile       @relation(fields: [userId], references: [userId], onDelete: Cascade)
   Session     Session[]
   SharedPhoto SharedPhoto[]
@@ -52,13 +52,13 @@ model Session {
 }
 
 model AIPhoto {
-  id            String        @id @default(cuid())
-  sessionId     String        @map("session_id")
-  generatedUrl  String        @map("generated_url")
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
-  session       Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  SharedPhoto   SharedPhoto[]
+  id           String        @id @default(cuid())
+  sessionId    String        @map("session_id")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  generatedUrl String        @map("generated_url")
+  session      Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  SharedPhoto  SharedPhoto[]
 
   @@map("ai_photos")
 }
