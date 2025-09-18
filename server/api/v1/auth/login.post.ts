@@ -12,7 +12,10 @@ import type { LoginResponse } from "../../../types/auth/response.types";
 import { ERROR_STATUS_MAP } from "../../../types/auth/auth-error.types";
 import type { LoginRequest } from "../../../types/auth/request.types";
 import { createAuthClient } from "../../../clients/supabase.client";
-import { createProfile, getProfileByUserId } from "../../../model/profile.model"
+import {
+  createProfile,
+  getProfileByUserId,
+} from "../../../model/profile.model";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<LoginResponse>> => {
@@ -61,11 +64,11 @@ export default defineEventHandler(
           }),
         });
       }
-      
-      try { 
-        const existingProfile = await getProfileByUserId(data.user.id)
+
+      try {
+        const existingProfile = await getProfileByUserId(data.user.id);
         if (!existingProfile) {
-          await createProfile(data.user.id)
+          await createProfile(data.user.id);
         } else if (existingProfile.isDeleted) {
           throw createError({
             statusCode: 403,
@@ -78,12 +81,12 @@ export default defineEventHandler(
           });
         }
       } catch (err) {
-        const error = handleApiError(err)
+        const error = handleApiError(err);
         if (error.statusCode === 403) {
-          throw error
+          throw error;
         }
         if (error.code !== "P2002") {
-          console.error("fail:", data.user.id)
+          console.error("fail:", data.user.id);
         }
       }
 

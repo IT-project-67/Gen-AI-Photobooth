@@ -15,9 +15,9 @@ export const createProfile = async (userId: string) => {
 export const getProfileByUserId = async (userId: string) => {
   try {
     const profile = await prisma.profile.findUnique({
-      where: { 
+      where: {
         userId,
-        isDeleted: false 
+        isDeleted: false,
       },
     });
     return profile;
@@ -27,11 +27,14 @@ export const getProfileByUserId = async (userId: string) => {
   }
 };
 
-export const updateProfile = async (userId: string, data: { displayName?: string; organization?: string }) => {
+export const updateProfile = async (
+  userId: string,
+  data: { displayName?: string; organization?: string },
+) => {
   try {
     // 只更新有变化的字段
     const updateData: { displayName?: string; organization?: string } = {};
-    
+
     if (data.displayName !== undefined) {
       updateData.displayName = data.displayName;
     }
@@ -40,9 +43,9 @@ export const updateProfile = async (userId: string, data: { displayName?: string
     }
 
     const profile = await prisma.profile.update({
-      where: { 
+      where: {
         userId,
-        isDeleted: false 
+        isDeleted: false,
       },
       data: updateData,
     });
@@ -56,12 +59,12 @@ export const updateProfile = async (userId: string, data: { displayName?: string
 export const softDeleteProfile = async (userId: string) => {
   try {
     const profile = await prisma.profile.update({
-      where: { 
+      where: {
         userId,
-        isDeleted: false 
+        isDeleted: false,
       },
-      data: { 
-        isDeleted: true 
+      data: {
+        isDeleted: true,
       },
     });
     return profile;
@@ -74,12 +77,12 @@ export const softDeleteProfile = async (userId: string) => {
 export const restoreProfile = async (userId: string) => {
   try {
     const profile = await prisma.profile.update({
-      where: { 
+      where: {
         userId,
-        isDeleted: true 
+        isDeleted: true,
       },
-      data: { 
-        isDeleted: false 
+      data: {
+        isDeleted: false,
       },
     });
     return profile;

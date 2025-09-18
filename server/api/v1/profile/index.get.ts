@@ -9,12 +9,12 @@ import { getProfileByUserId } from "../../../model/profile.model";
 import type { ApiResponse } from "../../../types/core/api-response.types";
 
 interface ProfileResponse {
-  userId: string
-  displayName?: string | null
-  organization?: string | null
-  createdAt: string
-  updatedAt: string
-  isDeleted: boolean
+  userId: string;
+  displayName?: string | null;
+  organization?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  isDeleted: boolean;
 }
 
 export default defineEventHandler(
@@ -73,9 +73,12 @@ export default defineEventHandler(
         createdAt: profile.createdAt.toISOString(),
         updatedAt: profile.updatedAt.toISOString(),
         isDeleted: profile.isDeleted,
-      }
+      };
 
-      return createSuccessResponse(profileResponse, "Profile retrieved successfully");
+      return createSuccessResponse(
+        profileResponse,
+        "Profile retrieved successfully",
+      );
     } catch (error) {
       const apiError = handleApiError(error);
       throw createError({
