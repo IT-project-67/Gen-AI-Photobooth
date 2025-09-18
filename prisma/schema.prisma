@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Profile {
-  userId       String   @map("user_id")
+  userId       String   @id @map("user_id") @db.Uuid
   displayName  String?  @map("display_name")
   organization String?
   createdAt    DateTime @default(now()) @map("created_at")
@@ -17,61 +17,62 @@ model Profile {
   Event        Event[]
 
   @@map("profiles")
-  @@unique([userId])
 }
 
 model Event {
-  id                 String           @id @default(cuid())
-  userId             String           @map("user_id")
-  name               String
-  description        String?
-  logoUrl            String?
-  location           String?
-  createdAt          DateTime         @default(now()) @map("created_at")
-  updatedAt          DateTime         @updatedAt @map("updated_at")
-  isDeleted          Boolean          @default(false) @map("is_deleted")
-  profile            Profile          @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  Session            Session[]
-  SharedPhoto        SharedPhoto[]
+  id          String        @id @default(cuid())
+  userId      String        @map("user_id") @db.Uuid
+  name        String
+  description String?
+  location    String?
+  logoUrl     String?
+  startDate   DateTime
+  endDate     DateTime
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  isDeleted   Boolean       @default(false) @map("is_deleted")
+  profile     Profile       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  Session     Session[]
+  SharedPhoto SharedPhoto[]
 
   @@map("events")
 }
 
 model Session {
-  id               String             @id @default(cuid())
-  eventId          String             @map("event_id")
-  photoUrl         String?            @map("photo_url")
-  status           String?            @default("active")
-  createdAt        DateTime           @default(now()) @map("created_at")
-  updatedAt        DateTime           @updatedAt @map("updated_at")
-  AIPhoto          AIPhoto[]
-  Event            Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  id        String    @id @default(cuid())
+  eventId   String    @map("event_id")
+  photoUrl  String?   @map("photo_url")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  status    String?   @default("active")
+  AIPhoto   AIPhoto[]
+  Event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
 
 model AIPhoto {
-  id                String        @id @default(cuid())
-  sessionId         String        @map("session_id")
-  generatedUrls     String[]      @map("generated_urls")
-  createdAt         DateTime      @default(now()) @map("created_at")
-  updatedAt         DateTime      @updatedAt @map("updated_at")
-  session           Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  SharedPhoto       SharedPhoto[]
+  id            String        @id @default(cuid())
+  sessionId     String        @map("session_id")
+  generatedUrl  String        @map("generated_url")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  session       Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  SharedPhoto   SharedPhoto[]
 
   @@map("ai_photos")
 }
 
 model SharedPhoto {
-  id                 String           @id @default(cuid())
-  aiPhotoId          String           @map("ai_photo_id")
-  eventId            String           @map("event_id")
-  selectedUrl        String           @map("selected_url")
-  qrCodeUrl          String           @map("qr_code_url")
-  qrExpiresAt        DateTime         @map("qr_expires_at")
-  createdAt          DateTime         @default(now()) @map("created_at")
-  AIPhoto            AIPhoto          @relation(fields: [aiPhotoId], references: [id], onDelete: Cascade)
-  Event              Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid())
+  aiPhotoId   String   @map("ai_photo_id")
+  eventId     String   @map("event_id")
+  selectedUrl String   @map("selected_url")
+  qrCodeUrl   String   @map("qr_code_url")
+  qrExpiresAt DateTime @map("qr_expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  AIPhoto     AIPhoto  @relation(fields: [aiPhotoId], references: [id], onDelete: Cascade)
+  Event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@map("shared_photos")
 }
