@@ -6,21 +6,11 @@ import {
 } from "../../../utils/core/response.utils";
 import { updateProfile } from "../../../model/profile.model";
 import type { ApiResponse } from "../../../types/core/api-response.types";
-import { ERROR_STATUS_MAP } from "../../../types/auth/auth-error.types";
-
-interface UpdateProfileRequest {
-  displayName?: string;
-  organization?: string;
-}
-
-interface ProfileResponse {
-  userId: string;
-  displayName?: string | null;
-  organization?: string | null;
-  createdAt: string;
-  updatedAt: string;
-  isDeleted: boolean;
-}
+import { ERROR_STATUS_MAP } from "../../../types/core/error-match.types";
+import type {
+  UpdateProfileRequest,
+  ProfileResponse,
+} from "../../../types/profile/profile.types";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<ProfileResponse>> => {
@@ -60,7 +50,7 @@ export default defineEventHandler(
 
       if (!body.displayName && !body.organization) {
         throw createError({
-          statusCode: 400,
+          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
           statusMessage:
             "At least one field (displayName or organization) must be provided",
           data: createErrorResponse({
@@ -68,33 +58,33 @@ export default defineEventHandler(
             code: "VALIDATION_ERROR",
             message:
               "At least one field (displayName or organization) must be provided",
-            statusCode: 400,
+            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
           }),
         });
       }
 
       if (body.displayName !== undefined && body.displayName.length > 100) {
         throw createError({
-          statusCode: 400,
+          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
           statusMessage: "Display name must be less than 100 characters",
           data: createErrorResponse({
             type: "VALIDATION_ERROR" as const,
             code: "VALIDATION_ERROR",
             message: "Display name must be less than 100 characters",
-            statusCode: 400,
+            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
           }),
         });
       }
 
       if (body.organization !== undefined && body.organization.length > 100) {
         throw createError({
-          statusCode: 400,
+          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
           statusMessage: "Organization must be less than 100 characters",
           data: createErrorResponse({
             type: "VALIDATION_ERROR" as const,
             code: "VALIDATION_ERROR",
             message: "Organization must be less than 100 characters",
-            statusCode: 400,
+            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
           }),
         });
       }

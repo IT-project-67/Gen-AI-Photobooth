@@ -10,7 +10,7 @@ import { validateResetPasswordRequest } from "../../../utils/auth/validation.uti
 import type { ResetPasswordResponse } from "../../../types/auth/response.types";
 import type { ResetPasswordRequest } from "../../../types/auth/request.types";
 import type { ApiResponse } from "../../../types/core/api-response.types";
-import { ERROR_STATUS_MAP } from "~~/server/types/auth/auth-error.types";
+import { ERROR_STATUS_MAP } from "~~/server/types/core/error-match.types";
 import { createAuthClient } from "../../../clients/supabase.client";
 
 export default defineEventHandler(

@@ -40,8 +40,16 @@
 
       <!-- Confirmation message-->
       <p v-if="verify" class="verification-message">
-        We've sent you a verification email. Please check your inbox and click
-        the link to verify your email address.
+        <span v-if="successMessage === 'verify_email'">
+          We've sent you a verification email. Please check your inbox and click
+          the link to verify your email address.
+        </span>
+        <span v-else-if="successMessage === 'verify_recovered'">
+          Account recovered successfully! Redirecting login to continue...
+        </span>
+        <span v-else-if="successMessage === 'verify_success'">
+          Registration successful! Redirecting...
+        </span>
       </p>
 
       <!-- password don't match error message -->
@@ -113,6 +121,7 @@ const props = defineProps<{
   title: string;
   buttonText: string;
   errorMessage?: string;
+  successMessage?: string;
   verify?: boolean;
   showConfirmPassword?: boolean;
   showForgotPassword?: boolean;

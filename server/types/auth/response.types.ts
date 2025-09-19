@@ -10,6 +10,7 @@ export type LoginResponse = AuthResponse;
 
 export interface RegisterResponse extends AuthResponse {
   emailSent?: boolean;
+  isRecovered?: boolean;
 }
 
 // Forgot Password Types

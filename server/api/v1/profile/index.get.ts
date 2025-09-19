@@ -1,5 +1,5 @@
 import { handleApiError } from "../../../utils/auth/error-handler.utils";
-import { ERROR_STATUS_MAP } from "../../../types/auth/auth-error.types";
+import { ERROR_STATUS_MAP } from "../../../types/core/error-match.types";
 import {
   createErrorResponse,
   createSuccessResponse,
@@ -7,15 +7,7 @@ import {
 import { createAuthClient } from "../../../clients/supabase.client";
 import { getValidProfile } from "../../../model/profile.model";
 import type { ApiResponse } from "../../../types/core/api-response.types";
-
-interface ProfileResponse {
-  userId: string;
-  displayName?: string | null;
-  organization?: string | null;
-  createdAt: string;
-  updatedAt: string;
-  isDeleted: boolean;
-}
+import type { ProfileResponse } from "../../../types/profile/profile.types";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<ProfileResponse>> => {

@@ -9,7 +9,7 @@ import {
 import { validateLoginRequest } from "../../../utils/auth/validation.utils";
 import type { ApiResponse } from "../../../types/core/api-response.types";
 import type { LoginResponse } from "../../../types/auth/response.types";
-import { ERROR_STATUS_MAP } from "../../../types/auth/auth-error.types";
+import { ERROR_STATUS_MAP } from "../../../types/core/error-match.types";
 import type { LoginRequest } from "../../../types/auth/request.types";
 import { createAuthClient } from "../../../clients/supabase.client";
 import { createProfile, getAllProfile } from "../../../model/profile.model";

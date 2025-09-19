@@ -5,6 +5,26 @@
   </NuxtLayout>
 </template>
 
+<script setup lang="ts">
+const user = useSupabaseUser();
+const { handleOAuthProfile } = useOAuth();
+
+watch(
+  user,
+  async (newUser, oldUser) => {
+    if (newUser && !oldUser) {
+      const isOAuthUser = newUser.app_metadata?.provider !== "email";
+      if (isOAuthUser) {
+        setTimeout(() => {
+          handleOAuthProfile();
+        }, 1000);
+      }
+    }
+  },
+  { immediate: false },
+);
+</script>
+
 <style>
 html,
 body {

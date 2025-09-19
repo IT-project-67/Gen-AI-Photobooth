@@ -106,6 +106,13 @@ export const useAuth = () => {
         };
       }
 
+      if (response.data?.isRecovered) {
+        return {
+          data: response.data || null,
+          error: null,
+        };
+      }
+
       // Set session in Supabase client if available (auto-confirmed)
       if (response.data?.session) {
         await supabase.auth.setSession({

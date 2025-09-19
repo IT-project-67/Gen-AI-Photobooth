@@ -6,16 +6,8 @@ import {
 } from "../../../utils/core/response.utils";
 import { softDeleteProfile } from "../../../model/profile.model";
 import type { ApiResponse } from "../../../types/core/api-response.types";
-import { ERROR_STATUS_MAP } from "../../../types/auth/auth-error.types";
-
-interface ProfileResponse {
-  userId: string;
-  displayName?: string | null;
-  organization?: string | null;
-  createdAt: string;
-  updatedAt: string;
-  isDeleted: boolean;
-}
+import { ERROR_STATUS_MAP } from "../../../types/core/error-match.types";
+import type { ProfileResponse } from "../../../types/profile/profile.types";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<ProfileResponse>> => {

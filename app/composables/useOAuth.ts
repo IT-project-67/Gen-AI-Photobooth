@@ -54,8 +54,36 @@ export const useOAuth = () => {
     return { error: `Unsupported provider: ${provider}` };
   };
 
+  const handleOAuthProfile = async () => {
+    const user = useSupabaseUser();
+    if (user.value) {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        const access_token = session?.access_token;
+
+        if (!access_token) {
+          console.error("No access token found for OAuth profile handling.");
+          return;
+        }
+
+        const result = await $fetch("/api/v1/profile/oauth", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        });
+        console.log("OAuth profile handled:", result);
+      } catch (error) {
+        console.log("OAuth profile creation failed:", error);
+      }
+    }
+  };
+
   return {
     user: readonly(user),
     loginWithProvider,
+    handleOAuthProfile,
   };
 };

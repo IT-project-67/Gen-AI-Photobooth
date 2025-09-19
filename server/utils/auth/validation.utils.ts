@@ -1,4 +1,4 @@
-import { ERROR_STATUS_MAP } from "../../types/auth/auth-error.types";
+import { ERROR_STATUS_MAP } from "../../types/core/error-match.types";
 import type { Errors } from "../../types/core/error.types";
 
 // Email validation

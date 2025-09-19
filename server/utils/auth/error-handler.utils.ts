@@ -1,7 +1,7 @@
 import {
   ERROR_STATUS_MAP,
   type SupabaseAuthError,
-} from "../../types/auth/auth-error.types";
+} from "../../types/core/error-match.types";
 import type {
   Errors,
   GenericError,
