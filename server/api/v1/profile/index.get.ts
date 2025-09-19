@@ -5,7 +5,7 @@ import {
   createSuccessResponse,
 } from "../../../utils/core/response.utils";
 import { createAuthClient } from "../../../clients/supabase.client";
-import { getProfileByUserId } from "../../../model/profile.model";
+import { getValidProfile } from "../../../model/profile.model";
 import type { ApiResponse } from "../../../types/core/api-response.types";
 
 interface ProfileResponse {
@@ -51,7 +51,7 @@ export default defineEventHandler(
         });
       }
 
-      const profile = await getProfileByUserId(user.id);
+      const profile = await getValidProfile(user.id);
 
       if (!profile) {
         throw createError({

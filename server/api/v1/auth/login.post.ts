@@ -12,10 +12,7 @@ import type { LoginResponse } from "../../../types/auth/response.types";
 import { ERROR_STATUS_MAP } from "../../../types/auth/auth-error.types";
 import type { LoginRequest } from "../../../types/auth/request.types";
 import { createAuthClient } from "../../../clients/supabase.client";
-import {
-  createProfile,
-  getProfileByUserId,
-} from "../../../model/profile.model";
+import { createProfile, getAllProfile } from "../../../model/profile.model";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<LoginResponse>> => {
@@ -55,7 +52,7 @@ export default defineEventHandler(
 
       if (!data.session || !data.user) {
         throw createError({
-          statusCode: 400,
+          statusCode: ERROR_STATUS_MAP.LOGIN_FAILED,
           statusMessage: "Login failed. Please try again.",
           data: createErrorResponse({
             code: "LOGIN_FAILED",
@@ -65,29 +62,21 @@ export default defineEventHandler(
         });
       }
 
-      try {
-        const existingProfile = await getProfileByUserId(data.user.id);
-        if (!existingProfile) {
-          await createProfile(data.user.id);
-        } else if (existingProfile.isDeleted) {
-          throw createError({
-            statusCode: 403,
-            statusMessage: "Invalid Email or password",
-            data: createErrorResponse({
-              code: "INVALID_CREDENTIALS",
-              message: "Invalid Email or password",
-              statusCode: 403,
-            }),
-          });
-        }
-      } catch (err) {
-        const error = handleApiError(err);
-        if (error.statusCode === 403) {
-          throw error;
-        }
-        if (error.code !== "P2002") {
-          console.error("fail:", data.user.id);
-        }
+      const existingProfile = await getAllProfile(data.user.id);
+      if (!existingProfile) {
+        await createProfile(data.user.id);
+      } else if (existingProfile.isDeleted) {
+        throw createError({
+          statusCode: ERROR_STATUS_MAP.DELETED_USER,
+          statusMessage:
+            "The user has been deleted, please re-register to retrieve the account.",
+          data: createErrorResponse({
+            code: "FORBIDDEN",
+            message:
+              "The user has been deleted, please re-register to retrieve the account.",
+            statusCode: ERROR_STATUS_MAP.DELETED_USER,
+          }),
+        });
       }
 
       // Prepare response

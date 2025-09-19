@@ -12,7 +12,7 @@ export const createProfile = async (userId: string) => {
   }
 };
 
-export const getProfileByUserId = async (userId: string) => {
+export const getValidProfile = async (userId: string) => {
   try {
     const profile = await prisma.profile.findUnique({
       where: {
@@ -27,12 +27,23 @@ export const getProfileByUserId = async (userId: string) => {
   }
 };
 
+export const getAllProfile = async (userId: string) => {
+  try {
+    const profile = await prisma.profile.findUnique({
+      where: { userId },
+    });
+    return profile;
+  } catch (error) {
+    console.error("Error fetching profile (including deleted):", error);
+    throw error;
+  }
+};
+
 export const updateProfile = async (
   userId: string,
   data: { displayName?: string; organization?: string },
 ) => {
   try {
-    // 只更新有变化的字段
     const updateData: { displayName?: string; organization?: string } = {};
 
     if (data.displayName !== undefined) {
