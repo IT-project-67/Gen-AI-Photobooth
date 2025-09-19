@@ -1,33 +1,19 @@
 <template>
   <div class="photo-preview">
-    <div class="photo-container" v-if="photo">
+    <div v-if="dataUrl" class="photo-container">
       <p>Preview Page, will change in further development</p>
-      <img :src="photo.dataUrl" alt="photo" class="preview-image" />
+      <img :src="dataUrl" alt="photo" class="preview-image" />
       <div class="photo-info">
-        <p class="photo-time">TakenTime: {{ photo.timestamp }}</p>
+        <p class="photo-time">TakenTime: {{ timestamp }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
-
-interface Photo {
-  dataUrl: string;
-  timestamp: number;
-}
-
-const router = useRouter();
-const photo = ref<Photo | null>(null);
-
-onMounted(() => {
-  const photoData = history.state?.photo;
-  if (photoData) {
-    photo.value = photoData;
-  }
-});
+const route = useRoute();
+const dataUrl = route.query.dataUrl as string;
+const timestamp = route.query.timestamp as string;
 </script>
 
 <style scoped>

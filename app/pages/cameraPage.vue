@@ -43,7 +43,10 @@ const onPhotoCaptured = (dataUrl: string) => {
   setTimeout(() => {
     router.push({
       name: "PhotoPreview",
-      state: { photo } as any,
+      query: {
+        dataUrl: photo.dataUrl,
+        timestamp: photo.timestamp,
+      },
     });
   }, 1000);
 };

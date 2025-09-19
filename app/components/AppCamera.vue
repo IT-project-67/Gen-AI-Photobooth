@@ -11,9 +11,9 @@
 
       <button
         class="flip-button"
-        @click="flipCamera"
         :disabled="!canFlip"
         title="flipCamera"
+        @click="flipCamera"
       >
         <p class="flip-content">🔄</p>
       </button>
@@ -22,9 +22,9 @@
     <div class="camera-control">
       <button
         class="camera-button"
-        @click="takePhoto"
         :disabled="!isReady"
         title="takePhoto"
+        @click="takePhoto"
       >
         <div class="button-inner"></div>
       </button>
