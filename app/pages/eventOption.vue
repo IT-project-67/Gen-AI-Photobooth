@@ -1,12 +1,13 @@
 <template>
-  <br />
-  <AppButton text="Create New Event" @click="clickCreate" />
-  <br />
-  <AppButton text="Select History Event" @click="clickSelect" />
+  <div class="eventOptionPage">
+    <AppButton text="Create New Event" @click="clickCreate" />
+    <br />
+    <AppButton text="Select History Event" @click="clickSelect" />
+  </div>
 </template>
 
 <script setup lang="ts">
-const router = useRouter();
+// const router = useRouter();
 
 const clickCreate = () => {
   // router.push("/createEvent")
@@ -18,4 +19,8 @@ const clickSelect = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.eventOptionPage {
+  margin: 20px auto;
+}
+</style>
