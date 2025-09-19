@@ -1,9 +1,12 @@
 import { prisma } from "../clients/prisma.client";
 
-export const createProfile = async (userId: string) => {
+export const createProfile = async (userId: string, displayName?: string) => {
   try {
     const profile = await prisma.profile.create({
-      data: { userId },
+      data: {
+        userId,
+        displayName: displayName || "user",
+      },
     });
     return profile;
   } catch (error) {

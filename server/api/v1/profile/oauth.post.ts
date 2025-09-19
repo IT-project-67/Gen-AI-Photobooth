@@ -36,7 +36,11 @@ export default defineEventHandler(async (event) => {
     const existingProfile = await getAllProfile(user.id);
 
     if (!existingProfile) {
-      const newProfile = await createProfile(user.id);
+      const displayName =
+        user.user_metadata?.displayName ||
+        user.user_metadata?.full_name ||
+        "user";
+      const newProfile = await createProfile(user.id, displayName);
       return {
         success: true,
         profile: newProfile,

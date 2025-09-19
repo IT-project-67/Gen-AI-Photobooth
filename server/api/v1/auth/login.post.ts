@@ -64,7 +64,11 @@ export default defineEventHandler(
 
       const existingProfile = await getAllProfile(data.user.id);
       if (!existingProfile) {
-        await createProfile(data.user.id);
+        const displayName =
+          data.user.user_metadata?.displayName ||
+          data.user.user_metadata?.full_name ||
+          "user";
+        await createProfile(data.user.id, displayName);
       } else if (existingProfile.isDeleted) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.DELETED_USER,
