@@ -49,8 +49,7 @@ const clickStart = () => {
   if (!user.value) {
     router.push("/login");
   } else {
-    // waiting for further development
-    alert("Function not available yet, please wait for further development");
+    router.push("/eventOption");
   }
 };
 </script>
