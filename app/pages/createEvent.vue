@@ -53,7 +53,14 @@
 
     <AppButton
       class="AppButton"
-      :text="logoUrl ? 'Continue' : 'Continue without Logo'"
+      :text="
+        isSubmitting
+          ? 'Processing...'
+          : logoUrl
+            ? 'Continue'
+            : 'Continue without Logo'
+      "
+      :disabled="isSubmitting"
       @click="handleSubmit"
     />
   </div>
@@ -68,6 +75,7 @@ const eventName = ref("");
 const eventStartDate = ref("");
 const eventEndDate = ref("");
 const errorMessage = ref("");
+const isSubmitting = ref(false);
 
 // Logo state
 const logoUrl = ref("");
@@ -79,6 +87,7 @@ const handleSubmit = async () => {
     return;
   }
   errorMessage.value = "";
+  isSubmitting.value = true;
 
   try {
     const body = {
@@ -103,6 +112,8 @@ const handleSubmit = async () => {
     // navigateTo("/events/" + data.id)
   } catch (err) {
     console.error("Error submitting event:", err);
+  } finally {
+    isSubmitting.value = false;
   }
 };
 
