@@ -48,8 +48,7 @@ const props = withDefaults(defineProps<props>(), {
 });
 
 interface Emits {
-  (e: "photo-captured", dataUrl: string): void;
-  (e: "error", error: string): void;
+  (e: "photo-captured" | "error", payload: string): void;
 }
 
 const emit = defineEmits<Emits>();
