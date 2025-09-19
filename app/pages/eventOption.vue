@@ -7,15 +7,15 @@
 </template>
 
 <script setup lang="ts">
-// const router = useRouter();
+const router = useRouter();
 
 const clickCreate = () => {
-  // router.push("/createEvent")
-  alert("create event page here");
+  router.push("/createEvent");
+  // alert("create event page here");
 };
 const clickSelect = () => {
-  // router.push("/selectEvent")
-  alert("select event page here");
+  router.push("/selectEvent");
+  // alert("select event page here");
 };
 </script>
 
