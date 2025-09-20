@@ -1,4 +1,4 @@
-import type { ErrorCode } from "../auth/auth-error.types";
+import type { ErrorCode } from "./error-match.types";
 import type { StatusCode } from "./status.types";
 
 // Error Types

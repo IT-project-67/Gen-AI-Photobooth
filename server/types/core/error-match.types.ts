@@ -1,4 +1,4 @@
-import { STATUS_CODES } from "../core/status.types";
+import { STATUS_CODES } from "./status.types";
 
 // Error Type
 export const ERROR_STATUS_MAP = {
@@ -21,6 +21,7 @@ export const ERROR_STATUS_MAP = {
 
   // Business logic errors
   USER_ALREADY_EXISTS: STATUS_CODES.CONFLICT,
+  DELETED_USER: STATUS_CODES.FORBIDDEN,
   EMAIL_NOT_FOUND: STATUS_CODES.NOT_FOUND,
   LOGIN_FAILED: STATUS_CODES.BAD_REQUEST,
 

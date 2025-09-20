@@ -5,6 +5,31 @@
   </NuxtLayout>
 </template>
 
+<script setup lang="ts">
+const user = useSupabaseUser();
+const { handleOAuthProfile } = useOAuth();
+const providers = ["google", "discord"];
+const lastProcessedUserId = ref<string | null>(null);
+
+watch(
+  user,
+  async (newUser, oldUser) => {
+    if (newUser && !oldUser) {
+      const provider = newUser.app_metadata?.provider;
+      const isOAuthUser = provider && providers.includes(provider);
+      const isOAuthLogin =
+        isOAuthUser && newUser.id !== lastProcessedUserId.value;
+      if (isOAuthLogin) {
+        setTimeout(() => {
+          handleOAuthProfile();
+        }, 1000);
+      }
+    }
+  },
+  { immediate: false },
+);
+</script>
+
 <style>
 html,
 body {

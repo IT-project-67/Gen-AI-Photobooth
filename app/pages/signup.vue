@@ -8,7 +8,8 @@
       :show-confirm-password="true"
       :switch-to-log-in="true"
       :error-message="signupError"
-      :verify="success === 'Waiting for verification.'"
+      :success-message="success"
+      :verify="success !== ''"
       @submit="handleSignUp"
       @error="handleSignUpError"
       @social-login="handleSocialLogin"
@@ -68,12 +69,18 @@ const handleSignUp = async ({
     }
 
     if (data) {
-      if (data.emailSent) {
-        success.value = "Waiting for verification.";
+      if (data.isRecovered) {
+        success.value = "verify_recovered";
+        authFormRef.value?.resetForm();
+        setTimeout(() => {
+          navigateTo("/login");
+        }, 2000);
+      } else if (data.emailSent) {
+        success.value = "verify_email";
         await nextTick();
         authFormRef.value?.resetForm();
       } else if (data.session) {
-        success.value = "Registration successful";
+        success.value = "verify_success";
         // Redirect to home page after a short delay
         setTimeout(() => {
           navigateTo("/");

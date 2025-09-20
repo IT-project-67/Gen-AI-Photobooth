@@ -14,7 +14,8 @@ import { validateRegisterRequest } from "../../../utils/auth/validation.utils";
 import type { RegisterResponse } from "../../../types/auth/response.types";
 import type { ApiResponse } from "../../../types/core/api-response.types";
 import type { RegisterRequest } from "../../../types/auth/request.types";
-import { ERROR_STATUS_MAP } from "~~/server/types/auth/auth-error.types";
+import { ERROR_STATUS_MAP } from "~~/server/types/core/error-match.types";
+import { getAllProfile, restoreProfile } from "~~/server/model/profile.model";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<RegisterResponse>> => {
@@ -46,27 +47,110 @@ export default defineEventHandler(
         (user) => user.email === body.email,
       );
 
+      let shouldRestore = false;
+      let existingUserId = null;
       // If user exists, return error
       if (existingUser) {
-        const authError = {
-          type: "AUTH_ERROR" as const,
-          code: "USER_ALREADY_EXISTS",
-          message:
-            "This email is already registered. Please try logging in instead.",
-          statusCode: 409,
-        };
-        throw createError({
-          statusCode: 409,
-          statusMessage: authError.message,
-          data: createErrorResponse(authError),
-        });
+        try {
+          const existingProfile = await getAllProfile(existingUser.id);
+
+          if (existingProfile && existingProfile.isDeleted) {
+            shouldRestore = true;
+            existingUserId = existingUser.id;
+          } else {
+            const authError = {
+              type: "AUTH_ERROR" as const,
+              code: "USER_ALREADY_EXISTS",
+              message:
+                "This email is already registered. Please try logging in instead.",
+              statusCode: ERROR_STATUS_MAP.USER_ALREADY_EXISTS,
+            };
+            throw createError({
+              statusCode: ERROR_STATUS_MAP.USER_ALREADY_EXISTS,
+              statusMessage: authError.message,
+              data: createErrorResponse(authError),
+            });
+          }
+        } catch (error) {
+          const apiError = handleApiError(error);
+          throw createError({
+            statusCode: apiError.statusCode || ERROR_STATUS_MAP.INTERNAL_ERROR,
+            statusMessage: apiError.message,
+            data: createErrorResponse(apiError),
+          });
+        }
       }
 
       // Register user
-      const { data, error } = await supabase.auth.signUp({
-        email: body.email,
-        password: body.password,
-      });
+      let data, error;
+      if (shouldRestore) {
+        // For deleted accounts, restore profile and return success
+        try {
+          const { error: updateError } =
+            await adminClient.auth.admin.updateUserById(existingUserId!, {
+              password: body.password,
+            });
+
+          if (updateError) {
+            throw createError({
+              statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
+              statusMessage:
+                "Failed to update password for account recovery. Please try again.",
+              data: createErrorResponse({
+                type: "AUTH_ERROR" as const,
+                code: "UPDATE_PASSWORD_FAILED",
+                message:
+                  "Failed to update password for account recovery. Please try again.",
+                statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
+              }),
+            });
+          }
+
+          // Restore the profile
+          await restoreProfile(existingUserId!);
+
+          // Return success message for account recovery
+          const registerResponse: RegisterResponse = {
+            session: null,
+            user: {
+              id: existingUser!.id,
+              email: existingUser!.email || "",
+              email_confirmed_at: existingUser!.email_confirmed_at,
+              created_at: existingUser!.created_at || new Date().toISOString(),
+              updated_at: existingUser!.updated_at || new Date().toISOString(),
+            },
+            emailSent: false,
+            isRecovered: true,
+          };
+
+          return createSuccessResponse(
+            registerResponse,
+            "Account recovered successfully! Please login to continue.",
+          );
+        } catch (restoreError) {
+          console.error("Failed to restore profile:", restoreError);
+          throw createError({
+            statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
+            statusMessage: "Failed to restore account. Please try again.",
+            data: createErrorResponse({
+              type: "AUTH_ERROR" as const,
+              code: "RESTORE_FAILED",
+              message: "Failed to restore account. Please try again.",
+              statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
+            }),
+          });
+        }
+      } else {
+        // Register new user
+        const { data: registerData, error: registerError } =
+          await supabase.auth.signUp({
+            email: body.email,
+            password: body.password,
+          });
+
+        data = registerData;
+        error = registerError;
+      }
 
       if (error) {
         const authError = handleAuthError(error);
