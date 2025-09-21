@@ -1,11 +1,11 @@
-import type { ApiResponse } from "~~/server/types/core/api-response.types";
+import type { ApiResponse } from "~~/server/types/core";
 import { useSupabaseClient } from "#imports";
 import type {
-  CreateEventResponse,
+  EventResponse,
   LogoUploadResponse,
   SignedUrlResponse,
   EventListItem,
-} from "~~/server/types/events/response.types";
+} from "~~/server/types/events";
 
 export const useEvent = () => {
   const supabase = useSupabaseClient();
@@ -85,7 +85,7 @@ export const useEvent = () => {
     const token = await getAccessToken();
     if (!token) throw new Error("No access token");
 
-    const resp: ApiResponse<CreateEventResponse> = await $fetch(
+    const resp: ApiResponse<EventResponse> = await $fetch(
       "/api/v1/event/create",
       {
         method: "POST",
@@ -116,7 +116,7 @@ export const useEvent = () => {
     const token = await getAccessToken();
     if (!token) throw new Error("No access token");
 
-    const resp: ApiResponse<CreateEventResponse> = await $fetch(
+    const resp: ApiResponse<EventResponse> = await $fetch(
       `/api/v1/event/get-event-by-id?id=${encodeURIComponent(eventId)}`,
       {
         headers: { Authorization: `Bearer ${token}` },

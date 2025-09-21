@@ -1,19 +1,16 @@
-import type { CreateEventResponse } from "./../../../types/events/response.types";
-import type { ApiResponse } from "~~/server/types/core/api-response.types";
-import { handleApiError } from "~~/server/utils/auth/error-handler.utils";
-import { ERROR_STATUS_MAP } from "~~/server/types/core/error-match.types";
+import { ERROR_STATUS_MAP, type ApiResponse } from "~~/server/types/core";
+import { createAuthClient, prismaClient } from "~~/server/clients";
+import { handleApiError } from "~~/server/utils/auth";
+import type { EventRequest, EventResponse } from "~~/server/types/events";
 import {
   createErrorResponse,
   createSuccessResponse,
-} from "~~/server/utils/core/response.utils";
-import { createAuthClient } from "~~/server/clients/supabase.client";
-import { prisma } from "~~/server/clients/prisma.client";
-import type { CreateEventRequest } from "~~/server/types/events/request.types";
+} from "~~/server/utils/core";
 
 export default defineEventHandler(
-  async (event): Promise<ApiResponse<CreateEventResponse>> => {
+  async (event): Promise<ApiResponse<EventResponse>> => {
     try {
-      const body = await readBody<CreateEventRequest>(event);
+      const body = await readBody<EventRequest>(event);
       const authHeader = getHeader(event, "authorization");
       const token = authHeader?.split(" ")[1];
       if (!authHeader) {
@@ -79,7 +76,7 @@ export default defineEventHandler(
         });
       }
 
-      const newEvent = await prisma.event.create({
+      const newEvent = await prismaClient.event.create({
         data: {
           userId: user.id,
           name: body.name,

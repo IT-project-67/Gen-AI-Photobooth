@@ -1,17 +1,21 @@
-import type { ApiResponse } from "~~/server/types/core/api-response.types";
-import { handleApiError } from "~~/server/utils/auth/error-handler.utils";
-import { ERROR_STATUS_MAP } from "~~/server/types/core/error-match.types";
+import { createAdminClient, prismaClient } from "~~/server/clients";
+import { handleApiError, requireAuth } from "~~/server/utils/auth";
+import type { LogoUploadResponse } from "~~/server/types/events";
+import { config } from "~~/server/config";
+import {
+  allowedType,
+  allowedExts,
+  MAX_FILE_SIZE,
+} from "~~/server/types/storage";
+import {
+  ERROR_STATUS_MAP,
+  ErrorType,
+  type ApiResponse,
+} from "~~/server/types/core";
 import {
   createErrorResponse,
   createSuccessResponse,
-} from "~~/server/utils/core/response.utils";
-import { requireAuth } from "~~/server/utils/auth/auth-guard.utils";
-import { prisma } from "~~/server/clients/prisma.client";
-import { createAdminClient } from "~~/server/clients/supabase.client";
-import { ErrorType } from "~~/server/types/core/error.types";
-import type { LogoUploadResponse } from "~~/server/types/events/response.types";
-
-const BUCKET = "Logo";
+} from "~~/server/utils/core";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<LogoUploadResponse>> => {
@@ -38,7 +42,6 @@ export default defineEventHandler(
         data: Buffer;
         size: number;
       } | null = null;
-
       for (const f of form) {
         if (f.name === "eventId") {
           if (typeof f.data === "string") {
@@ -80,7 +83,6 @@ export default defineEventHandler(
           }),
         });
       }
-
       if (!file) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
@@ -94,7 +96,11 @@ export default defineEventHandler(
         });
       }
 
-      const ev = await prisma.event.findUnique({ where: { id: eventId } });
+      const ev = await prismaClient.event.findUnique({
+        where: { id: eventId },
+      });
+      const supabase = createAdminClient();
+      const ext = file.name.split(".").pop();
       if (!ev || ev.isDeleted) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
@@ -107,7 +113,6 @@ export default defineEventHandler(
           }),
         });
       }
-
       if (ev.userId !== user.id) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.FORBIDDEN,
@@ -120,16 +125,7 @@ export default defineEventHandler(
           }),
         });
       }
-
-      const allowed = [
-        "image/jpeg",
-        "image/jpg",
-        "image/png",
-        "image/webp",
-        "image/svg+xml",
-        "image/x-icon",
-      ];
-      if (!allowed.includes(file.type)) {
+      if (!allowedType.includes(file.type)) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
           statusMessage: "Invalid file type",
@@ -142,8 +138,7 @@ export default defineEventHandler(
           }),
         });
       }
-
-      if (file.size > 5 * 1024 * 1024) {
+      if (file.size > MAX_FILE_SIZE) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
           statusMessage: "File too large",
@@ -155,9 +150,6 @@ export default defineEventHandler(
           }),
         });
       }
-
-      const supabase = createAdminClient();
-      const ext = file.name.split(".").pop();
       if (!ext) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
@@ -171,8 +163,8 @@ export default defineEventHandler(
           }),
         });
       }
+
       const extLower = ext.toLowerCase();
-      const allowedExts = ["png", "jpg", "jpeg", "webp", "svg", "ico"];
       if (!allowedExts.includes(extLower)) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
@@ -187,9 +179,8 @@ export default defineEventHandler(
       }
 
       const path = `Logo/${user.id}/${eventId}/logo.${extLower}`;
-
       const { error } = await supabase.storage
-        .from(BUCKET)
+        .from(config.STORAGE_BUCKET)
         .upload(path, file.data, {
           contentType: file.type,
           cacheControl: "3600",
@@ -209,7 +200,7 @@ export default defineEventHandler(
         });
       }
 
-      await prisma.event.update({
+      await prismaClient.event.update({
         where: { id: eventId },
         data: { logoUrl: path },
       });

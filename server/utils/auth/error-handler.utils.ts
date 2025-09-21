@@ -1,13 +1,10 @@
-import {
-  ERROR_STATUS_MAP,
-  type SupabaseAuthError,
-} from "../../types/core/error-match.types";
+import { STATUS_CODES, ERROR_STATUS_MAP } from "~~/server/types/core";
 import type {
   Errors,
   GenericError,
+  SupabaseAuthError,
   CreateErrorObject,
-} from "../../types/core/error.types";
-import { STATUS_CODES } from "../../types/core/status.types";
+} from "~~/server/types/core";
 
 // Handle Supabase Auth Errors
 export const handleAuthError = (error: SupabaseAuthError | unknown): Errors => {
@@ -117,7 +114,7 @@ export const handleApiError = (error: GenericError | unknown): Errors => {
       return {
         code: errorData.code || "INTERNAL_ERROR",
         message: errorData.message || "An unexpected error occurred",
-        statusCode: errorData.statusCode || 500,
+        statusCode: errorData.statusCode || ERROR_STATUS_MAP.INTERNAL_ERROR,
       };
     }
   }
@@ -132,6 +129,6 @@ export const handleApiError = (error: GenericError | unknown): Errors => {
   return {
     code: genericError.code || "INTERNAL_ERROR",
     message: genericError.message || "An unexpected error occurred",
-    statusCode: genericError.statusCode || 500,
+    statusCode: genericError.statusCode || ERROR_STATUS_MAP.INTERNAL_ERROR,
   };
 };

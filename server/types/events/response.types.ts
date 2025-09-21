@@ -1,4 +1,4 @@
-export interface CreateEventResponse {
+export interface EventResponse {
   id: string;
   name: string;
   logoUrl?: string | null;

@@ -1,4 +1,4 @@
-export interface CreateEventRequest {
+export interface EventRequest {
   name: string;
   logoUrl?: string;
   startDate: string;

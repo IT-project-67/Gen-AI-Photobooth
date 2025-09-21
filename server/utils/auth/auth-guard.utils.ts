@@ -1,6 +1,6 @@
-import { createAuthClient } from "../../clients/supabase.client";
-import type { UserData } from "../../types/domain/user.types";
-import type { H3Error } from "../../types/core/error.types";
+import { ERROR_STATUS_MAP, type H3Error } from "~~/server/types/core";
+import { createAuthClient } from "~~/server/clients/supabase.client";
+import type { UserData } from "~~/server/types/domain";
 import { handleAuthError } from "./error-handler.utils";
 import type { H3Event } from "h3";
 
@@ -23,11 +23,8 @@ export const requireAuth = async (event: H3Event): Promise<UserData> => {
   }
 
   const token = authHeader.substring(7);
-
   try {
     const supabase = createAuthClient();
-
-    // Get user from token
     const {
       data: { user },
       error,
@@ -66,7 +63,7 @@ export const requireAuth = async (event: H3Event): Promise<UserData> => {
 
     // For all other errors, create a generic auth error
     throw createError({
-      statusCode: 401,
+      statusCode: ERROR_STATUS_MAP.AUTH_ERROR,
       statusMessage: "Invalid or expired token",
     });
   }

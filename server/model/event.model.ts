@@ -1,5 +1,5 @@
-import { prisma } from "~~/server/clients/prisma.client";
-import type { CreateEventParams } from "~~/server/types/events/model.types";
+import type { EventStruct } from "~~/server/types/events/model.types";
+import { prismaClient } from "~~/server/clients/prisma.client";
 
 export const createEvent = async ({
   name,
@@ -7,9 +7,9 @@ export const createEvent = async ({
   logoUrl,
   startDate,
   endDate,
-}: CreateEventParams) => {
+}: EventStruct) => {
   try {
-    const newEvent = await prisma.event.create({
+    const newEvent = await prismaClient.event.create({
       data: {
         name: name,
         userId: profileId,
@@ -27,7 +27,7 @@ export const createEvent = async ({
 
 export const getEventById = async (id: string) => {
   try {
-    const targetEvent = await prisma.event.findUnique({
+    const targetEvent = await prismaClient.event.findUnique({
       where: { id },
     });
     return targetEvent;
@@ -39,7 +39,7 @@ export const getEventById = async (id: string) => {
 
 export const getEventsByProfileId = async (profileId: string) => {
   try {
-    const targetEvent = await prisma.event.findMany({
+    const targetEvent = await prismaClient.event.findMany({
       where: { userId: profileId },
     });
     return targetEvent;

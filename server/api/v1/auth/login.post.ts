@@ -1,18 +1,16 @@
+import { ERROR_STATUS_MAP, type ApiResponse } from "~~/server/types/core";
+import type { LoginResponse, LoginRequest } from "~~/server/types/auth";
+import { createProfile, getAllProfile } from "~~/server/model";
+import { createAuthClient } from "~~/server/clients";
 import {
   createSuccessResponse,
   createErrorResponse,
-} from "../../../utils/core/response.utils";
+} from "~~/server/utils/core";
 import {
   handleAuthError,
   handleApiError,
-} from "../../../utils/auth/error-handler.utils";
-import { validateLoginRequest } from "../../../utils/auth/validation.utils";
-import type { ApiResponse } from "../../../types/core/api-response.types";
-import type { LoginResponse } from "../../../types/auth/response.types";
-import { ERROR_STATUS_MAP } from "../../../types/core/error-match.types";
-import type { LoginRequest } from "../../../types/auth/request.types";
-import { createAuthClient } from "../../../clients/supabase.client";
-import { createProfile, getAllProfile } from "../../../model/profile.model";
+  validateLoginRequest,
+} from "~~/server/utils/auth";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<LoginResponse>> => {

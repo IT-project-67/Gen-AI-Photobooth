@@ -1,16 +1,14 @@
-import type { CreateEventResponse } from "./../../../types/events/response.types";
-import type { ApiResponse } from "~~/server/types/core/api-response.types";
-import { handleApiError } from "~~/server/utils/auth/error-handler.utils";
-import { ERROR_STATUS_MAP } from "~~/server/types/core/error-match.types";
+import { ERROR_STATUS_MAP, type ApiResponse } from "~~/server/types/core";
+import { createAuthClient, prismaClient } from "~~/server/clients";
+import type { EventResponse } from "~~/server/types/events";
+import { handleApiError } from "~~/server/utils/auth";
 import {
   createErrorResponse,
   createSuccessResponse,
-} from "~~/server/utils/core/response.utils";
-import { createAuthClient } from "~~/server/clients/supabase.client";
-import { prisma } from "~~/server/clients/prisma.client";
+} from "~~/server/utils/core";
 
 export default defineEventHandler(
-  async (event): Promise<ApiResponse<CreateEventResponse | null>> => {
+  async (event): Promise<ApiResponse<EventResponse | null>> => {
     try {
       const query = getQuery(event);
       const eventId = query.id as string;
@@ -56,7 +54,9 @@ export default defineEventHandler(
         });
       }
 
-      const ev = await prisma.event.findUnique({ where: { id: eventId } });
+      const ev = await prismaClient.event.findUnique({
+        where: { id: eventId },
+      });
       if (!ev || ev.isDeleted || ev.userId !== user.id) {
         return createSuccessResponse(null, "Event not found");
       }

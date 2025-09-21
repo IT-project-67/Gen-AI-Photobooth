@@ -1,4 +1,4 @@
-export interface CreateEventParams {
+export interface EventStruct {
   name: string;
   profileId: string;
   logoUrl?: string;

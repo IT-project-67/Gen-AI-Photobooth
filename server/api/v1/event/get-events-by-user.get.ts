@@ -1,16 +1,14 @@
-import type { ApiResponse } from "~~/server/types/core/api-response.types";
-import { handleApiError } from "~~/server/utils/auth/error-handler.utils";
-import { ERROR_STATUS_MAP } from "~~/server/types/core/error-match.types";
+import { ERROR_STATUS_MAP, type ApiResponse } from "~~/server/types/core";
+import { createAuthClient, prismaClient } from "~~/server/clients";
+import type { EventResponse } from "~~/server/types/events";
+import { handleApiError } from "~~/server/utils/auth";
 import {
   createErrorResponse,
   createSuccessResponse,
-} from "~~/server/utils/core/response.utils";
-import { createAuthClient } from "~~/server/clients/supabase.client";
-import { prisma } from "~~/server/clients/prisma.client";
-import type { CreateEventResponse } from "~~/server/types/events";
+} from "~~/server/utils/core";
 
 export default defineEventHandler(
-  async (event): Promise<ApiResponse<CreateEventResponse[]>> => {
+  async (event): Promise<ApiResponse<EventResponse[]>> => {
     try {
       const authHeader = getHeader(event, "authorization");
       const token = authHeader?.split(" ")[1];
@@ -41,12 +39,12 @@ export default defineEventHandler(
         });
       }
 
-      const events = await prisma.event.findMany({
+      const events = await prismaClient.event.findMany({
         where: { userId: user.id, isDeleted: false },
         orderBy: { createdAt: "desc" },
       });
 
-      const mapped: CreateEventResponse[] = events.map((ev) => ({
+      const mapped: EventResponse[] = events.map((ev) => ({
         id: ev.id,
         name: ev.name,
         logoUrl: ev.logoUrl,

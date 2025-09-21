@@ -1,16 +1,12 @@
-import { handleApiError } from "~~/server/utils/auth/error-handler.utils";
-import { ERROR_STATUS_MAP } from "~~/server/types/core/error-match.types";
+import { defineEventHandler, getQuery, createError, setHeader, send } from "h3";
+import { createAdminClient, prismaClient } from "~~/server/clients";
+import { handleApiError, requireAuth } from "~~/server/utils/auth";
+import { ERROR_STATUS_MAP, ErrorType } from "~~/server/types/core";
+import { config } from "~~/server/config";
 import {
   createErrorResponse,
   createSuccessResponse,
-} from "~~/server/utils/core/response.utils";
-import { requireAuth } from "~~/server/utils/auth/auth-guard.utils";
-import { prisma } from "~~/server/clients/prisma.client";
-import { createAdminClient } from "~~/server/clients/supabase.client";
-import { defineEventHandler, getQuery, createError, setHeader, send } from "h3";
-import { ErrorType } from "~~/server/types/core/error.types";
-
-const BUCKET = "Logo";
+} from "~~/server/utils/core";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -34,7 +30,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const ev = await prisma.event.findUnique({ where: { id: eventId } });
+    const ev = await prismaClient.event.findUnique({ where: { id: eventId } });
     if (!ev || ev.isDeleted) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
@@ -47,7 +43,6 @@ export default defineEventHandler(async (event) => {
         }),
       });
     }
-
     if (ev.userId !== user.id) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.FORBIDDEN,
@@ -60,7 +55,6 @@ export default defineEventHandler(async (event) => {
         }),
       });
     }
-
     if (!ev.logoUrl) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
@@ -75,11 +69,10 @@ export default defineEventHandler(async (event) => {
     }
 
     const supabase = createAdminClient();
-
     if (mode === "signed") {
       const seconds = Math.min(Math.max(Number(expires) || 600, 10), 3600);
       const { data, error } = await supabase.storage
-        .from(BUCKET)
+        .from(config.STORAGE_BUCKET)
         .createSignedUrl(ev.logoUrl, seconds);
 
       if (error || !data?.signedUrl) {
@@ -94,7 +87,6 @@ export default defineEventHandler(async (event) => {
           }),
         });
       }
-
       return createSuccessResponse(
         {
           url: data.signedUrl,
@@ -105,7 +97,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const { data, error } = await supabase.storage
-      .from(BUCKET)
+      .from(config.STORAGE_BUCKET)
       .download(ev.logoUrl);
     if (error || !data) {
       throw createError({
@@ -119,7 +111,6 @@ export default defineEventHandler(async (event) => {
         }),
       });
     }
-
     const arrayBuf = await data.arrayBuffer();
     const buf = Buffer.from(arrayBuf);
     setHeader(event, "Content-Type", data.type || "application/octet-stream");
