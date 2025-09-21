@@ -1,14 +1,14 @@
 <template>
   <div class="page">
-    <div class="wrapper">
+    <div v-if="submittedEventID === ''" class="wrapper">
       <!-- title -->
-      <h1>Return to Your Event!</h1>
+      <h1 class="title">Return to Your Event!</h1>
 
       <!-- discription of drop down box -->
       <label class="select-label" for="event-select">Select an event: </label>
 
       <!-- drop down box -->
-      <select class="event-select" v-model="selectedEventID">
+      <select v-model="selectedEventID" class="event-select">
         <!-- placeholder -->
         <option disabled value="">-- Please choose an event --</option>
 
@@ -27,11 +27,36 @@
         {{ isSubmitting ? "Processing..." : "Submit" }}
       </button>
     </div>
-    <PreviewBox v-if="selectedEventID !== ''" logo-url="" />
+
+    <div v-if="submittedEventID !== ''" class="wrapper">
+      <!-- title -->
+      <h1>Welcome back to AI Photobooth Launch Party!</h1>
+      <br />
+      <p class="event-info">
+        Created {{ 2020 - 12 - 30 }}
+        <span class="dot">•</span>
+        Ends {{ 2020 - 12 - 31 }}
+      </p>
+      <p>Please confirm the event logo below before continuing.</p>
+    </div>
+    <!-- preview box -->
+    <PreviewBox v-if="submittedEventID !== ''" logo-url="" />
+
+    <!-- continue button -->
     <AppButton
-      v-if="selectedEventID !== ''"
+      v-if="submittedEventID !== ''"
       text="continue"
       class="continue-button"
+    />
+    <AppButton
+      v-if="submittedEventID !== ''"
+      text="reselect event"
+      class="continue-button"
+      @click="
+        submittedEventID = '';
+        isSubmitting = false;
+        selectedEventID = '';
+      "
     />
   </div>
 </template>
@@ -40,6 +65,7 @@
 import AppButton from "~/components/AppButton.vue";
 
 const selectedEventID = ref("");
+const submittedEventID = ref("");
 const isSubmitting = ref(false);
 // const events = ref<[]>([])
 const events = [
@@ -58,6 +84,7 @@ const events = [
 const handleSubmit = (): void => {
   // enable loading when submitted and waiting for response
   isSubmitting.value = true;
+  submittedEventID.value = selectedEventID.value;
 };
 </script>
 
@@ -65,7 +92,7 @@ const handleSubmit = (): void => {
 .wrapper {
   width: 85%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 30px;
   background: white;
   border-radius: 7px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -84,18 +111,23 @@ const handleSubmit = (): void => {
   align-items: center;
 }
 
-h1 {
+.title {
   margin-bottom: 10px;
   font-size: 2rem;
 }
 
 .select-label {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
 .event-select {
   width: 100%;
   margin-top: 10px;
+  font-size: 1rem;
+}
+
+.event-select option {
+  padding: 8px;
   font-size: 1rem;
 }
 
@@ -138,5 +170,19 @@ select:hover {
 
 .continue-button {
   margin-top: 15px; /* adjust as needed */
+}
+
+/* small, subtle line under the title */
+.event-meta {
+  margin-top: 6px;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.4;
+  color: #6b7280; /* neutral gray */
+}
+
+/* tiny separator dot spacing */
+.event-meta .dot {
+  margin: 0 6px;
+  color: #9ca3af;
 }
 </style>
