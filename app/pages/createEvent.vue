@@ -13,7 +13,7 @@
             type="eventName"
             :required="true"
           />
-          <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+          <p v-if="nameError" class="error">{{ nameError }}</p>
 
           <AppInputBox
             id="eventStartDate"
@@ -21,8 +21,10 @@
             label="Event Start Date"
             placeholder="Enter your event start date"
             type="date"
-            :required="false"
+            :required="true"
           />
+
+          <p v-if="startError" class="error">{{ startError }}</p>
 
           <AppInputBox
             id="eventEndDate"
@@ -30,8 +32,10 @@
             label="Event End Date"
             placeholder="Enter your event end date"
             type="date"
-            :required="false"
+            :required="true"
           />
+
+          <p v-if="endError" class="error">{{ endError }}</p>
         </form>
       </div>
     </div>
@@ -74,7 +78,9 @@ import PreviewBox from "~/components/PreviewBox.vue";
 const eventName = ref("");
 const eventStartDate = ref("");
 const eventEndDate = ref("");
-const errorMessage = ref("");
+const nameError = ref("");
+const startError = ref("");
+const endError = ref("");
 const isSubmitting = ref(false);
 
 // Logo state
@@ -83,10 +89,26 @@ const fileInput = ref<HTMLInputElement | null>(null);
 
 const handleSubmit = async () => {
   if (!eventName.value.trim()) {
-    errorMessage.value = "Event name is required";
+    nameError.value = "Event name is required";
     return;
   }
-  errorMessage.value = "";
+
+  nameError.value = "";
+
+  if (!eventStartDate.value.trim()) {
+    startError.value = "Event start date is required";
+    return;
+  }
+
+  startError.value = "";
+
+  if (!eventEndDate.value.trim()) {
+    endError.value = "Event end date is required";
+    return;
+  }
+
+  endError.value = "";
+
   isSubmitting.value = true;
 
   try {
