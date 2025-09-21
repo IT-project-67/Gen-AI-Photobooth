@@ -8,7 +8,6 @@ import {
 import { requireAuth } from "~~/server/utils/auth/auth-guard.utils";
 import { prisma } from "~~/server/clients/prisma.client";
 import { createAdminClient } from "~~/server/clients/supabase.client";
-import { looksLikeImage } from "~~/server/utils/event/storage-guard.utils";
 import { ErrorType } from "~~/server/types/core/error.types";
 import type { LogoUploadResponse } from "~~/server/types/events/response.types";
 
@@ -54,12 +53,15 @@ export default defineEventHandler(
           let type = f.type;
           if (!type) {
             const ext = (f.filename.split(".").pop() || "").toLowerCase();
-            type =
-              ext === "png"
-                ? "image/png"
-                : ext === "webp"
-                  ? "image/webp"
-                  : "image/jpeg";
+            const mimeMap: Record<string, string> = {
+              png: "image/png",
+              jpg: "image/jpeg",
+              jpeg: "image/jpeg",
+              webp: "image/webp",
+              svg: "image/svg+xml",
+              ico: "image/x-icon",
+            };
+            type = mimeMap[ext] || "image/jpeg";
           }
           const data = Buffer.isBuffer(f.data) ? f.data : Buffer.from(f.data);
           file = { name: f.filename, type, data, size: data.length };
@@ -119,7 +121,14 @@ export default defineEventHandler(
         });
       }
 
-      const allowed = ["image/jpeg", "image/png", "image/webp"];
+      const allowed = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/webp",
+        "image/svg+xml",
+        "image/x-icon",
+      ];
       if (!allowed.includes(file.type)) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
@@ -127,7 +136,8 @@ export default defineEventHandler(
           data: createErrorResponse({
             type: "VALIDATION_ERROR" as const,
             code: "INVALID_FILE_TYPE",
-            message: "Invalid file type. Only JPEG, PNG, and WebP are allowed",
+            message:
+              "Invalid file type. Only JPEG, JPG, PNG, WebP, SVG, and ICO are allowed",
             statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
           }),
         });
@@ -146,22 +156,37 @@ export default defineEventHandler(
         });
       }
 
-      if (!looksLikeImage(file.type, file.data)) {
+      const supabase = createAdminClient();
+      const ext = file.name.split(".").pop();
+      if (!ext) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
-          statusMessage: "Invalid image content",
+          statusMessage: "Invalid file name",
           data: createErrorResponse({
             type: "VALIDATION_ERROR" as const,
-            code: "INVALID_IMAGE_CONTENT",
-            message: "Invalid image content",
+            code: "INVALID_FILE_NAME",
+            message:
+              "File must have a valid extension (png, jpg, jpeg, webp, svg, ico)",
+            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          }),
+        });
+      }
+      const extLower = ext.toLowerCase();
+      const allowedExts = ["png", "jpg", "jpeg", "webp", "svg", "ico"];
+      if (!allowedExts.includes(extLower)) {
+        throw createError({
+          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          statusMessage: "Invalid file extension",
+          data: createErrorResponse({
+            type: "VALIDATION_ERROR" as const,
+            code: "INVALID_FILE_EXTENSION",
+            message: `Invalid file extension. Allowed: ${allowedExts.join(", ")}`,
             statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
           }),
         });
       }
 
-      const supabase = createAdminClient();
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-      const path = `${user.id}/${eventId}/logo.${ext}`;
+      const path = `Logo/${user.id}/${eventId}/logo.${extLower}`;
 
       const { error } = await supabase.storage
         .from(BUCKET)
