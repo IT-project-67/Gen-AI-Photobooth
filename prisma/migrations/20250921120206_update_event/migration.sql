@@ -1,28 +1,26 @@
 -- CreateTable
 CREATE TABLE "public"."profiles" (
-    "id" TEXT NOT NULL,
-    "user_id" TEXT NOT NULL,
     "display_name" TEXT,
     "organization" TEXT,
-    "phone" TEXT,
-    "logoUrl" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "is_deleted" BOOLEAN NOT NULL DEFAULT false,
+    "user_id" UUID NOT NULL,
 
-    CONSTRAINT "profiles_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "profiles_pkey" PRIMARY KEY ("user_id")
 );
 
 -- CreateTable
 CREATE TABLE "public"."events" (
     "id" TEXT NOT NULL,
-    "profile_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "description" TEXT,
-    "start_date" TIMESTAMP(3),
-    "end_date" TIMESTAMP(3),
-    "location" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "logoUrl" TEXT,
+    "is_deleted" BOOLEAN NOT NULL DEFAULT false,
+    "end_date" TIMESTAMP(3) NOT NULL,
+    "start_date" TIMESTAMP(3) NOT NULL,
+    "user_id" UUID NOT NULL,
 
     CONSTRAINT "events_pkey" PRIMARY KEY ("id")
 );
@@ -34,6 +32,7 @@ CREATE TABLE "public"."sessions" (
     "photo_url" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "status" TEXT DEFAULT 'active',
 
     CONSTRAINT "sessions_pkey" PRIMARY KEY ("id")
 );
@@ -42,9 +41,9 @@ CREATE TABLE "public"."sessions" (
 CREATE TABLE "public"."ai_photos" (
     "id" TEXT NOT NULL,
     "session_id" TEXT NOT NULL,
-    "generated_urls" TEXT[],
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "generated_url" TEXT NOT NULL,
 
     CONSTRAINT "ai_photos_pkey" PRIMARY KEY ("id")
 );
@@ -56,18 +55,14 @@ CREATE TABLE "public"."shared_photos" (
     "event_id" TEXT NOT NULL,
     "selected_url" TEXT NOT NULL,
     "qr_code_url" TEXT NOT NULL,
-    "shared_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "qr_expires_at" TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "shared_photos_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "profiles_user_id_key" ON "public"."profiles"("user_id");
-
 -- AddForeignKey
-ALTER TABLE "public"."events" ADD CONSTRAINT "events_profile_id_fkey" FOREIGN KEY ("profile_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."events" ADD CONSTRAINT "events_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."sessions" ADD CONSTRAINT "sessions_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "public"."events"("id") ON DELETE CASCADE ON UPDATE CASCADE;

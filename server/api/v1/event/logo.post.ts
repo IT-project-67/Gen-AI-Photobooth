@@ -1,0 +1,209 @@
+import type { ApiResponse } from "~~/server/types/core/api-response.types";
+import { handleApiError } from "~~/server/utils/auth/error-handler.utils";
+import { ERROR_STATUS_MAP } from "~~/server/types/core/error-match.types";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+} from "~~/server/utils/core/response.utils";
+import { requireAuth } from "~~/server/utils/auth/auth-guard.utils";
+import { prisma } from "~~/server/clients/prisma.client";
+import { createAdminClient } from "~~/server/clients/supabase.client";
+import { looksLikeImage } from "~~/server/utils/event/storage-guard.utils";
+import { ErrorType } from "~~/server/types/core/error.types";
+import type { LogoUploadResponse } from "~~/server/types/events/response.types";
+
+const BUCKET = "Logo";
+
+export default defineEventHandler(
+  async (event): Promise<ApiResponse<LogoUploadResponse>> => {
+    try {
+      const user = await requireAuth(event);
+      const form = await readMultipartFormData(event);
+      if (!form) {
+        throw createError({
+          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          statusMessage: "No form data",
+          data: createErrorResponse({
+            type: "VALIDATION_ERROR" as const,
+            code: "MISSING_FORM_DATA",
+            message: "No form data provided",
+            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          }),
+        });
+      }
+
+      let eventId = "";
+      let file: {
+        name: string;
+        type: string;
+        data: Buffer;
+        size: number;
+      } | null = null;
+
+      for (const f of form) {
+        if (f.name === "eventId") {
+          if (typeof f.data === "string") {
+            eventId = f.data;
+          } else if (Buffer.isBuffer(f.data)) {
+            eventId = f.data.toString("utf8");
+          } else if (f.data) {
+            eventId = String(f.data);
+          }
+        }
+        if (f.name === "logo" && f.filename && f.data?.length) {
+          let type = f.type;
+          if (!type) {
+            const ext = (f.filename.split(".").pop() || "").toLowerCase();
+            type =
+              ext === "png"
+                ? "image/png"
+                : ext === "webp"
+                  ? "image/webp"
+                  : "image/jpeg";
+          }
+          const data = Buffer.isBuffer(f.data) ? f.data : Buffer.from(f.data);
+          file = { name: f.filename, type, data, size: data.length };
+        }
+      }
+
+      if (!eventId) {
+        throw createError({
+          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          statusMessage: "Missing eventId",
+          data: createErrorResponse({
+            type: "VALIDATION_ERROR" as const,
+            code: "MISSING_EVENT_ID",
+            message: "Missing required field: eventId",
+            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          }),
+        });
+      }
+
+      if (!file) {
+        throw createError({
+          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          statusMessage: "No logo file",
+          data: createErrorResponse({
+            type: "VALIDATION_ERROR" as const,
+            code: "MISSING_LOGO_FILE",
+            message: "No logo file provided",
+            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          }),
+        });
+      }
+
+      const ev = await prisma.event.findUnique({ where: { id: eventId } });
+      if (!ev || ev.isDeleted) {
+        throw createError({
+          statusCode: ERROR_STATUS_MAP.NOT_FOUND,
+          statusMessage: "Event not found",
+          data: createErrorResponse({
+            type: ErrorType.NOT_FOUND,
+            code: "EVENT_NOT_FOUND",
+            message: "Event not found",
+            statusCode: ERROR_STATUS_MAP.NOT_FOUND,
+          }),
+        });
+      }
+
+      if (ev.userId !== user.id) {
+        throw createError({
+          statusCode: ERROR_STATUS_MAP.FORBIDDEN,
+          statusMessage: "Forbidden",
+          data: createErrorResponse({
+            type: ErrorType.FORBIDDEN,
+            code: "ACCESS_DENIED",
+            message: "Access denied to this event",
+            statusCode: ERROR_STATUS_MAP.FORBIDDEN,
+          }),
+        });
+      }
+
+      const allowed = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowed.includes(file.type)) {
+        throw createError({
+          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          statusMessage: "Invalid file type",
+          data: createErrorResponse({
+            type: "VALIDATION_ERROR" as const,
+            code: "INVALID_FILE_TYPE",
+            message: "Invalid file type. Only JPEG, PNG, and WebP are allowed",
+            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          }),
+        });
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        throw createError({
+          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          statusMessage: "File too large",
+          data: createErrorResponse({
+            type: "VALIDATION_ERROR" as const,
+            code: "FILE_TOO_LARGE",
+            message: "File too large. Maximum size is 5MB",
+            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          }),
+        });
+      }
+
+      if (!looksLikeImage(file.type, file.data)) {
+        throw createError({
+          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          statusMessage: "Invalid image content",
+          data: createErrorResponse({
+            type: "VALIDATION_ERROR" as const,
+            code: "INVALID_IMAGE_CONTENT",
+            message: "Invalid image content",
+            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          }),
+        });
+      }
+
+      const supabase = createAdminClient();
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const path = `${user.id}/${eventId}/logo.${ext}`;
+
+      const { error } = await supabase.storage
+        .from(BUCKET)
+        .upload(path, file.data, {
+          contentType: file.type,
+          cacheControl: "3600",
+          upsert: true,
+        });
+
+      if (error) {
+        throw createError({
+          statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
+          statusMessage: "Upload failed",
+          data: createErrorResponse({
+            type: "SERVER_ERROR" as const,
+            code: "STORAGE_UPLOAD_ERROR",
+            message: error.message,
+            statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
+          }),
+        });
+      }
+
+      await prisma.event.update({
+        where: { id: eventId },
+        data: { logoUrl: path },
+      });
+
+      return createSuccessResponse(
+        {
+          eventId,
+          logoUrl: path,
+          fileInfo: { name: file.name, type: file.type, size: file.size },
+        },
+        "Logo uploaded successfully",
+      );
+    } catch (error) {
+      const apiError = handleApiError(error);
+      throw createError({
+        statusCode: apiError.statusCode || ERROR_STATUS_MAP.INTERNAL_ERROR,
+        statusMessage: apiError.message,
+        data: createErrorResponse(apiError),
+      });
+    }
+  },
+);
