@@ -1,4 +1,4 @@
-import type { UserSession } from "../domain/user.types";
+import type { UserSession } from "~~/server/types/domain";
 
 // Auth Response Types
 export interface AuthResponse {

@@ -1,5 +1,5 @@
-import { ERROR_STATUS_MAP } from "../../types/core/error-match.types";
-import type { Errors } from "../../types/core/error.types";
+import { ERROR_STATUS_MAP } from "~~/server/types/core";
+import type { Errors } from "~~/server/types/core";
 
 // Email validation
 export const validateEmail = (email: string): Errors | null => {

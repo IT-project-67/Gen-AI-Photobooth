@@ -76,7 +76,7 @@ export const useOAuth = () => {
         });
         console.log("OAuth profile handled:", result);
       } catch (error) {
-        console.log("OAuth profile creation failed:", error);
+        console.error("OAuth profile creation failed:", error);
       }
     }
   };

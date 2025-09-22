@@ -7,6 +7,8 @@ export const ErrorType = {
   VALIDATION_ERROR: "VALIDATION_ERROR",
   BUSINESS_ERROR: "BUSINESS_ERROR",
   SERVER_ERROR: "SERVER_ERROR",
+  NOT_FOUND: "NOT_FOUND",
+  FORBIDDEN: "FORBIDDEN",
 } as const;
 export type ErrorType = (typeof ErrorType)[keyof typeof ErrorType];
 

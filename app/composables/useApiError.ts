@@ -1,4 +1,4 @@
-import type { Errors } from "~~/server/types/core/error.types";
+import type { Errors } from "~~/server/types/core";
 
 export const useApiError = () => {
   // Format error message for display

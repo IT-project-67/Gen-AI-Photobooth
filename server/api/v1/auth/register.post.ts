@@ -1,21 +1,16 @@
+import type { RegisterResponse, RegisterRequest } from "~~/server/types/auth";
+import { ERROR_STATUS_MAP, type ApiResponse } from "~~/server/types/core";
+import { createAuthClient, createAdminClient } from "~~/server/clients";
+import { getAllProfile, restoreProfile } from "~~/server/model";
 import {
   createSuccessResponse,
   createErrorResponse,
-} from "../../../utils/core/response.utils";
+} from "~~/server/utils/core";
 import {
   handleAuthError,
   handleApiError,
-} from "../../../utils/auth/error-handler.utils";
-import {
-  createAuthClient,
-  createAdminClient,
-} from "../../../clients/supabase.client";
-import { validateRegisterRequest } from "../../../utils/auth/validation.utils";
-import type { RegisterResponse } from "../../../types/auth/response.types";
-import type { ApiResponse } from "../../../types/core/api-response.types";
-import type { RegisterRequest } from "../../../types/auth/request.types";
-import { ERROR_STATUS_MAP } from "~~/server/types/core/error-match.types";
-import { getAllProfile, restoreProfile } from "~~/server/model/profile.model";
+  validateRegisterRequest,
+} from "~~/server/utils/auth";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<RegisterResponse>> => {
