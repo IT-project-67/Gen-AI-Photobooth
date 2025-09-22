@@ -180,7 +180,7 @@ export default defineEventHandler(
 
       const path = `Logo/${user.id}/${eventId}/logo.${extLower}`;
       const { error } = await supabase.storage
-        .from(config.STORAGE_BUCKET)
+        .from(config().STORAGE_BUCKET)
         .upload(path, file.data, {
           contentType: file.type,
           cacheControl: "3600",

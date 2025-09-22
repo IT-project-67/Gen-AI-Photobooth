@@ -72,7 +72,7 @@ export default defineEventHandler(async (event) => {
     if (mode === "signed") {
       const seconds = Math.min(Math.max(Number(expires) || 600, 10), 3600);
       const { data, error } = await supabase.storage
-        .from(config.STORAGE_BUCKET)
+        .from(config().STORAGE_BUCKET)
         .createSignedUrl(ev.logoUrl, seconds);
 
       if (error || !data?.signedUrl) {
@@ -97,7 +97,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const { data, error } = await supabase.storage
-      .from(config.STORAGE_BUCKET)
+      .from(config().STORAGE_BUCKET)
       .download(ev.logoUrl);
     if (error || !data) {
       throw createError({
