@@ -8,15 +8,27 @@
       <label class="select-label" for="event-select">Select an event: </label>
 
       <!-- drop down box -->
-      <select v-model="selectedEventID" class="event-select" :disabled="isLoadingEvents">
+      <select
+        v-model="selectedEventID"
+        class="event-select"
+        :disabled="isLoadingEvents"
+      >
         <!-- placeholder -->
         <option disabled value="">
-          {{ isLoadingEvents ? 'Loading events...' : '-- Please choose an event --' }}
+          {{
+            isLoadingEvents
+              ? "Loading events..."
+              : "-- Please choose an event --"
+          }}
         </option>
 
         <!-- options -->
         <option v-for="event in events" :key="event.id" :value="event.id">
-          {{ event.name }} ({{ event.startDate ? new Date(event.startDate).toLocaleDateString() : 'No date' }})
+          {{ event.name }} ({{
+            event.startDate
+              ? new Date(event.startDate).toLocaleDateString()
+              : "No date"
+          }})
         </option>
       </select>
 
@@ -32,12 +44,22 @@
 
     <div v-if="submittedEventID !== ''" class="wrapper">
       <!-- title -->
-      <h1>Welcome back to {{ selectedEvent?.name || 'Your Event' }}!</h1>
+      <h1>Welcome back to {{ selectedEvent?.name || "Your Event" }}!</h1>
       <br />
       <p class="event-info">
-        Start Date: {{ selectedEvent?.createdAt ? new Date(selectedEvent.createdAt).toLocaleDateString() : 'Unknown' }}
+        Start Date:
+        {{
+          selectedEvent?.createdAt
+            ? new Date(selectedEvent.createdAt).toLocaleDateString()
+            : "Unknown"
+        }}
         <span class="dot">•</span>
-        End Date: {{ selectedEvent?.endDate ? new Date(selectedEvent.endDate).toLocaleDateString() : 'Unknown' }}
+        End Date:
+        {{
+          selectedEvent?.endDate
+            ? new Date(selectedEvent.endDate).toLocaleDateString()
+            : "Unknown"
+        }}
       </p>
       <p>Please confirm the event logo below before continuing.</p>
     </div>
@@ -64,75 +86,77 @@
 </template>
 
 <script setup lang="ts">
-  import AppButton from "~/components/AppButton.vue";
-  import type { EventListItem, EventResponse, SignedUrlResponse } from "~~/server/types/events";
+import AppButton from "~/components/AppButton.vue";
+import type {
+  EventListItem,
+  EventResponse,
+  SignedUrlResponse,
+} from "~~/server/types/events";
 
-  const selectedEventID = ref("");
-  const submittedEventID = ref("");
-  const isSubmitting = ref(false);
+const selectedEventID = ref("");
+const submittedEventID = ref("");
+const isSubmitting = ref(false);
 
-  const events = ref<EventListItem[]>([]);
-  const selectedEvent = ref<EventResponse | null>(null);
-  const eventLogoUrl = ref("");
-  const isLoadingEvents = ref(false);
+const events = ref<EventListItem[]>([]);
+const selectedEvent = ref<EventResponse | null>(null);
+const eventLogoUrl = ref("");
+const isLoadingEvents = ref(false);
 
-  const { 
-    getUserEvents, 
-    getEventById, 
-    getEventLogoSignedUrl 
-  } = useEvent();
+const { getUserEvents, getEventById, getEventLogoSignedUrl } = useEvent();
 
-  onMounted(async () => {
-    isLoadingEvents.value = true;
-    try {
-      const userEvents = await getUserEvents();
-      events.value = (userEvents as EventListItem[]).map(event => ({
-        id: event.id,
-        name: event.name,
-        logoUrl: event.logoUrl,
-        startDate: event.startDate,
-        endDate: event.endDate,
-        createdAt: event.createdAt,
-        updatedAt: event.updatedAt
-      }));
-      
-      console.log("Events mapped:", events.value);
-    } catch (error) {
-      console.error("Failed to fetch events:", error);
-    } finally {
-      isLoadingEvents.value = false;
-    }
-  });
+onMounted(async () => {
+  isLoadingEvents.value = true;
+  try {
+    const userEvents = await getUserEvents();
+    events.value = (userEvents as EventListItem[]).map((event) => ({
+      id: event.id,
+      name: event.name,
+      logoUrl: event.logoUrl,
+      startDate: event.startDate,
+      endDate: event.endDate,
+      createdAt: event.createdAt,
+      updatedAt: event.updatedAt,
+    }));
 
-  const handleSubmit = async (): Promise<void> => {
-    if (!selectedEventID.value) return;
-    isSubmitting.value = true;
-    try {
-      // Get event details
-      const eventDetails = await getEventById(selectedEventID.value);
-      const event = eventDetails as EventResponse;
-      selectedEvent.value = event;
-      
-      // Get event logo if available
-      if (event?.logoUrl) {
-        try {
-          const signedUrlResponse = await getEventLogoSignedUrl(selectedEventID.value);
-          const signedUrl = (signedUrlResponse as SignedUrlResponse).url;
-          eventLogoUrl.value = signedUrl || "";
-        } catch (logoError) {
-          console.error("Failed to get event logo:", logoError);
-          eventLogoUrl.value = "";
-        }
-      } else {
+    console.log("Events mapped:", events.value);
+  } catch (error) {
+    console.error("Failed to fetch events:", error);
+  } finally {
+    isLoadingEvents.value = false;
+  }
+});
+
+const handleSubmit = async (): Promise<void> => {
+  if (!selectedEventID.value) return;
+  isSubmitting.value = true;
+  try {
+    // Get event details
+    const eventDetails = await getEventById(selectedEventID.value);
+    const event = eventDetails as EventResponse;
+    selectedEvent.value = event;
+
+    // Get event logo if available
+    if (event?.logoUrl) {
+      try {
+        const signedUrlResponse = await getEventLogoSignedUrl(
+          selectedEventID.value,
+        );
+        const signedUrl = (signedUrlResponse as SignedUrlResponse).url;
+        eventLogoUrl.value = signedUrl || "";
+      } catch (logoError) {
+        console.error("Failed to get event logo:", logoError);
         eventLogoUrl.value = "";
       }
-      submittedEventID.value = selectedEventID.value;
-    } catch (error) {
-      console.error("Failed to fetch event details:", error);
-    } finally {
-      isSubmitting.value = false;
+    } else {
+      eventLogoUrl.value = "";
     }
-  };
+    submittedEventID.value = selectedEventID.value;
+  } catch (error) {
+    console.error("Failed to fetch event details:", error);
+  } finally {
+    isSubmitting.value = false;
+  }
+};
 </script>
 
 <style>

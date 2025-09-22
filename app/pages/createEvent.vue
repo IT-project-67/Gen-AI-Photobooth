@@ -87,10 +87,7 @@ const isSubmitting = ref(false);
 const logoUrl = ref("");
 const fileInput = ref<HTMLInputElement | null>(null);
 const selectedFile = ref<File | null>(null);
-const { 
-  createEvent, 
-  uploadEventLogo 
-} = useEvent();
+const { createEvent, uploadEventLogo } = useEvent();
 
 const handleSubmit = async () => {
   if (!eventName.value.trim()) {
@@ -142,7 +139,8 @@ const handleSubmit = async () => {
 
     if (selectedFile.value) {
       try {
-        const eventId = 'id' in eventResponse ? eventResponse.id : eventResponse.data?.id;
+        const eventId =
+          "id" in eventResponse ? eventResponse.id : eventResponse.data?.id;
         if (!eventId) {
           throw new Error("No event ID available for logo upload");
         }
