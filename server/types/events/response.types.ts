@@ -27,8 +27,6 @@ export interface SignedUrlResponse {
 export interface EventListItem {
   id: string;
   name: string;
-  description: string | null;
-  location: string | null;
   logoUrl: string | null;
   startDate: Date | null;
   endDate: Date | null;

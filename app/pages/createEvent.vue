@@ -41,9 +41,9 @@
     </div>
 
     <input
-      type="file"
       ref="fileInput"
-      accept="image/png"
+      type="file"
+      accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml,image/x-icon"
       style="display: none"
       @change="handleFileChange"
     />
@@ -53,7 +53,7 @@
       @click="ClickUpload"
     />
 
-    <PreviewBox v-if="logoUrl" :logoUrl="logoUrl" />
+    <PreviewBox v-if="logoUrl" :logo-url="logoUrl" />
 
     <AppButton
       class="AppButton"
@@ -86,51 +86,73 @@ const isSubmitting = ref(false);
 // Logo state
 const logoUrl = ref("");
 const fileInput = ref<HTMLInputElement | null>(null);
+const selectedFile = ref<File | null>(null);
+const { 
+  createEvent, 
+  uploadEventLogo 
+} = useEvent();
 
 const handleSubmit = async () => {
   if (!eventName.value.trim()) {
     nameError.value = "Event name is required";
     return;
   }
-
   nameError.value = "";
 
   if (!eventStartDate.value.trim()) {
     startError.value = "Event start date is required";
     return;
   }
-
   startError.value = "";
 
   if (!eventEndDate.value.trim()) {
     endError.value = "Event end date is required";
     return;
   }
-
   endError.value = "";
+
+  // Validate date logic (backend doesn't have date validation)
+  const startDate = new Date(eventStartDate.value);
+  const endDate = new Date(eventEndDate.value);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Check if start date is in the past
+  if (startDate < today) {
+    startError.value = "Start date cannot be in the past";
+    return;
+  }
+
+  // Check if end date is before start date
+  if (endDate < startDate) {
+    endError.value = "End date cannot be before start date";
+    return;
+  }
 
   isSubmitting.value = true;
 
   try {
-    const body = {
+    const eventData = {
       name: eventName.value,
       startDate: eventStartDate.value,
       endDate: eventEndDate.value,
     };
 
-    const response = await fetch("/api/create-event", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    const eventResponse = await createEvent(eventData);
 
-    if (!response.ok) throw new Error("Failed to create event");
-
-    // const data = await response.json()
-    console.log("Event created successfully");
-
+    if (selectedFile.value) {
+      try {
+        const eventId = 'id' in eventResponse ? eventResponse.id : eventResponse.data?.id;
+        if (!eventId) {
+          throw new Error("No event ID available for logo upload");
+        }
+        await uploadEventLogo(eventId, selectedFile.value);
+      } catch (logoError) {
+        console.error("=== LOGO UPLOAD ERROR ===");
+        console.error("Logo upload failed:", logoError);
+        console.error("Error details:", logoError);
+      }
+    }
     // navigateTo("/events/" + data.id)
   } catch (err) {
     console.error("Error submitting event:", err);
@@ -150,24 +172,10 @@ async function handleFileChange(event: Event) {
 
   const file = target.files[0];
   if (!file) return;
+  selectedFile.value = file;
 
   // Give the logo an url to preview in browser
   logoUrl.value = URL.createObjectURL(file);
-
-  // Prepare a package to send to server
-  const formData = new FormData();
-  formData.append("file", file);
-
-  try {
-    const response = await fetch("/api/upload-logo", {
-      method: "POST",
-      body: formData,
-    });
-    if (!response.ok) throw new Error("Upload failed");
-    console.log("Uploaded successfully");
-  } catch (err) {
-    console.error("Upload error:", err);
-  }
 }
 </script>
 
