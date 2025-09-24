@@ -61,10 +61,16 @@
             : "Unknown"
         }}
       </p>
-      <p>Please confirm the event logo below before continuing.</p>
+      <p v-if="eventLogoUrl !== ''">
+        Please confirm the event details and logo below before continuing.
+      </p>
+      <p v-else>Please confirm the event details below before continuing.</p>
     </div>
     <!-- preview box -->
-    <PreviewBox v-if="submittedEventID !== ''" :logo-url="eventLogoUrl" />
+    <PreviewBox
+      v-if="submittedEventID !== '' && eventLogoUrl !== ''"
+      :logo-url="eventLogoUrl"
+    />
 
     <!-- continue button -->
     <AppButton
