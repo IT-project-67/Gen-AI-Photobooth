@@ -1,8 +1,3 @@
-export interface UpdateProfileRequest {
-  displayName?: string;
-  organization?: string;
-}
-
 export interface ProfileResponse {
   userId: string;
   displayName?: string | null;
@@ -10,4 +5,9 @@ export interface ProfileResponse {
   createdAt: string;
   updatedAt: string;
   isDeleted: boolean;
+}
+
+export interface UpdateProfileRequest {
+  displayName?: string;
+  organization?: string;
 }

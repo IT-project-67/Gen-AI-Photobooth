@@ -1,8 +1,8 @@
-import { prisma } from "../clients/prisma.client";
+import { prismaClient } from "../clients/prisma.client";
 
 export const createProfile = async (userId: string, displayName?: string) => {
   try {
-    const profile = await prisma.profile.create({
+    const profile = await prismaClient.profile.create({
       data: {
         userId,
         displayName: displayName || "user",
@@ -17,7 +17,7 @@ export const createProfile = async (userId: string, displayName?: string) => {
 
 export const getValidProfile = async (userId: string) => {
   try {
-    const profile = await prisma.profile.findUnique({
+    const profile = await prismaClient.profile.findUnique({
       where: {
         userId,
         isDeleted: false,
@@ -32,7 +32,7 @@ export const getValidProfile = async (userId: string) => {
 
 export const getAllProfile = async (userId: string) => {
   try {
-    const profile = await prisma.profile.findUnique({
+    const profile = await prismaClient.profile.findUnique({
       where: { userId },
     });
     return profile;
@@ -56,7 +56,7 @@ export const updateProfile = async (
       updateData.organization = data.organization;
     }
 
-    const profile = await prisma.profile.update({
+    const profile = await prismaClient.profile.update({
       where: {
         userId,
         isDeleted: false,
@@ -72,7 +72,7 @@ export const updateProfile = async (
 
 export const softDeleteProfile = async (userId: string) => {
   try {
-    const profile = await prisma.profile.update({
+    const profile = await prismaClient.profile.update({
       where: {
         userId,
         isDeleted: false,
@@ -90,7 +90,7 @@ export const softDeleteProfile = async (userId: string) => {
 
 export const restoreProfile = async (userId: string) => {
   try {
-    const profile = await prisma.profile.update({
+    const profile = await prismaClient.profile.update({
       where: {
         userId,
         isDeleted: true,

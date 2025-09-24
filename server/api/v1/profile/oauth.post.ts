@@ -1,12 +1,7 @@
-// server/api/v1/profile/oauth.post.ts
-import { createAuthClient } from "../../../clients/supabase.client";
-import {
-  getAllProfile,
-  createProfile,
-  restoreProfile,
-} from "../../../model/profile.model";
-import type { OAuthError } from "../../../types/profile/oauth.types";
-import { ERROR_STATUS_MAP } from "../../../types/core/error-match.types";
+import { getAllProfile, createProfile, restoreProfile } from "~~/server/model";
+import type { OAuthError } from "~~/server/types/profile";
+import { ERROR_STATUS_MAP } from "~~/server/types/core";
+import { createAuthClient } from "~~/server/clients";
 
 export default defineEventHandler(async (event) => {
   try {

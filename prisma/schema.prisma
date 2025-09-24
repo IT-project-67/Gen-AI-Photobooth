@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DIRECT_URL")
 }
 
 model Profile {
@@ -22,14 +22,12 @@ model Profile {
 model Event {
   id          String        @id @default(cuid())
   name        String
-  description String?
-  location    String?
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
   logoUrl     String?
   isDeleted   Boolean       @default(false) @map("is_deleted")
-  endDate     DateTime?
-  startDate   DateTime?
+  endDate     DateTime      @map("end_date")
+  startDate   DateTime      @map("start_date")
   userId      String        @map("user_id") @db.Uuid
   profile     Profile       @relation(fields: [userId], references: [userId], onDelete: Cascade)
   Session     Session[]
