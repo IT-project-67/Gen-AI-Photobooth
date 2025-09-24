@@ -1,4 +1,4 @@
-import type { ErrorCode } from "../auth/auth-error.types";
+import type { ErrorCode } from "./error-match.types";
 import type { StatusCode } from "./status.types";
 
 // Error Types
@@ -7,6 +7,8 @@ export const ErrorType = {
   VALIDATION_ERROR: "VALIDATION_ERROR",
   BUSINESS_ERROR: "BUSINESS_ERROR",
   SERVER_ERROR: "SERVER_ERROR",
+  NOT_FOUND: "NOT_FOUND",
+  FORBIDDEN: "FORBIDDEN",
 } as const;
 export type ErrorType = (typeof ErrorType)[keyof typeof ErrorType];
 

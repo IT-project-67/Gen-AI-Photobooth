@@ -1,17 +1,18 @@
+import { ERROR_STATUS_MAP, type ApiResponse } from "~~/server/types/core";
+import { createAuthClient } from "~~/server/clients";
 import {
   createSuccessResponse,
   createErrorResponse,
-} from "../../../utils/core/response.utils";
+} from "~~/server/utils/core";
 import {
   handleAuthError,
   handleApiError,
-} from "../../../utils/auth/error-handler.utils";
-import { validateResetPasswordRequest } from "../../../utils/auth/validation.utils";
-import type { ResetPasswordResponse } from "../../../types/auth/response.types";
-import type { ResetPasswordRequest } from "../../../types/auth/request.types";
-import type { ApiResponse } from "../../../types/core/api-response.types";
-import { ERROR_STATUS_MAP } from "~~/server/types/auth/auth-error.types";
-import { createAuthClient } from "../../../clients/supabase.client";
+  validateResetPasswordRequest,
+} from "~~/server/utils/auth";
+import type {
+  ResetPasswordResponse,
+  ResetPasswordRequest,
+} from "~~/server/types/auth";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<ResetPasswordResponse>> => {

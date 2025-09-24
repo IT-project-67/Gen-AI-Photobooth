@@ -1,4 +1,4 @@
-import type { UserSession } from "../domain/user.types";
+import type { UserSession } from "~~/server/types/domain";
 
 // Auth Response Types
 export interface AuthResponse {
@@ -10,6 +10,7 @@ export type LoginResponse = AuthResponse;
 
 export interface RegisterResponse extends AuthResponse {
   emailSent?: boolean;
+  isRecovered?: boolean;
 }
 
 // Forgot Password Types

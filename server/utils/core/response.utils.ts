@@ -1,5 +1,4 @@
-import type { ApiResponse } from "../../types/core/api-response.types";
-import type { Errors } from "../../types/core/error.types";
+import type { ApiResponse, Errors } from "~~/server/types/core";
 
 // Create success response
 export const createSuccessResponse = <T>(

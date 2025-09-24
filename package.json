@@ -12,7 +12,12 @@
     "lint:fix": "eslint . --ext .js,.ts,.vue --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:pull": "prisma db pull",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.1",
@@ -22,6 +27,7 @@
     "@nuxt/test-utils": "^3.19.2",
     "@nuxt/ui": "^3.3.2",
     "@nuxtjs/supabase": "^1.6.1",
+    "@prisma/client": "^6.16.1",
     "@supabase/supabase-js": "^2.57.0",
     "nuxt": "^4.0.3",
     "typescript": "^5.9.2",
@@ -32,6 +38,7 @@
     "@nuxt/eslint-config": "^1.9.0",
     "eslint": "^9.34.0",
     "eslint-plugin-vue": "^10.4.0",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "prisma": "^6.16.1"
   }
 }

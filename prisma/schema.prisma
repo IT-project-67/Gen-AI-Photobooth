@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DIRECT_URL")
+}
+
+model Profile {
+  displayName  String?  @map("display_name")
+  organization String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  isDeleted    Boolean  @default(false) @map("is_deleted")
+  userId       String   @id @map("user_id") @db.Uuid
+  Event        Event[]
+
+  @@map("profiles")
+}
+
+model Event {
+  id          String        @id @default(cuid())
+  name        String
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  logoUrl     String?
+  isDeleted   Boolean       @default(false) @map("is_deleted")
+  endDate     DateTime      @map("end_date")
+  startDate   DateTime      @map("start_date")
+  userId      String        @map("user_id") @db.Uuid
+  profile     Profile       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  Session     Session[]
+  SharedPhoto SharedPhoto[]
+
+  @@map("events")
+}
+
+model Session {
+  id        String    @id @default(cuid())
+  eventId   String    @map("event_id")
+  photoUrl  String?   @map("photo_url")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  status    String?   @default("active")
+  AIPhoto   AIPhoto[]
+  Event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model AIPhoto {
+  id           String        @id @default(cuid())
+  sessionId    String        @map("session_id")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  generatedUrl String        @map("generated_url")
+  session      Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  SharedPhoto  SharedPhoto[]
+
+  @@map("ai_photos")
+}
+
+model SharedPhoto {
+  id          String   @id @default(cuid())
+  aiPhotoId   String   @map("ai_photo_id")
+  eventId     String   @map("event_id")
+  selectedUrl String   @map("selected_url")
+  qrCodeUrl   String   @map("qr_code_url")
+  qrExpiresAt DateTime @map("qr_expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  AIPhoto     AIPhoto  @relation(fields: [aiPhotoId], references: [id], onDelete: Cascade)
+  Event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("shared_photos")
+}

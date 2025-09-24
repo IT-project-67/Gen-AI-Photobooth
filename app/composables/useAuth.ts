@@ -1,15 +1,12 @@
+import type { ApiResponse, Errors } from "~~/server/types/core";
 import type {
   LoginResponse,
   RegisterResponse,
   ForgotPasswordResponse,
-} from "~~/server/types/auth/response.types";
-import type {
   LoginRequest,
   RegisterRequest,
   ForgotPasswordRequest,
-} from "~~/server/types/auth/request.types";
-import type { ApiResponse } from "~~/server/types/core/api-response.types";
-import type { Errors } from "~~/server/types/core/error.types";
+} from "~~/server/types/auth";
 
 type AuthApi<T> = ApiResponse<T, Errors>;
 
@@ -103,6 +100,13 @@ export const useAuth = () => {
         return {
           data: null,
           error: response.error?.message || "Registration failed",
+        };
+      }
+
+      if (response.data?.isRecovered) {
+        return {
+          data: response.data || null,
+          error: null,
         };
       }
 
