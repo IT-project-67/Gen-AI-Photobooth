@@ -11,6 +11,18 @@ export default defineNuxtConfig({
     "@nuxtjs/supabase",
   ],
 
+  nitro: {
+    experimental: {
+      wasm: true
+    },
+    routeRules: {
+      '/api/**': { 
+        cors: true,
+        headers: { 'Access-Control-Allow-Origin': '*' }
+      }
+    }
+  },
+
   supabase: {
     url: process.env.NUXT_PUBLIC_SUPABASE_URL,
     key: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
