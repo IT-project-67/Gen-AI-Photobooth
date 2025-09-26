@@ -6,6 +6,7 @@
         :class="{ mirrored: currentFacingMode === 'user' }"
         autoplay
         playsinline
+        webkit-playsinline
         muted
       ></video>
 
@@ -77,8 +78,8 @@ const initCamera = async (
     // request camera access
     const constraints: MediaStreamConstraints = {
       video: {
-        facingMode: facingMode,
-        width: { ideal: props.width, max: 1920  },
+        facingMode: { ideal: facingMode },
+        width: { ideal: props.width, max: 1920 },
         height: { ideal: props.height, max: 1080 },
       },
       audio: false,
@@ -90,10 +91,22 @@ const initCamera = async (
       videoRef.value.srcObject = stream.value;
       await nextTick();
 
-      await new Promise<void>((resolve) => {
+      await new Promise<void>((resolve, reject) => {
         if (videoRef.value) {
+          const timeout = setTimeout(() => {
+            reject(new Error("Video metadata loading timeout"));
+          }, 5000);
+
           videoRef.value.onloadedmetadata = () => {
+            clearTimeout(timeout);
+            console.log("Video metadata loaded successfully");
             resolve();
+          };
+
+          videoRef.value.onerror = (error) => {
+            clearTimeout(timeout);
+            console.error("Video loading error:", error);
+            reject(error);
           };
         }
       });
@@ -206,8 +219,11 @@ const takePhoto = () => {
   emit("photo-captured", dataUrl);
 };
 
-onMounted(() => {
-  initCamera();
+onMounted(async () => {
+  await nextTick();
+  setTimeout(() => {
+    initCamera();
+  }, 100);
 });
 
 onUnmounted(() => {
@@ -243,10 +259,10 @@ video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 10px;
-  aspect-ratio: 3/4;
   min-height: 300px;
   max-height: 80vh;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .mirrored {
