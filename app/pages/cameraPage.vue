@@ -66,8 +66,11 @@ const clearError = () => {
 };
 
 onMounted(() => {
-  cameraWidth.value = window.innerWidth * 0.95;
-  cameraHeight.value = (cameraWidth.value / 3) * 4;
+  // cameraWidth.value = window.innerWidth * 0.95;
+  // cameraHeight.value = (cameraWidth.value / 3) * 4;
+  const maxWidth = Math.min(window.innerWidth * 0.95, 400);
+  cameraWidth.value = maxWidth;
+  cameraHeight.value = (maxWidth / 3) * 4;
   //   console.log(cameraWidth.value, cameraHeight.value)
 });
 </script>

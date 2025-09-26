@@ -69,12 +69,17 @@ const initCamera = async (
       stream.value.getTracks().forEach((track) => track.stop());
     }
 
+    // Check if getUserMedia is supported
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error("Camera not supported on this device");
+    }
+
     // request camera access
     const constraints: MediaStreamConstraints = {
       video: {
         facingMode: facingMode,
-        width: { ideal: props.width },
-        height: { ideal: props.height },
+        width: { ideal: props.width, max: 1920  },
+        height: { ideal: props.height, max: 1080 },
       },
       audio: false,
     };
@@ -236,9 +241,12 @@ onUnmounted(() => {
 video {
   display: block;
   width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 10px;
   aspect-ratio: 3/4;
+  min-height: 300px;
+  max-height: 80vh;
 }
 
 .mirrored {
@@ -328,10 +336,20 @@ video {
     padding: 10px;
     gap: 15px;
     max-width: 100%;
+    max-height: 90vh;
+  }
+
+  .camera-preview {
+    width: 100%;
+    height: 60vh;
+    min-height: 300px;
   }
 
   video {
-    aspect-ratio: 3/4;
+    /* aspect-ratio: 3/4; */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .flip-button {
