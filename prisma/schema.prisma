@@ -43,7 +43,6 @@ model Session {
   photoUrl  String?   @map("photo_url")
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
-  status    String?   @default("active")
   AIPhoto   AIPhoto[]
   Event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
