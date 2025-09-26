@@ -2,11 +2,11 @@ import { defineEventHandler, getQuery, createError, setHeader, send } from "h3";
 import { createAdminClient, prismaClient } from "~~/server/clients";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import { ERROR_STATUS_MAP, ErrorType } from "~~/server/types/core";
-import { config } from "~~/server/config";
 import {
   createErrorResponse,
   createSuccessResponse,
 } from "~~/server/utils/core";
+import { getStorageBucket } from "~~/server/utils/storage/path.utils";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -69,10 +69,12 @@ export default defineEventHandler(async (event) => {
     }
 
     const supabase = createAdminClient();
+    const bucket = getStorageBucket();
+
     if (mode === "signed") {
       const seconds = Math.min(Math.max(Number(expires) || 600, 10), 3600);
       const { data, error } = await supabase.storage
-        .from(config().STORAGE_BUCKET)
+        .from(bucket)
         .createSignedUrl(ev.logoUrl, seconds);
 
       if (error || !data?.signedUrl) {
@@ -97,9 +99,11 @@ export default defineEventHandler(async (event) => {
     }
 
     const { data, error } = await supabase.storage
-      .from(config().STORAGE_BUCKET)
+      .from(bucket)
       .download(ev.logoUrl);
+
     if (error || !data) {
+      console.error("Logo download error:", error);
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
         statusMessage: "Logo not found",
@@ -111,6 +115,7 @@ export default defineEventHandler(async (event) => {
         }),
       });
     }
+
     const arrayBuf = await data.arrayBuffer();
     const buf = Buffer.from(arrayBuf);
     setHeader(event, "Content-Type", data.type || "application/octet-stream");
