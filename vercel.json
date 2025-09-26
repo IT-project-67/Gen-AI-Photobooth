@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "server/api/**": {
+      "maxDuration": 30,
+      "memory": 1024
+    }
+  }
+}
