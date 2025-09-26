@@ -155,7 +155,7 @@ const takePhoto = () => {
   const ctx = canvas.getContext("2d");
 
   if (!ctx) {
-    emit("error", "unable to caputure");
+    emit("error", "unable to capture");
     return;
   }
 
@@ -362,7 +362,6 @@ video {
   }
 
   video {
-    /* aspect-ratio: 3/4; */
     width: 100%;
     height: 100%;
     object-fit: cover;

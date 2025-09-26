@@ -23,11 +23,6 @@ import AppCamera from "~/components/AppCamera.vue";
 const router = useRouter();
 const route = useRoute();
 
-const eventId = route.query.eventId as string;
-if (!eventId) {
-  await navigateTo("/selectEvent");
-}
-
 interface CapturedPhoto {
   dataUrl: string;
   timestamp: string;
@@ -65,13 +60,16 @@ const clearError = () => {
   errorMessage.value = "";
 };
 
-onMounted(() => {
-  // cameraWidth.value = window.innerWidth * 0.95;
-  // cameraHeight.value = (cameraWidth.value / 3) * 4;
+onMounted(async () => {
+  const eventId = route.query.eventId as string;
+  if (!eventId) {
+    await navigateTo("/selectEvent");
+    return;
+  }
+
   const maxWidth = Math.min(window.innerWidth * 0.95, 400);
   cameraWidth.value = maxWidth;
   cameraHeight.value = (maxWidth / 3) * 4;
-  //   console.log(cameraWidth.value, cameraHeight.value)
 });
 </script>
 
