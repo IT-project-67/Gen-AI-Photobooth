@@ -1,6 +1,6 @@
 {
   "functions": {
-    "server/api/**": {
+    ".output/server/api/**": {
       "maxDuration": 30
     }
   }
