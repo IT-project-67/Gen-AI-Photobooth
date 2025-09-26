@@ -13,14 +13,20 @@ export default defineNuxtConfig({
 
   nitro: {
     experimental: {
-      wasm: true
+      wasm: true,
     },
     routeRules: {
-      '/api/**': { 
+      "/api/**": {
         cors: true,
-        headers: { 'Access-Control-Allow-Origin': '*' }
-      }
-    }
+        headers: { "Access-Control-Allow-Origin": "*" },
+      },
+    },
+  },
+
+  vite: {
+    build: {
+      sourcemap: false,
+    },
   },
 
   supabase: {
