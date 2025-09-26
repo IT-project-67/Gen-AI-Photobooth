@@ -21,6 +21,12 @@ import { ref, onMounted } from "vue";
 import AppCamera from "~/components/AppCamera.vue";
 
 const router = useRouter();
+const route = useRoute();
+
+const eventId = route.query.eventId as string;
+if (!eventId) {
+  await navigateTo("/selectEvent");
+}
 
 interface CapturedPhoto {
   dataUrl: string;

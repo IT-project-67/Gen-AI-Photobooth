@@ -77,6 +77,7 @@
       v-if="submittedEventID !== ''"
       text="Continue"
       class="continue-button"
+      @click="handleContinue"
     />
     <AppButton
       v-if="submittedEventID !== ''"
@@ -161,6 +162,12 @@ const handleSubmit = async (): Promise<void> => {
     console.error("Failed to fetch event details:", error);
   } finally {
     isSubmitting.value = false;
+  }
+};
+
+const handleContinue = async () => {
+  if (submittedEventID.value) {
+    await navigateTo(`/cameraPage?eventId=${submittedEventID.value}`);
   }
 };
 </script>
