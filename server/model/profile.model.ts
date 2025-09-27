@@ -1,4 +1,4 @@
-import { prismaClient } from "../clients/prisma.client";
+import { prismaClient } from "~~/server/clients/prisma.client";
 
 export const createProfile = async (userId: string, displayName?: string) => {
   try {

@@ -1,6 +1,7 @@
 import { createAdminClient, prismaClient } from "~~/server/clients";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
-import type { LogoUploadResponse } from "~~/server/types/events";
+import type { LogoUploadResponse } from "~~/server/types/event";
+import { updateEventLogoUrl } from "~~/server/model";
 import {
   ERROR_STATUS_MAP,
   ErrorType,
@@ -35,7 +36,6 @@ export default defineEventHandler(
         });
       }
 
-      // Extract eventId and logo file from form data
       let eventId = "";
       let logoFilePart = null;
 
@@ -80,7 +80,6 @@ export default defineEventHandler(
         });
       }
 
-      // Normalize file data using storage utilities
       const file = normalizeFilePart(logoFilePart);
       if (!file) {
         throw createError({
@@ -95,10 +94,8 @@ export default defineEventHandler(
         });
       }
 
-      // Validate file using storage utilities
       validateFileOrThrow(file);
 
-      // Verify event exists and user has access
       const ev = await prismaClient.event.findUnique({
         where: { id: eventId },
       });
@@ -129,7 +126,6 @@ export default defineEventHandler(
         });
       }
 
-      // Upload logo using storage utilities
       const supabase = createAdminClient();
       const runtimeConfig = useRuntimeConfig();
       const storageConfig = config();
@@ -149,11 +145,7 @@ export default defineEventHandler(
         throw uploadError;
       }
 
-      // Update event with logo URL
-      await prismaClient.event.update({
-        where: { id: eventId },
-        data: { logoUrl: uploadResult.path },
-      });
+      await updateEventLogoUrl(eventId, uploadResult.path);
 
       return createSuccessResponse(
         {
