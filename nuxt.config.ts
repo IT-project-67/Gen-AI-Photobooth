@@ -42,6 +42,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
     storageBucket: process.env.SUPABASE_BUCKET,
+    leonardoApiKey: process.env.LEONARDO_API_KEY,
     public: {
       supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
       supabaseAnonKey: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
