@@ -36,43 +36,42 @@ const cameraWidth = ref(0);
 const cameraHeight = ref(0);
 const eventId = ref("");
 
-
 const onPhotoCaptured = async (dataUrl: string) => {
   try {
     errorMessage.value = "";
-    
+
     const photo: CapturedPhoto = {
       dataUrl,
       timestamp: new Date().toLocaleString("en-GB"),
     };
     currentPhoto.value = photo;
 
-    console.log('Creating session for event:', eventId.value);
+    console.log("Creating session for event:", eventId.value);
     const session = await createSession(eventId.value);
-    
+
     if (!session) {
-      const errorMsg = error.value || 'Failed to create session';
-      console.error('Session creation failed:', errorMsg);
+      const errorMsg = error.value || "Failed to create session";
+      console.error("Session creation failed:", errorMsg);
       throw new Error(errorMsg);
     }
 
-    console.log('Session created successfully:', session);
+    console.log("Session created successfully:", session);
 
     photo.sessionId = session.id;
     currentPhoto.value = photo;
 
     const file = dataUrlToFile(dataUrl, `photo_${Date.now()}.jpg`);
-    
-    console.log('Uploading photo for session:', session.id);
+
+    console.log("Uploading photo for session:", session.id);
     const uploadResult = await uploadPhoto(eventId.value, session.id, file);
-    
+
     if (!uploadResult) {
-      const errorMsg = error.value || 'Failed to upload photo';
-      console.error('Photo upload failed:', errorMsg);
+      const errorMsg = error.value || "Failed to upload photo";
+      console.error("Photo upload failed:", errorMsg);
       throw new Error(errorMsg);
     }
 
-    console.log('Photo uploaded successfully:', uploadResult);
+    console.log("Photo uploaded successfully:", uploadResult);
 
     setTimeout(() => {
       router.push({
@@ -83,13 +82,12 @@ const onPhotoCaptured = async (dataUrl: string) => {
         },
       });
     }, 1000);
-
   } catch (err: unknown) {
-    console.error('Error in photo capture process:', err);
+    console.error("Error in photo capture process:", err);
     if (err instanceof Error) {
       errorMessage.value = err.message;
     } else {
-      errorMessage.value = 'Failed to process photo';
+      errorMessage.value = "Failed to process photo";
     }
   }
 };
