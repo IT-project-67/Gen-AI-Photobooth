@@ -23,17 +23,17 @@ export const usePhoto = () => {
 
   const getAuthHeaders = async () => {
     const {
-      data: { session },
+      data: { session: authSession },
     } = await supabase.auth.getSession();
-    if (!session?.access_token) {
+    if (!authSession?.access_token) {
       throw new Error("No valid session found");
     }
     return {
-      Authorization: `Bearer ${session.access_token}`,
+      Authorization: `Bearer ${authSession.access_token}`,
     };
   };
 
-  const createSession = async (
+  const createPhotoSession = async (
     eventId: string,
   ): Promise<SessionData | null> => {
     try {
@@ -74,7 +74,7 @@ export const usePhoto = () => {
     }
   };
 
-  const getSession = async (sessionId: string): Promise<SessionData | null> => {
+  const getPhotoSession = async (sessionId: string): Promise<SessionData | null> => {
     try {
       isLoading.value = true;
       error.value = null;
@@ -193,8 +193,8 @@ export const usePhoto = () => {
   return {
     isLoading: readonly(isLoading),
     error: readonly(error),
-    createSession,
-    getSession,
+    createPhotoSession,
+    getPhotoSession,
     uploadPhoto,
     dataUrlToFile,
     getPhotoUrl,

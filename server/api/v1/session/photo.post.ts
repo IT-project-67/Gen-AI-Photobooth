@@ -130,8 +130,8 @@ export default defineEventHandler(
         });
       }
 
-      const session = await getPhotoSessionById(sessionId);
-      if (!session || session.eventId !== eventId) {
+      const photoSession = await getPhotoSessionById(sessionId);
+      if (!photoSession || photoSession.eventId !== eventId) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
           statusMessage: "Session not found",

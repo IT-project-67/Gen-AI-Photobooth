@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const session = await prismaClient.photoSession.findFirst({
+    const photoSession = await prismaClient.photoSession.findFirst({
       where: {
         id: sessionId,
         event: {
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    if (!session) {
+    if (!photoSession) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
         statusMessage: "Session not found",
@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    if (!session.photoUrl) {
+    if (!photoSession.photoUrl) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
         statusMessage: "No photo found",
@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
       "Getting photo for session:",
       sessionId,
       "path:",
-      session.photoUrl,
+      photoSession.photoUrl,
       "bucket:",
       bucket,
     );
@@ -79,7 +79,7 @@ export default defineEventHandler(async (event) => {
       const seconds = Math.min(Math.max(Number(expires) || 600, 10), 3600);
       const { data, error } = await supabase.storage
         .from(bucket)
-        .createSignedUrl(session.photoUrl, seconds);
+        .createSignedUrl(photoSession.photoUrl, seconds);
 
       if (error || !data?.signedUrl) {
         throw createError({
@@ -104,7 +104,7 @@ export default defineEventHandler(async (event) => {
 
     const { data, error } = await supabase.storage
       .from(bucket)
-      .download(session.photoUrl);
+      .download(photoSession.photoUrl);
 
     if (error || !data) {
       console.error("Photo download error:", error);

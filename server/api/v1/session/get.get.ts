@@ -32,7 +32,7 @@ export default defineEventHandler(
       }
 
       // Get session and verify user access in one query
-      const session = await prismaClient.photoSession.findFirst({
+      const photoSession = await prismaClient.photoSession.findFirst({
         where: {
           id: sessionId,
           event: {
@@ -42,9 +42,9 @@ export default defineEventHandler(
         },
       });
 
-      console.log("Session query result:", session);
+      console.log("Session query result:", photoSession);
 
-      if (!session) {
+      if (!photoSession) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
           statusMessage: "Session not found",
@@ -59,11 +59,11 @@ export default defineEventHandler(
 
       return createSuccessResponse(
         {
-          id: session.id,
-          eventId: session.eventId,
-          photoUrl: session.photoUrl || undefined,
-          createdAt: session.createdAt.toISOString(),
-          updatedAt: session.updatedAt.toISOString(),
+          id: photoSession.id,
+          eventId: photoSession.eventId,
+          photoUrl: photoSession.photoUrl || undefined,
+          createdAt: photoSession.createdAt.toISOString(),
+          updatedAt: photoSession.updatedAt.toISOString(),
         },
         "Session retrieved successfully",
       );

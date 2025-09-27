@@ -22,7 +22,7 @@ import AppCamera from "~/components/AppCamera.vue";
 
 const router = useRouter();
 const route = useRoute();
-const { createSession, uploadPhoto, dataUrlToFile, error } = usePhoto();
+const { createPhotoSession, uploadPhoto, dataUrlToFile, error } = usePhoto();
 
 interface CapturedPhoto {
   dataUrl: string;
@@ -47,7 +47,7 @@ const onPhotoCaptured = async (dataUrl: string) => {
     currentPhoto.value = photo;
 
     console.log("Creating session for event:", eventId.value);
-    const session = await createSession(eventId.value);
+    const session = await createPhotoSession(eventId.value);
 
     if (!session) {
       const errorMsg = error.value || "Failed to create session";
