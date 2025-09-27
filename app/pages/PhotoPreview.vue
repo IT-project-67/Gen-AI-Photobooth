@@ -1,8 +1,8 @@
 <template>
   <div class="photo-preview">
-    <div v-if="dataUrl" class="photo-container">
+    <div v-if="photoBlobUrl" class="photo-container">
       <p>Preview Page, will change in further development</p>
-      <img :src="dataUrl" alt="photo" class="preview-image" />
+      <img :src="photoBlobUrl" alt="photo" class="preview-image" />
       <div class="photo-info">
         <p class="photo-time">TakenTime: {{ timestamp }}</p>
       </div>
@@ -11,9 +11,24 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { usePhoto } from "~/composables/usePhoto";
+
 const route = useRoute();
-const dataUrl = route.query.dataUrl as string;
-const timestamp = route.query.timestamp as string;
+const { getPhotoFile } = usePhoto();
+
+const photoBlobUrl = ref("");
+const timestamp = ref("");
+
+onMounted(async () => {
+  const sessionId = route.query.sessionId as string;
+  if (sessionId) {
+    const blobUrl = await getPhotoFile(sessionId);
+    if (blobUrl) {
+      photoBlobUrl.value = blobUrl;
+    }
+  }
+});
 </script>
 
 <style scoped>

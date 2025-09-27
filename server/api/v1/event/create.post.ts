@@ -1,7 +1,7 @@
 import { ERROR_STATUS_MAP, type ApiResponse } from "~~/server/types/core";
 import { createAuthClient, prismaClient } from "~~/server/clients";
 import { handleApiError } from "~~/server/utils/auth";
-import type { EventRequest, EventResponse } from "~~/server/types/events";
+import type { EventRequest, EventResponse } from "~~/server/types/event";
 import {
   createErrorResponse,
   createSuccessResponse,

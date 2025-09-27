@@ -22,39 +22,74 @@ import AppCamera from "~/components/AppCamera.vue";
 
 const router = useRouter();
 const route = useRoute();
-
-const eventId = route.query.eventId as string;
-if (!eventId) {
-  await navigateTo("/selectEvent");
-}
+const { createPhotoSession, uploadPhoto, dataUrlToFile, error } = usePhoto();
 
 interface CapturedPhoto {
   dataUrl: string;
   timestamp: string;
+  sessionId?: string;
 }
 
 const errorMessage = ref("");
 const currentPhoto = ref<CapturedPhoto | null>(null);
 const cameraWidth = ref(0);
 const cameraHeight = ref(0);
+const eventId = ref("");
 
-const onPhotoCaptured = (dataUrl: string) => {
-  const photo: CapturedPhoto = {
-    dataUrl,
-    timestamp: new Date().toLocaleString("en-GB"),
-  };
-  currentPhoto.value = photo;
+const onPhotoCaptured = async (dataUrl: string) => {
+  try {
+    errorMessage.value = "";
 
-  //   switch to preview page (need to change to await method in further development)
-  setTimeout(() => {
-    router.push({
-      name: "PhotoPreview",
-      query: {
-        dataUrl: photo.dataUrl,
-        timestamp: photo.timestamp,
-      },
-    });
-  }, 1000);
+    const photo: CapturedPhoto = {
+      dataUrl,
+      timestamp: new Date().toLocaleString("en-GB"),
+    };
+    currentPhoto.value = photo;
+
+    console.log("Creating session for event:", eventId.value);
+    const session = await createPhotoSession(eventId.value);
+
+    if (!session) {
+      const errorMsg = error.value || "Failed to create session";
+      console.error("Session creation failed:", errorMsg);
+      throw new Error(errorMsg);
+    }
+
+    console.log("Session created successfully:", session);
+
+    photo.sessionId = session.id;
+    currentPhoto.value = photo;
+
+    const file = dataUrlToFile(dataUrl, `photo_${Date.now()}.jpg`);
+
+    console.log("Uploading photo for session:", session.id);
+    const uploadResult = await uploadPhoto(eventId.value, session.id, file);
+
+    if (!uploadResult) {
+      const errorMsg = error.value || "Failed to upload photo";
+      console.error("Photo upload failed:", errorMsg);
+      throw new Error(errorMsg);
+    }
+
+    console.log("Photo uploaded successfully:", uploadResult);
+
+    setTimeout(() => {
+      router.push({
+        name: "PhotoPreview",
+        query: {
+          sessionId: session.id,
+          eventId: eventId.value,
+        },
+      });
+    }, 1000);
+  } catch (err: unknown) {
+    console.error("Error in photo capture process:", err);
+    if (err instanceof Error) {
+      errorMessage.value = err.message;
+    } else {
+      errorMessage.value = "Failed to process photo";
+    }
+  }
 };
 
 const onError = (error: string) => {
@@ -65,13 +100,17 @@ const clearError = () => {
   errorMessage.value = "";
 };
 
-onMounted(() => {
-  // cameraWidth.value = window.innerWidth * 0.95;
-  // cameraHeight.value = (cameraWidth.value / 3) * 4;
+onMounted(async () => {
+  const eventIdParam = route.query.eventId as string;
+  if (!eventIdParam) {
+    await navigateTo("/selectEvent");
+    return;
+  }
+  eventId.value = eventIdParam;
+
   const maxWidth = Math.min(window.innerWidth * 0.95, 400);
   cameraWidth.value = maxWidth;
   cameraHeight.value = (maxWidth / 3) * 4;
-  //   console.log(cameraWidth.value, cameraHeight.value)
 });
 </script>
 
