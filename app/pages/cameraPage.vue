@@ -36,24 +36,6 @@ const cameraWidth = ref(0);
 const cameraHeight = ref(0);
 const eventId = ref("");
 
-// const onPhotoCaptured = (dataUrl: string) => {
-//   const photo: CapturedPhoto = {
-//     dataUrl,
-//     timestamp: new Date().toLocaleString("en-GB"),
-//   };
-//   currentPhoto.value = photo;
-
-//   //   switch to preview page (need to change to await method in further development)
-//   setTimeout(() => {
-//     router.push({
-//       name: "PhotoPreview",
-//       query: {
-//         dataUrl: photo.dataUrl,
-//         timestamp: photo.timestamp,
-//       },
-//     });
-//   }, 1000);
-// };
 
 const onPhotoCaptured = async (dataUrl: string) => {
   try {
@@ -102,9 +84,13 @@ const onPhotoCaptured = async (dataUrl: string) => {
       });
     }, 1000);
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Error in photo capture process:', err);
-    errorMessage.value = err.message || 'Failed to process photo';
+    if (err instanceof Error) {
+      errorMessage.value = err.message;
+    } else {
+      errorMessage.value = 'Failed to process photo';
+    }
   }
 };
 
@@ -117,11 +103,6 @@ const clearError = () => {
 };
 
 onMounted(async () => {
-  // const eventId = route.query.eventId as string;
-  // if (!eventId) {
-  //   await navigateTo("/selectEvent");
-  //   return;
-  // }
   const eventIdParam = route.query.eventId as string;
   if (!eventIdParam) {
     await navigateTo("/selectEvent");

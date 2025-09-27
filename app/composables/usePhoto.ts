@@ -54,7 +54,6 @@ export const usePhoto = () => {
           id: response.data.sessionId,
           eventId: response.data.eventId,
           photoUrl: undefined,
-          status: response.data.status,
           createdAt: response.data.createdAt,
           updatedAt: response.data.createdAt,
         }
@@ -62,9 +61,9 @@ export const usePhoto = () => {
         return sessionData
       }
       throw new Error('Failed to create session')
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error creating session:', err)
-      error.value = err.message || 'Failed to create session'
+      error.value = handleError(err, 'Failed to create session');
       return null
     } finally {
       isLoading.value = false
@@ -85,9 +84,9 @@ export const usePhoto = () => {
         return response.data
       }
       throw new Error('Failed to get session')
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error getting session:', err)
-      error.value = err.message || 'Failed to get session'
+      error.value = handleError(err, 'Failed to get session');
       return null
     } finally {
       isLoading.value = false
@@ -119,9 +118,9 @@ export const usePhoto = () => {
         return response.data
       }
       throw new Error('Failed to upload photo')
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error uploading photo:', err)
-      error.value = err.message || 'Failed to upload photo'
+      error.value = handleError(err, 'Failed to upload photo');
       return null
     } finally {
       isLoading.value = false
@@ -129,16 +128,19 @@ export const usePhoto = () => {
   }
 
   const dataUrlToFile = (dataUrl: string, filename: string): File => {
-    const arr = dataUrl.split(',')
-    const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/jpeg'
-    const bstr = atob(arr[1])
-    let n = bstr.length
-    const u8arr = new Uint8Array(n)
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n)
-    }
-    return new File([u8arr], filename, { type: mime })
-  }
+    const [header = "", body] = dataUrl.split(",");
+    if (!body) throw new Error('Invalid data URL: missing data part');
+
+    const mime = header.match(/data:(.*?)(;|$)/i)?.[1] || 'image/jpeg';
+
+    const binary = atob(body);
+    const len = binary.length;
+    const u8 = new Uint8Array(len);
+    for (let i = 0; i < len; i++) u8[i] = binary.charCodeAt(i);
+
+    return new File([u8], filename, { type: mime });
+  };
+
 
   const getPhotoUrl = (photoUrl: string): string => {
     const config = useRuntimeConfig()
@@ -160,14 +162,24 @@ export const usePhoto = () => {
       }
       const blob = await response.blob()
       return URL.createObjectURL(blob)
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error getting photo file:', err)
-      error.value = err.message || 'Failed to get photo file'
+      error.value = handleError(err, 'Failed to get photo file');
       return null
     } finally {
       isLoading.value = false
     }
   }
+
+  const handleError = (err: unknown, defaultMessage: string): string => {
+    if (err instanceof Error) {
+      return err.message;
+    }
+    if (typeof err === 'string') {
+      return err;
+    }
+    return defaultMessage;
+  };
 
   return {
     isLoading: readonly(isLoading),
