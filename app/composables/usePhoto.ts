@@ -74,7 +74,9 @@ export const usePhoto = () => {
     }
   };
 
-  const getPhotoSession = async (sessionId: string): Promise<SessionData | null> => {
+  const getPhotoSession = async (
+    sessionId: string,
+  ): Promise<SessionData | null> => {
     try {
       isLoading.value = true;
       error.value = null;
