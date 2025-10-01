@@ -18,24 +18,27 @@ export async function updateAIPhotoUrl(id: string, generatedUrl: string) {
   });
 }
 
-export async function getAIPhotosBySession(photoSessionId: string, userId: string) {
+export async function getAIPhotosBySession(
+  photoSessionId: string,
+  userId: string,
+) {
   try {
     const aiPhotos = await prismaClient.aIPhoto.findMany({
-      where: { 
-          photoSessionId: photoSessionId,
-          photoSession: {
-              event: {
-                  profile: {
-                      userId: userId,
-                      isDeleted: false
-                  }
-              }
-          }
-      }
+      where: {
+        photoSessionId: photoSessionId,
+        photoSession: {
+          event: {
+            profile: {
+              userId: userId,
+              isDeleted: false,
+            },
+          },
+        },
+      },
     });
     const styleOrder = Object.values(Style) as Style[];
     aiPhotos.sort(
-      (a, b) => styleOrder.indexOf(a.style) - styleOrder.indexOf(b.style)
+      (a, b) => styleOrder.indexOf(a.style) - styleOrder.indexOf(b.style),
     );
     return aiPhotos;
   } catch (error) {

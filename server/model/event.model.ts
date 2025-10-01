@@ -28,12 +28,12 @@ export const createEvent = async ({
 export const getEventById = async (id: string, userId: string) => {
   try {
     const targetEvent = await prismaClient.event.findFirst({
-      where: { 
+      where: {
         id,
         userId: userId,
         profile: {
-          isDeleted: false
-        }
+          isDeleted: false,
+        },
       },
     });
     return targetEvent;
@@ -43,14 +43,17 @@ export const getEventById = async (id: string, userId: string) => {
   }
 };
 
-export const getEventsByProfile = async (userId: string, order: "asc" | "desc" = "desc") => {
+export const getEventsByProfile = async (
+  userId: string,
+  order: "asc" | "desc" = "desc",
+) => {
   try {
     const targetEvent = await prismaClient.event.findMany({
-      where: { 
+      where: {
         userId: userId,
-        profile:{
-          isDeleted: false 
-        }
+        profile: {
+          isDeleted: false,
+        },
       },
       orderBy: { createdAt: order },
     });

@@ -6,7 +6,12 @@ import type {
 import sharp from "sharp";
 import { ERROR_STATUS_MAP } from "~~/server/types/core";
 import { Style } from "@prisma/client";
-import { createAIPhoto, updateAIPhotoUrl, getEventById, getPhotoSessionById } from "~~/server/model";
+import {
+  createAIPhoto,
+  updateAIPhotoUrl,
+  getEventById,
+  getPhotoSessionById,
+} from "~~/server/model";
 import { createAdminClient } from "~~/server/clients";
 import { uploadAIPhoto } from "~~/server/utils/storage";
 import { requireAuth } from "~~/server/utils/auth";
