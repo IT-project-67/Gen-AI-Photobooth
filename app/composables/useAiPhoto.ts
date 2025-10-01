@@ -44,7 +44,9 @@ export const useAiPhoto = () => {
     return defaultMessage;
   };
 
-  const getSessionAiPhotos = async (sessionId: string): Promise<AIPhotosBySessionResponse | null> => {
+  const getSessionAiPhotos = async (
+    sessionId: string,
+  ): Promise<AIPhotosBySessionResponse | null> => {
     try {
       isLoading.value = true;
       error.value = null;
@@ -56,7 +58,7 @@ export const useAiPhoto = () => {
         `/api/v1/aiphoto/by-session?sessionId=${sessionId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       return response?.data ?? null;
@@ -69,7 +71,9 @@ export const useAiPhoto = () => {
     }
   };
 
-  const getAiPhotoById = async (aiPhotoId: string): Promise<AIPhotoByIdResponse | null> => {
+  const getAiPhotoById = async (
+    aiPhotoId: string,
+  ): Promise<AIPhotoByIdResponse | null> => {
     try {
       isLoading.value = true;
       error.value = null;
@@ -81,7 +85,7 @@ export const useAiPhoto = () => {
         `/api/v1/aiphoto/by-id?aiPhotoId=${aiPhotoId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       return response?.data ?? null;
@@ -106,7 +110,7 @@ export const useAiPhoto = () => {
         `/api/v1/aiphoto/file?aiPhotoId=${aiPhotoId}&mode=blob`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       if (!response.ok) {
