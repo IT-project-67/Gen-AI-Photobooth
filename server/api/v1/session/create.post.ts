@@ -1,5 +1,5 @@
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
-import { createPhotoSession } from "~~/server/model";
+import { createPhotoSession, getEventById } from "~~/server/model";
 import {
   ERROR_STATUS_MAP,
   type ErrorType,
@@ -9,7 +9,6 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "~~/server/utils/core";
-import { prismaClient } from "~~/server/clients";
 import type { SessionRequest, SessionResponse } from "~~/server/types/session";
 
 export default defineEventHandler(
@@ -32,16 +31,8 @@ export default defineEventHandler(
       }
 
       const { eventId } = body as SessionRequest;
-
-      const ev = await prismaClient.event.findFirst({
-        where: {
-          id: eventId,
-          userId: user.id,
-          isDeleted: false,
-        },
-      });
-
-      if (!ev) {
+      const userEvent = await getEventById(eventId, user.id);
+      if (!userEvent) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
           statusMessage: "Event not found",

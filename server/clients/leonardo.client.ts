@@ -1,4 +1,3 @@
-// server/utils/leonardo.ts
 export class LeonardoClient {
   private baseURL = "https://cloud.leonardo.ai/api/rest/v1";
   private apiKey: string;

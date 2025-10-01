@@ -8,7 +8,7 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "~~/server/utils/core";
-import { prismaClient } from "~~/server/clients";
+import { getPhotoSessionById } from "~~/server/model";
 import type { SessionGetResponse } from "~~/server/types/session";
 
 export default defineEventHandler(
@@ -31,19 +31,7 @@ export default defineEventHandler(
         });
       }
 
-      // Get session and verify user access in one query
-      const photoSession = await prismaClient.photoSession.findFirst({
-        where: {
-          id: sessionId,
-          event: {
-            userId: user.id,
-            isDeleted: false,
-          },
-        },
-      });
-
-      console.log("Session query result:", photoSession);
-
+      const photoSession = await getPhotoSessionById(sessionId, user.id);
       if (!photoSession) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,

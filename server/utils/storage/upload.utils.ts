@@ -1,7 +1,3 @@
-/**
- * File upload utilities for Supabase Storage
- */
-
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
   UploadFile,

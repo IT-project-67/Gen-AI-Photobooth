@@ -6,8 +6,8 @@ import type {
 import sharp from "sharp";
 import { ERROR_STATUS_MAP } from "~~/server/types/core";
 import { Style } from "@prisma/client";
-import { createAIPhoto, updateAIPhotoUrl } from "~~/server/model";
-import { createAdminClient, prismaClient } from "~~/server/clients";
+import { createAIPhoto, updateAIPhotoUrl, getEventById, getPhotoSessionById } from "~~/server/model";
+import { createAdminClient } from "~~/server/clients";
 import { uploadAIPhoto } from "~~/server/utils/storage";
 import { requireAuth } from "~~/server/utils/auth";
 
@@ -42,29 +42,15 @@ export default defineEventHandler(async (event) => {
 
   const eventId = eventIdField.data.toString();
   const sessionId = sessionIdField.data.toString();
-
-  const ev = await prismaClient.event.findFirst({
-    where: {
-      id: eventId,
-      userId: user.id,
-      isDeleted: false,
-    },
-  });
-
-  if (!ev) {
+  const userEvent = await getEventById(eventId, user.id);
+  if (!userEvent) {
     throw createError({
       statusCode: ERROR_STATUS_MAP.NOT_FOUND,
       statusMessage: "Event not found",
     });
   }
 
-  const photoSession = await prismaClient.photoSession.findFirst({
-    where: {
-      id: sessionId,
-      eventId: eventId,
-    },
-  });
-
+  const photoSession = await getPhotoSessionById(sessionId, user.id);
   if (!photoSession) {
     throw createError({
       statusCode: ERROR_STATUS_MAP.NOT_FOUND,
