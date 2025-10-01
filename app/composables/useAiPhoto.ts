@@ -1,6 +1,5 @@
-import type { ApiResponse, Errors } from "~~/server/types/core";
+import type { ApiResponse } from "~~/server/types/core";
 
-type AiPhotoApi<T> = ApiResponse<T, Errors>;
 interface AIPhoto {
   id: string;
   style: string;
@@ -25,232 +24,117 @@ interface AIPhotoByIdResponse {
   updatedAt: string;
 }
 
-interface AIPhotoFileResponse {
-  url: string;
-  expiresIn?: number;
-}
-
-interface ImageLoadStatus {
-  [key: string]: {
-    loading: boolean;
-    error: string | null;
-    url: string | null;
-  };
-}
-
 export const useAiPhoto = () => {
-  const imageStatus = ref<ImageLoadStatus>({});
-  const getAIPhotosBySession = async (sessionId: string) => {
+  const isLoading = ref(false);
+  const error = ref<string | null>(null);
+  const supabase = useSupabaseClient();
+
+  const getAccessToken = async () => {
+    const session = await supabase.auth.getSession();
+    return session.data.session?.access_token ?? null;
+  };
+
+  const handleError = (err: unknown, defaultMessage: string): string => {
+    if (err instanceof Error) {
+      return err.message;
+    }
+    if (typeof err === "string") {
+      return err;
+    }
+    return defaultMessage;
+  };
+
+  const getSessionAiPhotos = async (sessionId: string): Promise<AIPhotosBySessionResponse | null> => {
     try {
-      const response = await $fetch<AiPhotoApi<AIPhotosBySessionResponse>>(
+      isLoading.value = true;
+      error.value = null;
+
+      const token = await getAccessToken();
+      if (!token) throw new Error("No access token");
+
+      const response: ApiResponse<AIPhotosBySessionResponse> = await $fetch(
         `/api/v1/aiphoto/by-session?sessionId=${sessionId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
-      if (!response.success) {
-        throw new Error(response.error?.message || "Failed to fetch AI photos");
-      }
-
-      return {
-        data: response.data,
-        error: null,
-      };
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to fetch AI photos";
-      return {
-        data: null,
-        error: errorMessage,
-      };
+      return response?.data ?? null;
+    } catch (err: unknown) {
+      console.error("Error getting AI photos by session:", err);
+      error.value = handleError(err, "Failed to get AI photos");
+      return null;
+    } finally {
+      isLoading.value = false;
     }
   };
 
-  const getAIPhotoById = async (aiPhotoId: string) => {
+  const getAiPhotoById = async (aiPhotoId: string): Promise<AIPhotoByIdResponse | null> => {
     try {
-      const response = await $fetch<AiPhotoApi<AIPhotoByIdResponse>>(
+      isLoading.value = true;
+      error.value = null;
+
+      const token = await getAccessToken();
+      if (!token) throw new Error("No access token");
+
+      const response: ApiResponse<AIPhotoByIdResponse> = await $fetch(
         `/api/v1/aiphoto/by-id?aiPhotoId=${aiPhotoId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
-      if (!response.success) {
-        throw new Error(response.error?.message || "Failed to fetch AI photo");
-      }
-
-      return {
-        data: response.data,
-        error: null,
-      };
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to fetch AI photo";
-      return {
-        data: null,
-        error: errorMessage,
-      };
+      return response?.data ?? null;
+    } catch (err: unknown) {
+      console.error("Error getting AI photo by ID:", err);
+      error.value = handleError(err, "Failed to get AI photo");
+      return null;
+    } finally {
+      isLoading.value = false;
     }
   };
 
-  const getAIPhotoFile = async (aiPhotoId: string, expires: number = 600) => {
+  const getAiPhotoFile = async (aiPhotoId: string): Promise<string | null> => {
     try {
-      const response = await $fetch<AiPhotoApi<AIPhotoFileResponse>>(
-        `/api/v1/aiphoto/file?aiPhotoId=${aiPhotoId}&mode=signed&expires=${expires}`,
-      );
+      isLoading.value = true;
+      error.value = null;
 
-      if (!response.success) {
-        throw new Error(
-          response.error?.message || "Failed to fetch AI photo file",
-        );
-      }
+      const token = await getAccessToken();
+      if (!token) throw new Error("No access token");
 
-      return {
-        data: response.data,
-        error: null,
-      };
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to fetch AI photo file";
-      return {
-        data: null,
-        error: errorMessage,
-      };
-    }
-  };
-
-  const downloadAIPhotoFile = async (aiPhotoId: string) => {
-    try {
       const response = await fetch(
         `/api/v1/aiphoto/file?aiPhotoId=${aiPhotoId}&mode=blob`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to download AI photo file");
+        throw new Error(`Failed to get AI photo file: ${response.statusText}`);
       }
 
       const blob = await response.blob();
-      return {
-        data: blob,
-        error: null,
-      };
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to download AI photo file";
-      return {
-        data: null,
-        error: errorMessage,
-      };
+      return URL.createObjectURL(blob);
+    } catch (err: unknown) {
+      console.error("Error getting AI photo file:", err);
+      error.value = handleError(err, "Failed to get AI photo file");
+      return null;
+    } finally {
+      isLoading.value = false;
     }
   };
 
-  const getMultipleAIPhotoFiles = async (
-    aiPhotoIds: string[],
-    expires: number = 600,
-  ) => {
-    try {
-      const promises = aiPhotoIds.map((id) => getAIPhotoFile(id, expires));
-      const results = await Promise.all(promises);
-
-      const successResults = results.filter((result) => result.data);
-      const errorResults = results.filter((result) => result.error);
-
-      return {
-        data: successResults.map((result) => result.data!),
-        errors: errorResults.map((result) => result.error),
-        error:
-          errorResults.length > 0
-            ? `Failed to fetch ${errorResults.length} images`
-            : null,
-      };
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Multiple image fetch failed";
-      return {
-        data: [],
-        errors: [],
-        error: errorMessage,
-      };
-    }
-  };
-
-  const preloadImage = async (aiPhotoId: string, expires: number = 600) => {
-    imageStatus.value[aiPhotoId] = {
-      loading: true,
-      error: null,
-      url: null,
-    };
-
-    try {
-      const { data, error } = await getAIPhotoFile(aiPhotoId, expires);
-
-      if (error || !data) {
-        throw new Error(error || "Failed to get image URL");
-      }
-      const img = new Image();
-      img.onload = () => {
-        imageStatus.value[aiPhotoId] = {
-          loading: false,
-          error: null,
-          url: data.url,
-        };
-      };
-      img.onerror = () => {
-        imageStatus.value[aiPhotoId] = {
-          loading: false,
-          error: "Failed to get image URL",
-          url: null,
-        };
-      };
-      img.src = data.url;
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to get image URL";
-      imageStatus.value[aiPhotoId] = {
-        loading: false,
-        error: errorMessage,
-        url: null,
-      };
-    }
-  };
-
-  const preloadMultipleImages = async (
-    aiPhotoIds: string[],
-    expires: number = 600,
-  ) => {
-    const promises = aiPhotoIds.map((id) => preloadImage(id, expires));
-    await Promise.all(promises);
-  };
-
-  const getImageStatus = (aiPhotoId: string) => {
-    return (
-      imageStatus.value[aiPhotoId] || {
-        loading: false,
-        error: null,
-        url: null,
-      }
-    );
-  };
-
-  const clearImageStatus = (aiPhotoId?: string) => {
-    if (aiPhotoId) {
-      delete imageStatus.value[aiPhotoId];
-    } else {
-      imageStatus.value = {};
-    }
+  const getAiPhotoUrl = (storageUrl: string): string => {
+    const config = useRuntimeConfig();
+    return `${config.public.supabaseUrl}/storage/v1/object/public/${config.public.storageBucket}/${storageUrl}`;
   };
 
   return {
-    getAIPhotosBySession,
-    getAIPhotoById,
-    getAIPhotoFile,
-    downloadAIPhotoFile,
-
-    getMultipleAIPhotoFiles,
-    preloadImage,
-    preloadMultipleImages,
-
-    imageStatus: readonly(imageStatus),
-    getImageStatus,
-    clearImageStatus,
+    isLoading: readonly(isLoading),
+    error: readonly(error),
+    getSessionAiPhotos,
+    getAiPhotoById,
+    getAiPhotoFile,
+    getAiPhotoUrl,
   };
 };
