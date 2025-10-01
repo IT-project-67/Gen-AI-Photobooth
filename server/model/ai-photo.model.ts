@@ -18,10 +18,7 @@ export async function updateAIPhotoUrl(id: string, generatedUrl: string) {
   });
 }
 
-export async function getAIPhotosById(
-  aiPhotoId: string,
-  userId: string,
-) {
+export async function getAIPhotosById(aiPhotoId: string, userId: string) {
   try {
     const aiPhotos = await prismaClient.aIPhoto.findFirst({
       where: {
@@ -41,8 +38,8 @@ export async function getAIPhotosById(
             id: true,
             eventId: true,
           },
-        }
-      }
+        },
+      },
     });
     return aiPhotos;
   } catch (error) {

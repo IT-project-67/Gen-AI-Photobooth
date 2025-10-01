@@ -56,4 +56,3 @@ export default defineEventHandler(async (event) => {
     throw error;
   }
 });
-
