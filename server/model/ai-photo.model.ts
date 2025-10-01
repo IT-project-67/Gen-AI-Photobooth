@@ -18,6 +18,39 @@ export async function updateAIPhotoUrl(id: string, generatedUrl: string) {
   });
 }
 
+export async function getAIPhotosById(
+  aiPhotoId: string,
+  userId: string,
+) {
+  try {
+    const aiPhotos = await prismaClient.aIPhoto.findFirst({
+      where: {
+        id: aiPhotoId,
+        photoSession: {
+          event: {
+            profile: {
+              userId: userId,
+              isDeleted: false,
+            },
+          },
+        },
+      },
+      include: {
+        photoSession: {
+          select: {
+            id: true,
+            eventId: true,
+          },
+        }
+      }
+    });
+    return aiPhotos;
+  } catch (error) {
+    console.error("Error fetching AI photos:", error);
+    throw error;
+  }
+}
+
 export async function getAIPhotosBySession(
   photoSessionId: string,
   userId: string,
