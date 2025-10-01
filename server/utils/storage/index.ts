@@ -69,9 +69,15 @@ export async function uploadAIPhoto(
   filename: string,
   supabaseUrl: string,
 ) {
-  const path = generateAIPhotoPath(userId, eventId, sessionId, style, filename, file);
+  const path = generateAIPhotoPath(
+    userId,
+    eventId,
+    sessionId,
+    style,
+    filename,
+    file,
+  );
   const bucket = getStorageBucket();
 
   return uploadToSupabaseWithUrl(supabase, file, { bucket, path }, supabaseUrl);
 }
-

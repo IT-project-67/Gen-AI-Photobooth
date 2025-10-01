@@ -24,5 +24,3 @@ export async function getAIPhotosBySession(photoSessionId: string) {
     orderBy: { createdAt: "asc" },
   });
 }
-
-

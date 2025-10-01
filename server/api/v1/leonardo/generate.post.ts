@@ -124,7 +124,7 @@ export default defineEventHandler(async (event) => {
 
   const styles = Object.values(Style) as Style[];
   const aiPhotos = await Promise.all(
-    styles.map((style) => createAIPhoto(sessionId, style))
+    styles.map((style) => createAIPhoto(sessionId, style)),
   );
 
   async function waitForGenerations(generationId: string): Promise<string> {
@@ -148,7 +148,7 @@ export default defineEventHandler(async (event) => {
     generationIds.map((id) => waitForGenerations(id)),
   );
 
-    const supabase = createAdminClient();
+  const supabase = createAdminClient();
   const runtimeConfig = useRuntimeConfig();
 
   const uploadResults = await Promise.all(
