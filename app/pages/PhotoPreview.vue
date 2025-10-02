@@ -2,9 +2,9 @@
   <div class="photo-preview">
     <div class="top-bar">
       <button class="retake" @click="onRetake">⟲ Retake the Photo</button>
-      <GeneratingSign
+      <!-- <GeneratingSign
         v-if="status.isGenerating || aiPhotos.length != 4 || !photoBlobUrl"
-      />
+      /> -->
     </div>
 
     <div v-if="dataUrl" class="photo-container">
@@ -12,12 +12,12 @@
       <!-- <img :src="photoBlobUrl" alt="photo" class="preview-image" /> -->
     </div>
 
-    <AppButton
+    <!-- <AppButton
       v-if="!status.isGenerating && aiPhotos.length == 4 && photoBlobUrl"
       text="Continue"
       class="continue-button"
       @click="clickContinue"
-    />
+    /> -->
   </div>
 </template>
 
@@ -27,14 +27,14 @@ import GeneratingSign from "~/components/GeneratingSign.vue";
 import PhotoPreviewBox from "~/components/PhotoPreviewBox.vue";
 import AppButton from "~/components/AppButton.vue";
 import { usePhoto } from "~/composables/usePhoto";
-import { useAiPhoto } from "~/composables/useAiPhoto";
-import { useLeonardo } from "~/composables/useLeonardo";
+// import { useAiPhoto } from "~/composables/useAiPhoto";
+// import { useLeonardo } from "~/composables/useLeonardo";
 
 const route = useRoute();
 const router = useRouter();
 const { getPhotoFile } = usePhoto();
-const { getSessionAiPhotos } = useAiPhoto();
-const { status, generateImages } = useLeonardo();
+// const { getSessionAiPhotos } = useAiPhoto();
+// const { status, generateImages } = useLeonardo();
 
 const photoBlobUrl = ref("");
 
@@ -60,54 +60,54 @@ const onRetake = () => {
   });
 };
 
-onMounted(async () => {
-  const sessionId = route.query.sessionId as string;
-  if (sessionId) {
-    const blobUrl = await getPhotoFile(sessionId);
-    if (blobUrl) {
-      photoBlobUrl.value = blobUrl;
-    } else {
-      alert("Failed to store photo. Redirecting to retake...");
+// onMounted(async () => {
+//   const sessionId = route.query.sessionId as string;
+//   if (sessionId) {
+//     const blobUrl = await getPhotoFile(sessionId);
+//     if (blobUrl) {
+//       photoBlobUrl.value = blobUrl;
+//     } else {
+//       alert("Failed to store photo. Redirecting to retake...");
 
-      setTimeout(() => {
-        router.push({
-          name: "cameraPage",
-          query: { eventId },
-        });
-      }, 1500);
-    }
-  }
+//       setTimeout(() => {
+//         router.push({
+//           name: "cameraPage",
+//           query: { eventId },
+//         });
+//       }, 1500);
+//     }
+//   }
 
-  if (dataUrl) {
-    const res = await fetch(dataUrl);
-    const blob = await res.blob();
-    const file = new File([blob], "input-photo.jpg", { type: blob.type });
+//   if (dataUrl) {
+//     const res = await fetch(dataUrl);
+//     const blob = await res.blob();
+//     const file = new File([blob], "input-photo.jpg", { type: blob.type });
 
-    const { data, error } = await generateImages({
-      image: file,
-      eventId,
-      sessionId,
-    });
+//     const { data, error } = await generateImages({
+//       image: file,
+//       eventId,
+//       sessionId,
+//     });
 
-    if (!error && data) {
-      const checkPhotos = async () => {
-        const result = await getSessionAiPhotos(sessionId);
-        if (result && result.photos && result.photos.length == 4) {
-          aiPhotos.value = result.photos;
-          return true;
-        }
-        return false;
-      };
+//     if (!error && data) {
+//       const checkPhotos = async () => {
+//         const result = await getSessionAiPhotos(sessionId);
+//         if (result && result.photos && result.photos.length == 4) {
+//           aiPhotos.value = result.photos;
+//           return true;
+//         }
+//         return false;
+//       };
 
-      const interval = setInterval(async () => {
-        const ready = await checkPhotos();
-        if (ready) {
-          clearInterval(interval);
-        }
-      }, 2000);
-    }
-  }
-});
+//       const interval = setInterval(async () => {
+//         const ready = await checkPhotos();
+//         if (ready) {
+//           clearInterval(interval);
+//         }
+//       }, 2000);
+//     }
+//   }
+// });
 </script>
 
 <style scoped>
