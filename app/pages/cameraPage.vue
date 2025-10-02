@@ -26,7 +26,7 @@ const { createPhotoSession, uploadPhoto, dataUrlToFile, error } = usePhoto();
 
 interface CapturedPhoto {
   dataUrl: string;
-  timestamp: string;
+  timestamp?: string;
   sessionId?: string;
 }
 
@@ -42,7 +42,6 @@ const onPhotoCaptured = async (dataUrl: string) => {
 
     const photo: CapturedPhoto = {
       dataUrl,
-      timestamp: new Date().toLocaleString("en-GB"),
     };
     currentPhoto.value = photo;
 
@@ -73,15 +72,14 @@ const onPhotoCaptured = async (dataUrl: string) => {
 
     console.log("Photo uploaded successfully:", uploadResult);
 
-    setTimeout(() => {
-      router.push({
-        name: "PhotoPreview",
-        query: {
-          sessionId: session.id,
-          eventId: eventId.value,
-        },
-      });
-    }, 1000);
+    router.push({
+      name: "PhotoPreview",
+      query: {
+        dataUrl: dataUrl,
+        sessionId: session.id,
+        eventId: eventId.value,
+      },
+    });
   } catch (err: unknown) {
     console.error("Error in photo capture process:", err);
     if (err instanceof Error) {

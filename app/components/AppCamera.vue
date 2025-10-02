@@ -44,8 +44,8 @@ interface props {
 }
 
 const props = withDefaults(defineProps<props>(), {
-  width: 300,
-  height: 400,
+  width: 200,
+  height: 300,
 });
 
 interface Emits {
@@ -162,7 +162,7 @@ const takePhoto = () => {
   const videoWidth = video.videoWidth;
   const videoHeight = video.videoHeight;
 
-  const targetRatio = 3 / 4;
+  const targetRatio = 2 / 3;
   const videoRatio = videoWidth / videoHeight;
 
   let cropWidth, cropHeight, cropX, cropY;
@@ -181,9 +181,9 @@ const takePhoto = () => {
     cropY = (videoHeight - cropHeight) / 2;
   }
 
-  // set canvas to 4:3
-  const outputWidth = 960; // constant width
-  const outputHeight = 1280; // constant 4:3 height
+  // set canvas to 2:3
+  const outputWidth = 832; // constant width
+  const outputHeight = 1248; // constant 4:3 height
 
   canvas.width = outputWidth;
   canvas.height = outputHeight;
