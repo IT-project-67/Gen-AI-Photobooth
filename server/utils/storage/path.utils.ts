@@ -53,6 +53,27 @@ export function generatePhotoPath(
   );
 }
 
+export function generateAIPhotoPath(
+  userId: string,
+  eventId: string,
+  sessionId: string,
+  style: string,
+  filename: string,
+  file: UploadFile,
+): string {
+  return generateFilePath(
+    PATH_TEMPLATES.AI_PHOTO,
+    {
+      userId,
+      eventId,
+      sessionId,
+      style: style.toLowerCase(),
+      filename,
+    },
+    file,
+  );
+}
+
 export function getStorageBucket(): string {
   try {
     return config().STORAGE_BUCKET;

@@ -1,6 +1,7 @@
 import {
   generateLogoPath,
   generatePhotoPath,
+  generateAIPhotoPath,
   getStorageBucket,
 } from "./path.utils";
 import { uploadToSupabaseWithUrl } from "./upload.utils";
@@ -53,6 +54,29 @@ export async function uploadPhoto(
   supabaseUrl: string,
 ) {
   const path = generatePhotoPath(userId, eventId, sessionId, photoId, file);
+  const bucket = getStorageBucket();
+
+  return uploadToSupabaseWithUrl(supabase, file, { bucket, path }, supabaseUrl);
+}
+
+export async function uploadAIPhoto(
+  supabase: SupabaseClient,
+  file: UploadFile,
+  userId: string,
+  eventId: string,
+  sessionId: string,
+  style: string,
+  filename: string,
+  supabaseUrl: string,
+) {
+  const path = generateAIPhotoPath(
+    userId,
+    eventId,
+    sessionId,
+    style,
+    filename,
+    file,
+  );
   const bucket = getStorageBucket();
 
   return uploadToSupabaseWithUrl(supabase, file, { bucket, path }, supabaseUrl);

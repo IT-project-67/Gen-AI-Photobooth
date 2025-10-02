@@ -1,5 +1,6 @@
 import { defineEventHandler, getQuery, createError, setHeader, send } from "h3";
-import { createAdminClient, prismaClient } from "~~/server/clients";
+import { createAdminClient } from "~~/server/clients";
+import { getPhotoSessionById } from "~~/server/model";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import { ERROR_STATUS_MAP, type ErrorType } from "~~/server/types/core";
 import { createErrorResponse } from "~~/server/utils/core";
@@ -27,16 +28,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const photoSession = await prismaClient.photoSession.findFirst({
-      where: {
-        id: sessionId,
-        event: {
-          userId: user.id,
-          isDeleted: false,
-        },
-      },
-    });
-
+    const photoSession = await getPhotoSessionById(sessionId, user.id);
     if (!photoSession) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
@@ -65,15 +57,6 @@ export default defineEventHandler(async (event) => {
 
     const supabase = createAdminClient();
     const bucket = getStorageBucket();
-
-    console.log(
-      "Getting photo for session:",
-      sessionId,
-      "path:",
-      photoSession.photoUrl,
-      "bucket:",
-      bucket,
-    );
 
     if (mode === "signed") {
       const seconds = Math.min(Math.max(Number(expires) || 600, 10), 3600);
@@ -119,8 +102,6 @@ export default defineEventHandler(async (event) => {
         }),
       });
     }
-
-    console.log("Photo downloaded successfully, size:", data.size);
     const arrayBuf = await data.arrayBuffer();
     const buf = Buffer.from(arrayBuf);
     setHeader(event, "Content-Type", data.type || "application/octet-stream");

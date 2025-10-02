@@ -1,7 +1,7 @@
-import { createAdminClient, prismaClient } from "~~/server/clients";
+import { createAdminClient } from "~~/server/clients";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import type { LogoUploadResponse } from "~~/server/types/event";
-import { updateEventLogoUrl } from "~~/server/model";
+import { updateEventLogoUrl, getEventById } from "~~/server/model";
 import {
   ERROR_STATUS_MAP,
   ErrorType,
@@ -96,11 +96,8 @@ export default defineEventHandler(
 
       validateFileOrThrow(file);
 
-      const ev = await prismaClient.event.findUnique({
-        where: { id: eventId },
-      });
-
-      if (!ev || ev.isDeleted) {
+      const userEvent = await getEventById(eventId, user.id);
+      if (!userEvent) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
           statusMessage: "Event not found",
@@ -109,19 +106,6 @@ export default defineEventHandler(
             code: "EVENT_NOT_FOUND",
             message: "Event not found",
             statusCode: ERROR_STATUS_MAP.NOT_FOUND,
-          }),
-        });
-      }
-
-      if (ev.userId !== user.id) {
-        throw createError({
-          statusCode: ERROR_STATUS_MAP.FORBIDDEN,
-          statusMessage: "Forbidden",
-          data: createErrorResponse({
-            type: ErrorType.FORBIDDEN,
-            code: "ACCESS_DENIED",
-            message: "Access denied to this event",
-            statusCode: ERROR_STATUS_MAP.FORBIDDEN,
           }),
         });
       }

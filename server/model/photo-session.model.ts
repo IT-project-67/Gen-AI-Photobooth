@@ -14,11 +14,20 @@ export const createPhotoSession = async (eventId: string) => {
   }
 };
 
-export const getPhotoSessionById = async (sessionId: string) => {
+export const getPhotoSessionById = async (
+  sessionId: string,
+  userId: string,
+) => {
   try {
-    const photoSession = await prismaClient.photoSession.findUnique({
+    const photoSession = await prismaClient.photoSession.findFirst({
       where: {
         id: sessionId,
+        event: {
+          userId: userId,
+          profile: {
+            isDeleted: false,
+          },
+        },
       },
     });
     return photoSession;

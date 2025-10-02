@@ -1,7 +1,8 @@
-import { createAdminClient, prismaClient } from "~~/server/clients";
+import { createAdminClient } from "~~/server/clients";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import {
   getPhotoSessionById,
+  getEventById,
   updatePhotoSessionPhotoUrl,
 } from "~~/server/model";
 import {
@@ -18,7 +19,6 @@ import {
   validateFileOrThrow,
 } from "~~/server/utils/storage/validation.utils";
 import { uploadPhoto } from "~~/server/utils/storage";
-import { config } from "~~/server/config";
 import type { PhotoUploadResponse } from "~~/server/types/session";
 
 export default defineEventHandler(
@@ -109,15 +109,8 @@ export default defineEventHandler(
 
       validateFileOrThrow(file);
 
-      const ev = await prismaClient.event.findFirst({
-        where: {
-          id: eventId,
-          userId: user.id,
-          isDeleted: false,
-        },
-      });
-
-      if (!ev) {
+      const userEvent = await getEventById(eventId, user.id);
+      if (!userEvent) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
           statusMessage: "Event not found",
@@ -130,7 +123,7 @@ export default defineEventHandler(
         });
       }
 
-      const photoSession = await getPhotoSessionById(sessionId);
+      const photoSession = await getPhotoSessionById(sessionId, user.id);
       if (!photoSession || photoSession.eventId !== eventId) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
@@ -146,22 +139,6 @@ export default defineEventHandler(
 
       const supabase = createAdminClient();
       const runtimeConfig = useRuntimeConfig();
-      const storageConfig = config();
-
-      console.log(
-        "Uploading photo for user:",
-        user.id,
-        "event:",
-        eventId,
-        "session:",
-        sessionId,
-      );
-      console.log("File info:", {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-      });
-      console.log("Storage bucket:", storageConfig.STORAGE_BUCKET);
 
       let uploadResult;
       try {
@@ -174,8 +151,6 @@ export default defineEventHandler(
           "photo",
           runtimeConfig.public.supabaseUrl,
         );
-
-        console.log("Upload result:", uploadResult);
       } catch (uploadError) {
         console.error("Upload error:", uploadError);
         throw uploadError;

@@ -49,9 +49,17 @@ model PhotoSession {
   @@map("photo_sessions")
 }
 
+enum Style {
+  Anime
+  Watercolor
+  Oil
+  Disney
+}
+
 model AIPhoto {
   id             String        @id @default(cuid())
   photoSessionId String        @map("session_id")
+  style          Style         @map("style")
   createdAt      DateTime      @default(now()) @map("created_at")
   updatedAt      DateTime      @updatedAt @map("updated_at")
   generatedUrl   String        @map("generated_url")
