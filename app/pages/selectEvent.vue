@@ -98,7 +98,7 @@ import type {
   EventListItem,
   EventResponse,
   SignedUrlResponse,
-} from "~~/server/types/events";
+} from "~~/server/types/event";
 
 const selectedEventID = ref("");
 const submittedEventID = ref("");

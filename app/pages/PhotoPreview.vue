@@ -5,12 +5,9 @@
       <GeneratingSign />
     </div>
 
-    <div v-if="photoBlobUrl" class="photo-container">
-      <h1>Your Photo:</h1>
-      <img :src="photoBlobUrl" alt="photo" class="preview-image" />
-      <div class="photo-info">
-        <p class="photo-time">TakenTime: {{ timestamp }}</p>
-      </div>
+    <div v-if="dataUrl" class="photo-container">
+      <PhotoPreviewBox :photoUrl="dataUrl" />
+      <!-- <img :src="photoBlobUrl" alt="photo" class="preview-image" /> -->
     </div>
 
     <AppButton text="Continue" class="continue-button" @click="clickContinue" />
@@ -20,6 +17,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import GeneratingSign from "~/components/GeneratingSign.vue";
+import PhotoPreviewBox from "~/components/PhotoPreviewBox.vue";
 import { usePhoto } from "~/composables/usePhoto";
 
 const route = useRoute();
@@ -30,6 +28,7 @@ const photoBlobUrl = ref("");
 const timestamp = ref("");
 
 const eventId = route.query.eventId as string;
+const dataUrl = route.query.dataUrl as string;
 
 const clickContinue = () => {
   navigateTo("/selectPhoto");
@@ -48,6 +47,10 @@ onMounted(async () => {
     const blobUrl = await getPhotoFile(sessionId);
     if (blobUrl) {
       photoBlobUrl.value = blobUrl;
+    } else {
+      alert(
+        "failed to store photo, please reatake one, return to photoTaking page",
+      );
     }
   }
 });
@@ -56,8 +59,6 @@ onMounted(async () => {
 <style scoped>
 .photo-container {
   margin: 0 auto;
-  max-width: 95vw;
-  max-height: 95vh;
 }
 
 .preview-image {
