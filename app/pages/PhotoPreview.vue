@@ -2,7 +2,9 @@
   <div class="photo-preview">
     <div class="top-bar">
       <button class="retake" @click="onRetake">⟲ Retake the Photo</button>
-      <GeneratingSign />
+      <GeneratingSign
+        v-if="status.isGenerating || aiPhotos.length != 4 || !photoBlobUrl"
+      />
     </div>
 
     <div v-if="dataUrl" class="photo-container">
@@ -10,7 +12,12 @@
       <!-- <img :src="photoBlobUrl" alt="photo" class="preview-image" /> -->
     </div>
 
-    <AppButton text="Continue" class="continue-button" @click="clickContinue" />
+    <AppButton
+      v-if="!status.isGenerating && aiPhotos.length == 4 && photoBlobUrl"
+      text="Continue"
+      class="continue-button"
+      @click="clickContinue"
+    />
   </div>
 </template>
 
@@ -18,19 +25,32 @@
 import { ref, onMounted } from "vue";
 import GeneratingSign from "~/components/GeneratingSign.vue";
 import PhotoPreviewBox from "~/components/PhotoPreviewBox.vue";
+import AppButton from "~/components/AppButton.vue";
 import { usePhoto } from "~/composables/usePhoto";
+import { useAiPhoto } from "~/composables/useAiPhoto";
+import { useLeonardo } from "~/composables/useLeonardo";
 
 const route = useRoute();
 const router = useRouter();
 const { getPhotoFile } = usePhoto();
+const { getSessionAiPhotos } = useAiPhoto();
+const { status, generateImages } = useLeonardo();
 
 const photoBlobUrl = ref("");
 
 const eventId = route.query.eventId as string;
 const dataUrl = route.query.dataUrl as string;
+const sessionId = route.query.sessionId as string;
+const aiPhotos = ref<any[]>([]);
 
 const clickContinue = () => {
-  navigateTo("/selectPhoto");
+  navigateTo({
+    path: "/selectPhoto",
+    query: {
+      eventId,
+      sessionId,
+    },
+  });
 };
 
 const onRetake = () => {
@@ -47,9 +67,44 @@ onMounted(async () => {
     if (blobUrl) {
       photoBlobUrl.value = blobUrl;
     } else {
-      alert(
-        "failed to store photo, please reatake one, return to photoTaking page",
-      );
+      alert("Failed to store photo. Redirecting to retake...");
+
+      setTimeout(() => {
+        router.push({
+          name: "cameraPage",
+          query: { eventId },
+        });
+      }, 1500);
+    }
+  }
+
+  if (dataUrl) {
+    const res = await fetch(dataUrl);
+    const blob = await res.blob();
+    const file = new File([blob], "input-photo.jpg", { type: blob.type });
+
+    const { data, error } = await generateImages({
+      image: file,
+      eventId,
+      sessionId,
+    });
+
+    if (!error && data) {
+      const checkPhotos = async () => {
+        const result = await getSessionAiPhotos(sessionId);
+        if (result && result.photos && result.photos.length == 4) {
+          aiPhotos.value = result.photos;
+          return true;
+        }
+        return false;
+      };
+
+      const interval = setInterval(async () => {
+        const ready = await checkPhotos();
+        if (ready) {
+          clearInterval(interval);
+        }
+      }, 2000);
     }
   }
 });

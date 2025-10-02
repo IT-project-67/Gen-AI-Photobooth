@@ -44,6 +44,11 @@ export const useLeonardo = () => {
         error: null,
       };
 
+      const supabase = useSupabaseClient();
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) throw new Error("Not authenticated");
+
       const formData = new FormData();
       formData.append("image", request.image);
       formData.append("eventId", request.eventId);
@@ -57,6 +62,9 @@ export const useLeonardo = () => {
         {
           method: "POST",
           body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
       );
 
@@ -64,14 +72,12 @@ export const useLeonardo = () => {
         throw new Error(response.error?.message || "Failed to generate images");
       }
 
-      status.value.currentStep = "Complete";
-      status.value.progress = 100;
-
-      setTimeout(() => {
-        status.value.isGenerating = false;
-        status.value.currentStep = "";
-        status.value.progress = 0;
-      }, 2000);
+      status.value = {
+        isGenerating: false,
+        progress: 100,
+        currentStep: "Complete",
+        error: null,
+      };
 
       return {
         data: response.data,
