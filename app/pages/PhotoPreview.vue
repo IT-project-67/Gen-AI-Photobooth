@@ -29,6 +29,7 @@ import AppButton from "~/components/AppButton.vue";
 import { usePhoto } from "~/composables/usePhoto";
 import { useAiPhoto } from "~/composables/useAiPhoto";
 import { useLeonardo } from "~/composables/useLeonardo";
+import type { AIPhoto } from "@prisma/client";
 
 const route = useRoute();
 const router = useRouter();
@@ -41,7 +42,7 @@ const photoBlobUrl = ref("");
 const eventId = route.query.eventId as string;
 const dataUrl = route.query.dataUrl as string;
 const sessionId = route.query.sessionId as string;
-const aiPhotos = ref<any[]>([]);
+const aiPhotos = ref<AIPhoto[]>([]);
 
 const clickContinue = () => {
   navigateTo({
