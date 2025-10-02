@@ -1,24 +1,46 @@
 <template>
   <div class="photo-preview">
+    <div class="top-bar">
+      <button class="retake" @click="onRetake">⟲ Retake the Photo</button>
+      <GeneratingSign />
+    </div>
+
     <div v-if="photoBlobUrl" class="photo-container">
-      <p>Preview Page, will change in further development</p>
+      <h1>Your Photo:</h1>
       <img :src="photoBlobUrl" alt="photo" class="preview-image" />
       <div class="photo-info">
         <p class="photo-time">TakenTime: {{ timestamp }}</p>
       </div>
     </div>
+
+    <AppButton text="Continue" class="continue-button" @click="clickContinue" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import GeneratingSign from "~/components/GeneratingSign.vue";
 import { usePhoto } from "~/composables/usePhoto";
 
 const route = useRoute();
+const router = useRouter();
 const { getPhotoFile } = usePhoto();
 
 const photoBlobUrl = ref("");
 const timestamp = ref("");
+
+const eventId = route.query.eventId as string;
+
+const clickContinue = () => {
+  navigateTo("/selectPhoto");
+};
+
+const onRetake = () => {
+  router.push({
+    name: "cameraPage",
+    query: { eventId },
+  });
+};
 
 onMounted(async () => {
   const sessionId = route.query.sessionId as string;
@@ -41,5 +63,26 @@ onMounted(async () => {
 .preview-image {
   max-width: 100%;
   max-height: 100%;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between; /* left: button, right: spinner */
+  align-items: center;
+  padding: 5px 15px;
+  margin-bottom: 5px;
+}
+
+.retake {
+  background: linear-gradient(to right, #8a2be2, #ff69b4);
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  padding: 6px 10px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  color: white;
+  margin-top: -15px;
 }
 </style>
