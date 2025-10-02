@@ -132,20 +132,20 @@ export class LeonardoClient {
     return this.request("/generations", {
       method: "POST",
       body: JSON.stringify({
-        modelId: options.modelId,
+        // modelId: options.modelId,
         prompt: options.prompt,
-        enhancePrompt: true,
+        // enhancePrompt: true,
         height: options.height || (options.isLandscape ? 832 : 1248),
         num_images: options.num_images || 1,
-        styleUUID: options.styleId,
+        // styleUUID: options.styleId,
         width: options.width || (options.isLandscape ? 1248 : 832),
         contrastRatio: options.strength || 0.5,
-        contextImages: [
-          {
-            type: "UPLOADED",
-            id: options.initImageId,
-          },
-        ],
+        // contextImages: [
+        //   {
+        //     type: "UPLOADED",
+        //     id: options.initImageId,
+        //   },
+        // ],
       }),
     });
   }
