@@ -82,7 +82,8 @@ onMounted(async () => {
     const blob = await res.blob();
     const file = new File([blob], "input-photo.jpg", { type: blob.type });
 
-    const { data, error } = await generateImages({
+    // const { data, error } =
+    await generateImages({
       image: file,
       eventId,
       sessionId,
