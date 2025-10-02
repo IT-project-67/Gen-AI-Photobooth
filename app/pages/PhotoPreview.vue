@@ -2,9 +2,7 @@
   <div class="photo-preview">
     <div class="top-bar">
       <button class="retake" @click="onRetake">⟲ Retake the Photo</button>
-      <GeneratingSign
-        v-if="status.isGenerating || aiPhotos.length != 4 || !photoBlobUrl"
-      />
+      <GeneratingSign v-if="status.isGenerating || !photoBlobUrl" />
     </div>
 
     <div v-if="dataUrl" class="photo-container">
@@ -13,7 +11,7 @@
     </div>
 
     <AppButton
-      v-if="!status.isGenerating && aiPhotos.length == 4 && photoBlobUrl"
+      v-if="!status.isGenerating && photoBlobUrl"
       text="Continue"
       class="continue-button"
       @click="clickContinue"
@@ -27,14 +25,14 @@ import GeneratingSign from "~/components/GeneratingSign.vue";
 import PhotoPreviewBox from "~/components/PhotoPreviewBox.vue";
 import AppButton from "~/components/AppButton.vue";
 import { usePhoto } from "~/composables/usePhoto";
-import { useAiPhoto } from "~/composables/useAiPhoto";
+// import { useAiPhoto } from "~/composables/useAiPhoto";
 import { useLeonardo } from "~/composables/useLeonardo";
-import type { AIPhoto } from "@prisma/client";
+// import type { AIPhoto } from "@prisma/client";
 
 const route = useRoute();
 const router = useRouter();
 const { getPhotoFile } = usePhoto();
-const { getSessionAiPhotos } = useAiPhoto();
+// const { getSessionAiPhotos } = useAiPhoto();
 const { status, generateImages } = useLeonardo();
 
 const photoBlobUrl = ref("");
@@ -42,7 +40,7 @@ const photoBlobUrl = ref("");
 const eventId = route.query.eventId as string;
 const dataUrl = route.query.dataUrl as string;
 const sessionId = route.query.sessionId as string;
-const aiPhotos = ref<AIPhoto[]>([]);
+// const aiPhotos = ref<AIPhoto[]>([]);
 
 const clickContinue = () => {
   navigateTo({
@@ -90,23 +88,23 @@ onMounted(async () => {
       sessionId,
     });
 
-    if (!error && data) {
-      const checkPhotos = async () => {
-        const result = await getSessionAiPhotos(sessionId);
-        if (result && result.photos && result.photos.length == 4) {
-          aiPhotos.value = result.photos;
-          return true;
-        }
-        return false;
-      };
+    // if (!error && data) {
+    //   const checkPhotos = async () => {
+    //     const result = await getSessionAiPhotos(sessionId);
+    //     if (result && result.photos && result.photos.length == 4) {
+    //       aiPhotos.value = result.photos;
+    //       return true;
+    //     }
+    //     return false;
+    //   };
 
-      const interval = setInterval(async () => {
-        const ready = await checkPhotos();
-        if (ready) {
-          clearInterval(interval);
-        }
-      }, 2000);
-    }
+    //   const interval = setInterval(async () => {
+    //     const ready = await checkPhotos();
+    //     if (ready) {
+    //       clearInterval(interval);
+    //     }
+    //   }, 2000);
+    // }
   }
 });
 </script>
