@@ -6,7 +6,7 @@
     </div>
 
     <div v-if="dataUrl" class="photo-container">
-      <PhotoPreviewBox :photoUrl="dataUrl" />
+      <PhotoPreviewBox :photo-url="dataUrl" />
       <!-- <img :src="photoBlobUrl" alt="photo" class="preview-image" /> -->
     </div>
 
@@ -25,7 +25,6 @@ const router = useRouter();
 const { getPhotoFile } = usePhoto();
 
 const photoBlobUrl = ref("");
-const timestamp = ref("");
 
 const eventId = route.query.eventId as string;
 const dataUrl = route.query.dataUrl as string;
