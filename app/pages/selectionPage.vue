@@ -5,14 +5,13 @@
 
       <div v-if="isLoading" class="loading-container">
         <div class="loading-spinner"></div>
-        <p>Loading AI photos...</p >
+        <p>Loading AI photos...</p>
       </div>
 
       <div v-else-if="error" class="error-container">
-        <p>{{ error }}</p >
+        <p>{{ error }}</p>
         <button @click="loadAiPhotos" class="retry-button">Retry</button>
       </div>
-
 
       <HomePageCarousel
         v-else
@@ -71,7 +70,7 @@ const loadAiPhotos = async () => {
     }
 
     const blobUrls = await getAiPhotosBlobs(sessionData.photos);
-    
+
     aiPhotos.value = sessionData.photos.map((photo: AIPhoto) => ({
       img: blobUrls[photo.id] || "/assets/images/selection.png",
       id: photo.id,

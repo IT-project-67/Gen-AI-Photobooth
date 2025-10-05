@@ -47,7 +47,9 @@ export const useAiPhoto = () => {
     };
   };
 
-  const getSessionAiPhotos = async (sessionId: string): Promise<AIPhotoSession | null> => {
+  const getSessionAiPhotos = async (
+    sessionId: string,
+  ): Promise<AIPhotoSession | null> => {
     try {
       isLoading.value = true;
       error.value = null;
@@ -57,13 +59,15 @@ export const useAiPhoto = () => {
         `/api/v1/aiphoto/get-aiphotos-by-session?sessionId=${sessionId}`,
         {
           headers,
-        }
+        },
       );
 
       if (response.success && response.data) {
         return response.data;
       }
-      throw new Error(response.error?.message || "Failed to get AI photos by session");
+      throw new Error(
+        response.error?.message || "Failed to get AI photos by session",
+      );
     } catch (err: unknown) {
       console.error("Error getting AI photos by session:", err);
       error.value = handleError(err, "Failed to get AI photos by session");
@@ -73,7 +77,9 @@ export const useAiPhoto = () => {
     }
   };
 
-  const getAiPhotoById = async (aiPhotoId: string): Promise<AIPhotoDetail | null> => {
+  const getAiPhotoById = async (
+    aiPhotoId: string,
+  ): Promise<AIPhotoDetail | null> => {
     try {
       isLoading.value = true;
       error.value = null;
@@ -83,13 +89,15 @@ export const useAiPhoto = () => {
         `/api/v1/aiphoto/get-aiphoto-by-id?aiPhotoId=${aiPhotoId}`,
         {
           headers,
-        }
+        },
       );
 
       if (response.success && response.data) {
         return response.data;
       }
-      throw new Error(response.error?.message || "Failed to get AI photo by ID");
+      throw new Error(
+        response.error?.message || "Failed to get AI photo by ID",
+      );
     } catch (err: unknown) {
       console.error("Error getting AI photo by ID:", err);
       error.value = handleError(err, "Failed to get AI photo by ID");
@@ -109,7 +117,7 @@ export const useAiPhoto = () => {
         `/api/v1/aiphoto/aiphoto?aiPhotoId=${aiPhotoId}&mode=blob`,
         {
           headers,
-        }
+        },
       );
 
       if (!response.ok) {
@@ -129,7 +137,7 @@ export const useAiPhoto = () => {
 
   const getAiPhotoSignedUrl = async (
     aiPhotoId: string,
-    expires: number = 3600
+    expires: number = 3600,
   ): Promise<SignedUrlResponse | null> => {
     try {
       isLoading.value = true;
@@ -140,13 +148,15 @@ export const useAiPhoto = () => {
         `/api/v1/aiphoto/aiphoto?aiPhotoId=${aiPhotoId}&mode=signed&expires=${expires}`,
         {
           headers,
-        }
+        },
       );
 
       if (response.success && response.data) {
         return response.data;
       }
-      throw new Error(response.error?.message || "Failed to get AI photo signed URL");
+      throw new Error(
+        response.error?.message || "Failed to get AI photo signed URL",
+      );
     } catch (err: unknown) {
       console.error("Error getting AI photo signed URL:", err);
       error.value = handleError(err, "Failed to get AI photo signed URL");
@@ -156,9 +166,11 @@ export const useAiPhoto = () => {
     }
   };
 
-  const getAiPhotosBlobs = async (aiPhotos: AIPhoto[]): Promise<{ [key: string]: string }> => {
+  const getAiPhotosBlobs = async (
+    aiPhotos: AIPhoto[],
+  ): Promise<{ [key: string]: string }> => {
     const blobUrls: { [key: string]: string } = {};
-    
+
     try {
       const promises = aiPhotos.map(async (photo) => {
         const blobUrl = await getAiPhotoBlob(photo.id);
