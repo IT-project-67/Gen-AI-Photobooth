@@ -49,13 +49,6 @@ model PhotoSession {
   @@map("photo_sessions")
 }
 
-enum Style {
-  Anime
-  Watercolor
-  Oil
-  Disney
-}
-
 model AIPhoto {
   id             String        @id @default(cuid())
   photoSessionId String        @map("session_id")
@@ -81,4 +74,11 @@ model SharedPhoto {
   event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@map("shared_photos")
+}
+
+enum Style {
+  Anime
+  Watercolor
+  Oil
+  Disney
 }
