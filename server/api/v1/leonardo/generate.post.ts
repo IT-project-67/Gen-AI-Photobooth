@@ -13,8 +13,13 @@ import {
   getPhotoSessionById,
 } from "~~/server/model";
 import { createAdminClient } from "~~/server/clients";
-import { uploadAIPhoto } from "~~/server/utils/storage";
+import { uploadAIPhoto, type UploadFile } from "~~/server/utils/storage";
 import { requireAuth } from "~~/server/utils/auth";
+import {
+  hasEventLogo,
+  downloadEventLogo,
+  mergeImages,
+} from "~~/server/utils/image";
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event);
@@ -142,6 +147,18 @@ export default defineEventHandler(async (event) => {
   const supabase = createAdminClient();
   const runtimeConfig = useRuntimeConfig();
 
+  const shouldMergeLogo = hasEventLogo(userEvent.logoUrl);
+  let eventLogo: UploadFile | null = null;
+
+  if (shouldMergeLogo) {
+    try {
+      eventLogo = await downloadEventLogo(userEvent.logoUrl!);
+      console.log(`Logo downloaded successfully for event ${eventId}`);
+    } catch (error) {
+      console.warn(`Failed to download logo for event ${eventId}:`, error);
+    }
+  }
+
   const uploadResults = await Promise.all(
     imageUrls.map(async (leonardoUrl, index) => {
       try {
@@ -155,12 +172,31 @@ export default defineEventHandler(async (event) => {
 
         const style = styles[index];
         const styleFolder = style.toLowerCase();
-        const uploadFile = {
+        let uploadFile = {
           data: buffer,
           name: `${style.toLowerCase()}.jpg`,
           type: "image/jpeg",
           size: buffer.length,
         };
+
+        if (eventLogo) {
+          try {
+            console.log(`Merging logo with ${style} photo...`);
+            const mergedResult = await mergeImages(uploadFile, eventLogo);
+            uploadFile = {
+              data: Buffer.from(mergedResult.data),
+              name: `${style.toLowerCase()}-merged.jpg`,
+              type: mergedResult.mimeType,
+              size: mergedResult.data.length,
+            };
+            console.log(`Successfully merged logo with ${style} photo`);
+          } catch (mergeError) {
+            console.warn(
+              `Failed to merge logo with ${style} photo:`,
+              mergeError,
+            );
+          }
+        }
 
         const uploadResult = await uploadAIPhoto(
           supabase,
@@ -181,6 +217,7 @@ export default defineEventHandler(async (event) => {
           storageUrl: uploadResult.path,
           publicUrl: leonardoUrl,
           generationId: generationIds[index],
+          hasLogo: !!eventLogo,
         };
       } catch (error) {
         console.error(`Failed to process ${styles[index]} photo:`, error);

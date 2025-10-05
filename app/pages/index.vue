@@ -1,6 +1,5 @@
 <template>
   <div class="home-page">
-    <NuxtLink to="/selectionPage">select</NuxtLink>
     <!-- HomePage scrolling preview pictures -->
     <HomePageCarousel :slides="slides" :autoplay="true" :interval="4000" />
 
