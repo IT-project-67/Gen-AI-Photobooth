@@ -3,7 +3,19 @@
     <div class="main-content">
       <h1 class="title">Swipe to Select</h1>
 
+      <div v-if="isLoading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Loading AI photos...</p >
+      </div>
+
+      <div v-else-if="error" class="error-container">
+        <p>{{ error }}</p >
+        <button @click="loadAiPhotos" class="retry-button">Retry</button>
+      </div>
+
+
       <HomePageCarousel
+        v-else
         :slides="aiPhotos"
         :autoplay="false"
         class="ai-carousel"
@@ -20,18 +32,20 @@
 
 <script setup lang="ts">
 import HomePageCarousel from "~/components/HomePageCarousel.vue";
+import { useAiPhoto, type AIPhoto } from "~/composables/useAiPhoto";
+const { getSessionAiPhotos, getAiPhotosBlobs, isLoading, error } = useAiPhoto();
 
 const route = useRoute();
 const router = useRouter();
 const eventId = route.query.eventId as string;
 const sessionId = route.query.sessionId as string;
 
-const aiPhotos = [
+const aiPhotos = ref([
   { img: "/assets/images/selection.png" },
   { img: "/assets/images/selection.png" },
   { img: "/assets/images/selection.png" },
   { img: "/assets/images/selection.png" },
-];
+]);
 
 const clickShare = () => {
   navigateTo({
@@ -42,6 +56,35 @@ const clickShare = () => {
     },
   });
 };
+
+const loadAiPhotos = async () => {
+  if (!sessionId) {
+    console.error("Session ID is required");
+    return;
+  }
+
+  try {
+    const sessionData = await getSessionAiPhotos(sessionId);
+    if (!sessionData || !sessionData.photos.length) {
+      console.log("No AI photos found for session:", sessionId);
+      return;
+    }
+
+    const blobUrls = await getAiPhotosBlobs(sessionData.photos);
+    
+    aiPhotos.value = sessionData.photos.map((photo: AIPhoto) => ({
+      img: blobUrls[photo.id] || "/assets/images/selection.png",
+      id: photo.id,
+      style: photo.style,
+    }));
+  } catch (err) {
+    console.error("Error loading AI photos:", err);
+  }
+};
+
+onMounted(() => {
+  loadAiPhotos();
+});
 
 const clickRetake = () => {
   router.push({

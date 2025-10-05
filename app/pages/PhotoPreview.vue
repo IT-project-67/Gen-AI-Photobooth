@@ -44,7 +44,7 @@ const sessionId = route.query.sessionId as string;
 
 const clickContinue = () => {
   navigateTo({
-    path: "/selectPhoto",
+    path: "/selectionPage",
     query: {
       eventId,
       sessionId,
