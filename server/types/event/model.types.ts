@@ -1,6 +1,6 @@
 export interface EventStruct {
   name: string;
-  profileId: string;
+  userId: string;
   logoUrl?: string;
   startDate: Date;
   endDate: Date;

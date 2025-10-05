@@ -1,11 +1,12 @@
 import { ERROR_STATUS_MAP, type ApiResponse } from "~~/server/types/core";
-import { createAuthClient, prismaClient } from "~~/server/clients";
-import type { EventResponse } from "~~/server/types/events";
+import { createAuthClient } from "~~/server/clients";
+import type { EventResponse } from "~~/server/types/event";
 import { handleApiError } from "~~/server/utils/auth";
 import {
   createErrorResponse,
   createSuccessResponse,
 } from "~~/server/utils/core";
+import { getEventById } from "~~/server/model";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<EventResponse | null>> => {
@@ -54,22 +55,20 @@ export default defineEventHandler(
         });
       }
 
-      const ev = await prismaClient.event.findUnique({
-        where: { id: eventId },
-      });
-      if (!ev || ev.isDeleted || ev.userId !== user.id) {
+      const userEvent = await getEventById(eventId, user.id);
+      if (!userEvent) {
         return createSuccessResponse(null, "Event not found");
       }
 
       return createSuccessResponse(
         {
-          id: ev.id,
-          name: ev.name,
-          logoUrl: ev.logoUrl,
-          startDate: ev.startDate,
-          endDate: ev.endDate,
-          createdAt: ev.createdAt,
-          updatedAt: ev.updatedAt,
+          id: userEvent.id,
+          name: userEvent.name,
+          logoUrl: userEvent.logoUrl,
+          startDate: userEvent.startDate,
+          endDate: userEvent.endDate,
+          createdAt: userEvent.createdAt,
+          updatedAt: userEvent.updatedAt,
         },
         "Event fetched successfully",
       );

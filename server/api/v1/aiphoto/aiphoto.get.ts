@@ -1,57 +1,58 @@
-import { defineEventHandler, getQuery, createError, setHeader, send } from "h3";
+import { defineEventHandler, getQuery, createError, setHeader } from "h3";
 import { createAdminClient } from "~~/server/clients";
-import { handleApiError, requireAuth } from "~~/server/utils/auth";
-import { ERROR_STATUS_MAP, ErrorType } from "~~/server/types/core";
+import { requireAuth } from "~~/server/utils/auth";
+import { ERROR_STATUS_MAP } from "~~/server/types/core";
 import {
   createErrorResponse,
   createSuccessResponse,
 } from "~~/server/utils/core";
 import { getStorageBucket } from "~~/server/utils/storage/path.utils";
-import { getEventById } from "~~/server/model";
+import { getAIPhotosById } from "~~/server/model";
 
 export default defineEventHandler(async (event) => {
   try {
     const user = await requireAuth(event);
-    const { eventId, mode, expires } = getQuery(event) as {
-      eventId?: string;
+    const { aiPhotoId, mode, expires } = getQuery(event) as {
+      aiPhotoId?: string;
       mode?: "blob" | "signed";
       expires?: string;
     };
 
-    if (!eventId) {
+    if (!aiPhotoId) {
       throw createError({
-        statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
-        statusMessage: "Missing eventId",
+        statusCode: ERROR_STATUS_MAP.BAD_REQUEST,
+        statusMessage: "AI Photo ID is required",
         data: createErrorResponse({
           type: "VALIDATION_ERROR" as const,
-          code: "MISSING_EVENT_ID",
-          message: "Missing required field: eventId",
-          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          code: "MISSING_AI_PHOTO_ID",
+          message: "AI Photo ID is required",
+          statusCode: ERROR_STATUS_MAP.BAD_REQUEST,
         }),
       });
     }
 
-    const userEvent = await getEventById(eventId, user.id);
-    if (!userEvent) {
+    const aiPhoto = await getAIPhotosById(aiPhotoId, user.id);
+    if (!aiPhoto) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
-        statusMessage: "Event not found",
+        statusMessage: "AI Photo not found",
         data: createErrorResponse({
-          type: ErrorType.NOT_FOUND,
-          code: "EVENT_NOT_FOUND",
-          message: "Event not found",
+          type: "NOT_FOUND" as const,
+          code: "AI_PHOTO_NOT_FOUND",
+          message: "AI Photo not found or access denied",
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
         }),
       });
     }
-    if (!userEvent.logoUrl) {
+
+    if (!aiPhoto.generatedUrl) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
-        statusMessage: "Logo not set",
+        statusMessage: "AI Photo file not found",
         data: createErrorResponse({
-          type: ErrorType.NOT_FOUND,
-          code: "LOGO_NOT_FOUND",
-          message: "Logo not set for this event",
+          type: "NOT_FOUND" as const,
+          code: "FILE_NOT_FOUND",
+          message: "AI Photo file not found in storage",
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
         }),
       });
@@ -64,12 +65,12 @@ export default defineEventHandler(async (event) => {
       const seconds = Math.min(Math.max(Number(expires) || 600, 10), 3600);
       const { data, error } = await supabase.storage
         .from(bucket)
-        .createSignedUrl(userEvent.logoUrl, seconds);
+        .createSignedUrl(aiPhoto.generatedUrl, seconds);
 
       if (error || !data?.signedUrl) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
-          statusMessage: "Failed to sign URL",
+          statusMessage: "Failed to create signed URL",
           data: createErrorResponse({
             type: "SERVER_ERROR" as const,
             code: "SIGNED_URL_ERROR",
@@ -78,6 +79,7 @@ export default defineEventHandler(async (event) => {
           }),
         });
       }
+
       return createSuccessResponse(
         {
           url: data.signedUrl,
@@ -89,17 +91,17 @@ export default defineEventHandler(async (event) => {
 
     const { data, error } = await supabase.storage
       .from(bucket)
-      .download(userEvent.logoUrl);
+      .download(aiPhoto.generatedUrl);
 
     if (error || !data) {
-      console.error("Logo download error:", error);
+      console.error("AI Photo download error:", error);
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
-        statusMessage: "Logo not found",
+        statusMessage: "AI Photo file not found",
         data: createErrorResponse({
-          type: ErrorType.NOT_FOUND,
-          code: "LOGO_NOT_FOUND",
-          message: "Logo file not found in storage",
+          type: "NOT_FOUND" as const,
+          code: "FILE_NOT_FOUND",
+          message: "AI Photo file not found in storage",
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
         }),
       });
@@ -107,16 +109,19 @@ export default defineEventHandler(async (event) => {
 
     const arrayBuf = await data.arrayBuffer();
     const buf = Buffer.from(arrayBuf);
-    setHeader(event, "Content-Type", data.type || "application/octet-stream");
-    setHeader(event, "Cache-Control", "private, max-age=60");
-    setHeader(event, "Content-Disposition", 'inline; filename="logo"');
-    return send(event, buf);
+
+    setHeader(event, "Content-Type", "image/jpeg");
+    setHeader(event, "Content-Length", buf.length);
+    setHeader(
+      event,
+      "Content-Disposition",
+      `inline; filename="${aiPhoto.style.toLowerCase()}.jpg"`,
+    );
+    setHeader(event, "Cache-Control", "public, max-age=3600");
+
+    return buf;
   } catch (error) {
-    const apiError = handleApiError(error);
-    throw createError({
-      statusCode: apiError.statusCode || ERROR_STATUS_MAP.INTERNAL_ERROR,
-      statusMessage: apiError.message,
-      data: createErrorResponse(apiError),
-    });
+    console.error("Error fetching AI photo file:", error);
+    throw error;
   }
 });

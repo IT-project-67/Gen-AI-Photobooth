@@ -1,12 +1,7 @@
-import { createAdminClient, prismaClient } from "~~/server/clients";
+import { createAdminClient } from "~~/server/clients";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
-import type { LogoUploadResponse } from "~~/server/types/events";
-import { config } from "~~/server/config";
-import {
-  allowedType,
-  allowedExts,
-  MAX_FILE_SIZE,
-} from "~~/server/types/storage";
+import type { LogoUploadResponse } from "~~/server/types/event";
+import { updateEventLogoUrl, getEventById } from "~~/server/model";
 import {
   ERROR_STATUS_MAP,
   ErrorType,
@@ -16,6 +11,12 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "~~/server/utils/core";
+import {
+  normalizeFilePart,
+  validateFileOrThrow,
+} from "~~/server/utils/storage/validation.utils";
+import { uploadLogo } from "~~/server/utils/storage";
+import { config } from "~~/server/config";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<LogoUploadResponse>> => {
@@ -36,12 +37,8 @@ export default defineEventHandler(
       }
 
       let eventId = "";
-      let file: {
-        name: string;
-        type: string;
-        data: Buffer;
-        size: number;
-      } | null = null;
+      let logoFilePart = null;
+
       for (const f of form) {
         if (f.name === "eventId") {
           if (typeof f.data === "string") {
@@ -53,21 +50,7 @@ export default defineEventHandler(
           }
         }
         if (f.name === "logo" && f.filename && f.data?.length) {
-          let type = f.type;
-          if (!type) {
-            const ext = (f.filename.split(".").pop() || "").toLowerCase();
-            const mimeMap: Record<string, string> = {
-              png: "image/png",
-              jpg: "image/jpeg",
-              jpeg: "image/jpeg",
-              webp: "image/webp",
-              svg: "image/svg+xml",
-              ico: "image/x-icon",
-            };
-            type = mimeMap[ext] || "image/jpeg";
-          }
-          const data = Buffer.isBuffer(f.data) ? f.data : Buffer.from(f.data);
-          file = { name: f.filename, type, data, size: data.length };
+          logoFilePart = f;
         }
       }
 
@@ -83,7 +66,8 @@ export default defineEventHandler(
           }),
         });
       }
-      if (!file) {
+
+      if (!logoFilePart) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
           statusMessage: "No logo file",
@@ -96,12 +80,24 @@ export default defineEventHandler(
         });
       }
 
-      const ev = await prismaClient.event.findUnique({
-        where: { id: eventId },
-      });
-      const supabase = createAdminClient();
-      const ext = file.name.split(".").pop();
-      if (!ev || ev.isDeleted) {
+      const file = normalizeFilePart(logoFilePart);
+      if (!file) {
+        throw createError({
+          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          statusMessage: "Invalid file data",
+          data: createErrorResponse({
+            type: "VALIDATION_ERROR" as const,
+            code: "INVALID_FILE_DATA",
+            message: "Invalid file data provided",
+            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          }),
+        });
+      }
+
+      validateFileOrThrow(file);
+
+      const userEvent = await getEventById(eventId, user.id);
+      if (!userEvent) {
         throw createError({
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
           statusMessage: "Event not found",
@@ -113,102 +109,32 @@ export default defineEventHandler(
           }),
         });
       }
-      if (ev.userId !== user.id) {
-        throw createError({
-          statusCode: ERROR_STATUS_MAP.FORBIDDEN,
-          statusMessage: "Forbidden",
-          data: createErrorResponse({
-            type: ErrorType.FORBIDDEN,
-            code: "ACCESS_DENIED",
-            message: "Access denied to this event",
-            statusCode: ERROR_STATUS_MAP.FORBIDDEN,
-          }),
-        });
-      }
-      if (!allowedType.includes(file.type)) {
-        throw createError({
-          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
-          statusMessage: "Invalid file type",
-          data: createErrorResponse({
-            type: "VALIDATION_ERROR" as const,
-            code: "INVALID_FILE_TYPE",
-            message:
-              "Invalid file type. Only JPEG, JPG, PNG, WebP, SVG, and ICO are allowed",
-            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
-          }),
-        });
-      }
-      if (file.size > MAX_FILE_SIZE) {
-        throw createError({
-          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
-          statusMessage: "File too large",
-          data: createErrorResponse({
-            type: "VALIDATION_ERROR" as const,
-            code: "FILE_TOO_LARGE",
-            message: "File too large. Maximum size is 5MB",
-            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
-          }),
-        });
-      }
-      if (!ext) {
-        throw createError({
-          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
-          statusMessage: "Invalid file name",
-          data: createErrorResponse({
-            type: "VALIDATION_ERROR" as const,
-            code: "INVALID_FILE_NAME",
-            message:
-              "File must have a valid extension (png, jpg, jpeg, webp, svg, ico)",
-            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
-          }),
-        });
+
+      const supabase = createAdminClient();
+      const runtimeConfig = useRuntimeConfig();
+      const storageConfig = config();
+
+      let uploadResult;
+      try {
+        uploadResult = await uploadLogo(
+          supabase,
+          file,
+          user.id,
+          eventId,
+          runtimeConfig.public.supabaseUrl,
+          storageConfig.STORAGE_BUCKET,
+        );
+      } catch (uploadError) {
+        console.error("Upload error:", uploadError);
+        throw uploadError;
       }
 
-      const extLower = ext.toLowerCase();
-      if (!allowedExts.includes(extLower)) {
-        throw createError({
-          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
-          statusMessage: "Invalid file extension",
-          data: createErrorResponse({
-            type: "VALIDATION_ERROR" as const,
-            code: "INVALID_FILE_EXTENSION",
-            message: `Invalid file extension. Allowed: ${allowedExts.join(", ")}`,
-            statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
-          }),
-        });
-      }
-
-      const path = `Logo/${user.id}/${eventId}/logo.${extLower}`;
-      const { error } = await supabase.storage
-        .from(config().STORAGE_BUCKET)
-        .upload(path, file.data, {
-          contentType: file.type,
-          cacheControl: "3600",
-          upsert: true,
-        });
-
-      if (error) {
-        throw createError({
-          statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
-          statusMessage: "Upload failed",
-          data: createErrorResponse({
-            type: "SERVER_ERROR" as const,
-            code: "STORAGE_UPLOAD_ERROR",
-            message: error.message,
-            statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
-          }),
-        });
-      }
-
-      await prismaClient.event.update({
-        where: { id: eventId },
-        data: { logoUrl: path },
-      });
+      await updateEventLogoUrl(eventId, uploadResult.path);
 
       return createSuccessResponse(
         {
           eventId,
-          logoUrl: path,
+          logoUrl: uploadResult.path,
           fileInfo: { name: file.name, type: file.type, size: file.size },
         },
         "Logo uploaded successfully",

@@ -1,12 +1,36 @@
-export const allowedExts = ["png", "jpg", "jpeg", "webp", "svg", "ico"];
+export type UploadFile = {
+  name: string;
+  type: string;
+  data: Buffer;
+  size: number;
+};
 
-export const allowedType = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-  "image/svg+xml",
-  "image/x-icon",
-];
+export type UploadOptions = {
+  bucket: string;
+  path: string;
+  upsert?: boolean;
+  cacheControl?: string;
+};
 
-export const MAX_FILE_SIZE = 5 * 1024 * 1024;
+export type ValidationOptions = {
+  allowTypes?: string[];
+  allowExts?: string[];
+  maxSize?: number;
+};
+
+export type FilePart = {
+  filename?: string | null;
+  type?: string | null;
+  data?: Buffer | string | Uint8Array | null;
+};
+
+export type UploadResult = {
+  path: string;
+  url?: string;
+};
+
+export type ValidationError = {
+  code: string;
+  message: string;
+  field?: string;
+};

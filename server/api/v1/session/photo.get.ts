@@ -1,57 +1,55 @@
 import { defineEventHandler, getQuery, createError, setHeader, send } from "h3";
 import { createAdminClient } from "~~/server/clients";
+import { getPhotoSessionById } from "~~/server/model";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
-import { ERROR_STATUS_MAP, ErrorType } from "~~/server/types/core";
-import {
-  createErrorResponse,
-  createSuccessResponse,
-} from "~~/server/utils/core";
+import { ERROR_STATUS_MAP, type ErrorType } from "~~/server/types/core";
+import { createErrorResponse } from "~~/server/utils/core";
 import { getStorageBucket } from "~~/server/utils/storage/path.utils";
-import { getEventById } from "~~/server/model";
 
 export default defineEventHandler(async (event) => {
   try {
     const user = await requireAuth(event);
-    const { eventId, mode, expires } = getQuery(event) as {
-      eventId?: string;
+    const { sessionId, mode, expires } = getQuery(event) as {
+      sessionId: string;
       mode?: "blob" | "signed";
       expires?: string;
     };
 
-    if (!eventId) {
+    if (!sessionId) {
       throw createError({
-        statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
-        statusMessage: "Missing eventId",
+        statusCode: ERROR_STATUS_MAP.BAD_REQUEST,
+        statusMessage: "Session ID is required",
         data: createErrorResponse({
-          type: "VALIDATION_ERROR" as const,
-          code: "MISSING_EVENT_ID",
-          message: "Missing required field: eventId",
-          statusCode: ERROR_STATUS_MAP.VALIDATION_ERROR,
+          type: "VALIDATION_ERROR" as ErrorType,
+          code: "MISSING_SESSION_ID",
+          message: "Session ID is required",
+          statusCode: ERROR_STATUS_MAP.BAD_REQUEST,
         }),
       });
     }
 
-    const userEvent = await getEventById(eventId, user.id);
-    if (!userEvent) {
+    const photoSession = await getPhotoSessionById(sessionId, user.id);
+    if (!photoSession) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
-        statusMessage: "Event not found",
+        statusMessage: "Session not found",
         data: createErrorResponse({
-          type: ErrorType.NOT_FOUND,
-          code: "EVENT_NOT_FOUND",
-          message: "Event not found",
+          type: "NOT_FOUND" as ErrorType,
+          code: "SESSION_NOT_FOUND",
+          message: "Session not found or access denied",
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
         }),
       });
     }
-    if (!userEvent.logoUrl) {
+
+    if (!photoSession.photoUrl) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
-        statusMessage: "Logo not set",
+        statusMessage: "No photo found",
         data: createErrorResponse({
-          type: ErrorType.NOT_FOUND,
-          code: "LOGO_NOT_FOUND",
-          message: "Logo not set for this event",
+          type: "NOT_FOUND" as ErrorType,
+          code: "PHOTO_NOT_FOUND",
+          message: "No photo found for this session",
           statusCode: ERROR_STATUS_MAP.NOT_FOUND,
         }),
       });
@@ -64,7 +62,7 @@ export default defineEventHandler(async (event) => {
       const seconds = Math.min(Math.max(Number(expires) || 600, 10), 3600);
       const { data, error } = await supabase.storage
         .from(bucket)
-        .createSignedUrl(userEvent.logoUrl, seconds);
+        .createSignedUrl(photoSession.photoUrl, seconds);
 
       if (error || !data?.signedUrl) {
         throw createError({
@@ -89,27 +87,26 @@ export default defineEventHandler(async (event) => {
 
     const { data, error } = await supabase.storage
       .from(bucket)
-      .download(userEvent.logoUrl);
+      .download(photoSession.photoUrl);
 
     if (error || !data) {
-      console.error("Logo download error:", error);
+      console.error("Photo download error:", error);
       throw createError({
-        statusCode: ERROR_STATUS_MAP.NOT_FOUND,
-        statusMessage: "Logo not found",
+        statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
+        statusMessage: "Failed to download photo",
         data: createErrorResponse({
-          type: ErrorType.NOT_FOUND,
-          code: "LOGO_NOT_FOUND",
-          message: "Logo file not found in storage",
-          statusCode: ERROR_STATUS_MAP.NOT_FOUND,
+          type: "SERVER_ERROR" as const,
+          code: "DOWNLOAD_ERROR",
+          message: error?.message || "Failed to download photo",
+          statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
         }),
       });
     }
-
     const arrayBuf = await data.arrayBuffer();
     const buf = Buffer.from(arrayBuf);
     setHeader(event, "Content-Type", data.type || "application/octet-stream");
     setHeader(event, "Cache-Control", "private, max-age=60");
-    setHeader(event, "Content-Disposition", 'inline; filename="logo"');
+    setHeader(event, "Content-Disposition", 'inline; filename="photo"');
     return send(event, buf);
   } catch (error) {
     const apiError = handleApiError(error);
