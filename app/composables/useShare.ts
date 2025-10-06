@@ -78,9 +78,7 @@ export const useShare = () => {
           shareUrl: response.data.shareUrl,
         };
       }
-      throw new Error(
-        response.error?.message || "Failed to create share",
-      );
+      throw new Error(response.error?.message || "Failed to create share");
     } catch (err: unknown) {
       console.error("Error creating share:", err);
       error.value = handleError(err, "Failed to create share");
@@ -116,9 +114,7 @@ export const useShare = () => {
           aiPhoto: response.data.aiPhoto,
         };
       }
-      throw new Error(
-        response.error?.message || "Failed to get share by ID",
-      );
+      throw new Error(response.error?.message || "Failed to get share by ID");
     } catch (err: unknown) {
       console.error("Error getting share by ID:", err);
       error.value = handleError(err, "Failed to get share by ID");
@@ -198,7 +194,7 @@ export const useShare = () => {
     if (qrCodeUrl.startsWith("http")) {
       return qrCodeUrl;
     }
-    
+
     const config = useRuntimeConfig();
     return `${config.public.supabaseUrl}/storage/v1/object/public/${qrCodeUrl}`;
   };
