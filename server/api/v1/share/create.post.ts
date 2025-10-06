@@ -15,7 +15,10 @@ import {
   createSuccessResponse,
 } from "~~/server/utils/core";
 import { generateAndUploadQRCode } from "~~/server/utils/share";
-import type { CreateShareRequest, CreateShareResponse } from "~~/server/types/share";
+import type {
+  CreateShareRequest,
+  CreateShareResponse,
+} from "~~/server/types/share";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<CreateShareResponse>> => {
@@ -82,10 +85,11 @@ export default defineEventHandler(
       if (existingShare) {
         if (existingShare.qrExpiresAt > new Date()) {
           let qrCodeUrl = existingShare.qrCodeUrl;
-          
+
           if (!qrCodeUrl || qrCodeUrl.trim() === "") {
-            
-            const { generateAndUploadQRCode } = await import("~~/server/utils/share");
+            const { generateAndUploadQRCode } = await import(
+              "~~/server/utils/share"
+            );
             qrCodeUrl = await generateAndUploadQRCode(
               aiPhoto.generatedUrl,
               user.id,
@@ -93,17 +97,24 @@ export default defineEventHandler(
               aiPhoto.photoSessionId,
               expiresInSeconds,
             );
-            
-            const { prismaClient } = await import("~~/server/clients/prisma.client");
+
+            const { prismaClient } = await import(
+              "~~/server/clients/prisma.client"
+            );
             await prismaClient.sharedPhoto.update({
               where: { id: existingShare.id },
               data: { qrCodeUrl: qrCodeUrl },
             });
           }
-          
-          const { createSignedUrlForAIPhoto } = await import("~~/server/utils/share");
-          const shareUrl = await createSignedUrlForAIPhoto(aiPhoto.generatedUrl, expiresInSeconds);
-          
+
+          const { createSignedUrlForAIPhoto } = await import(
+            "~~/server/utils/share"
+          );
+          const shareUrl = await createSignedUrlForAIPhoto(
+            aiPhoto.generatedUrl,
+            expiresInSeconds,
+          );
+
           return createSuccessResponse(
             {
               shareId: existingShare.id,
@@ -134,15 +145,20 @@ export default defineEventHandler(
         aiPhoto.photoSessionId,
         expiresInSeconds,
       );
-      
+
       const { prismaClient } = await import("~~/server/clients/prisma.client");
       await prismaClient.sharedPhoto.update({
         where: { id: sharedPhoto.id },
         data: { qrCodeUrl: qrCodePath },
       });
 
-      const { createSignedUrlForAIPhoto } = await import("~~/server/utils/share");
-      const shareUrl = await createSignedUrlForAIPhoto(aiPhoto.generatedUrl, expiresInSeconds);
+      const { createSignedUrlForAIPhoto } = await import(
+        "~~/server/utils/share"
+      );
+      const shareUrl = await createSignedUrlForAIPhoto(
+        aiPhoto.generatedUrl,
+        expiresInSeconds,
+      );
 
       return createSuccessResponse(
         {

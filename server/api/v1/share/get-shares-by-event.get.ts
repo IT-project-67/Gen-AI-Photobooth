@@ -64,10 +64,7 @@ export default defineEventHandler(
         },
       }));
 
-      return createSuccessResponse(
-        { shares },
-        "Shares retrieved successfully",
-      );
+      return createSuccessResponse({ shares }, "Shares retrieved successfully");
     } catch (error) {
       const apiError = handleApiError(error);
       throw createError({

@@ -2,10 +2,7 @@ import { defineEventHandler, getQuery, createError, setHeader, send } from "h3";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import { getSharedPhotoById } from "~~/server/model";
 import { getQRCodeFromStorage } from "~~/server/utils/share";
-import {
-  ERROR_STATUS_MAP,
-  type ErrorType,
-} from "~~/server/types/core";
+import { ERROR_STATUS_MAP, type ErrorType } from "~~/server/types/core";
 import { createErrorResponse } from "~~/server/utils/core";
 
 export default defineEventHandler(async (event) => {

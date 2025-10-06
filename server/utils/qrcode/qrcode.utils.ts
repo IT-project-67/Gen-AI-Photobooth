@@ -43,4 +43,3 @@ export async function generateQRCodeFile(
   const buffer = await generateQRCode(data, options);
   return createQRCodeFile(buffer, filename);
 }
-

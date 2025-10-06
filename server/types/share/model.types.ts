@@ -7,4 +7,3 @@ export interface SharedPhotoData {
   qrExpiresAt: Date;
   createdAt: Date;
 }
-

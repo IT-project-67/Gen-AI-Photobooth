@@ -32,6 +32,7 @@ export const MIME_MAP: Record<string, string> = {
 export const PATH_TEMPLATES = {
   LOGO: "{userId}/{eventId}/Logo/logo.{ext}",
   PHOTO: "{userId}/{eventId}/Photos/{sessionId}/photo.{ext}",
-  AI_PHOTO: "{userId}/{eventId}/Photos/{sessionId}/GenPhotos/{style}/{filename}.{ext}",
+  AI_PHOTO:
+    "{userId}/{eventId}/Photos/{sessionId}/GenPhotos/{style}/{filename}.{ext}",
   QR_CODE: "{userId}/{eventId}/Photos/{sessionId}/qr.{ext}",
 } as const;

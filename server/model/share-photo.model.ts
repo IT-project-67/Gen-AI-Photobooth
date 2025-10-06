@@ -29,9 +29,7 @@ export async function createSharedPhoto(
   };
 }
 
-export async function getSharedPhotoById(
-  shareId: string,
-): Promise<{
+export async function getSharedPhotoById(shareId: string): Promise<{
   id: string;
   aiPhotoId: string;
   eventId: string;
@@ -43,8 +41,8 @@ export async function getSharedPhotoById(
   aiPhoto: { id: string; style: string; generatedUrl: string };
 } | null> {
   const sharedPhoto = await prismaClient.sharedPhoto.findFirst({
-    where: { 
-        id: shareId 
+    where: {
+      id: shareId,
     },
     include: {
       event: {
@@ -70,19 +68,19 @@ export async function getSharedPhotoById(
   return sharedPhoto;
 }
 
-export async function getSharedPhotosByEvent(
-  eventId: string,
-): Promise<{
-  id: string;
-  aiPhotoId: string;
-  eventId: string;
-  selectedUrl: string;
-  qrCodeUrl: string;
-  qrExpiresAt: Date;
-  createdAt: Date;
-  event: { id: string; name: string };
-  aiPhoto: { id: string; style: string; generatedUrl: string };
-}[]> {
+export async function getSharedPhotosByEvent(eventId: string): Promise<
+  {
+    id: string;
+    aiPhotoId: string;
+    eventId: string;
+    selectedUrl: string;
+    qrCodeUrl: string;
+    qrExpiresAt: Date;
+    createdAt: Date;
+    event: { id: string; name: string };
+    aiPhoto: { id: string; style: string; generatedUrl: string };
+  }[]
+> {
   const sharedPhotos = await prismaClient.sharedPhoto.findMany({
     where: { eventId },
     include: {
@@ -106,9 +104,7 @@ export async function getSharedPhotosByEvent(
   return sharedPhotos;
 }
 
-export async function getSharedPhotoByAIPhoto(
-  aiphotoId: string,
-): Promise<{
+export async function getSharedPhotoByAIPhoto(aiphotoId: string): Promise<{
   id: string;
   aiPhotoId: string;
   eventId: string;

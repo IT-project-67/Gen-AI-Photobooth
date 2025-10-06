@@ -27,4 +27,3 @@ export interface GetShareResponse {
 export interface GetSharesByEventResponse {
   shares: GetShareResponse[];
 }
-
