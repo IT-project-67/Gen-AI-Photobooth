@@ -5,7 +5,7 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "~~/server/utils/core";
-import { getAIPhotosById } from "~~/server/model";
+import { getAIPhotoById } from "~~/server/model";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const aiPhoto = await getAIPhotosById(aiPhotoId, user.id);
+    const aiPhoto = await getAIPhotoById(aiPhotoId, user.id);
     if (!aiPhoto) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
