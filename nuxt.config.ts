@@ -11,6 +11,24 @@ export default defineNuxtConfig({
     "@nuxtjs/supabase",
   ],
 
+  nitro: {
+    experimental: {
+      wasm: true,
+    },
+    routeRules: {
+      "/api/**": {
+        cors: true,
+        headers: { "Access-Control-Allow-Origin": "*" },
+      },
+    },
+  },
+
+  vite: {
+    build: {
+      sourcemap: false,
+    },
+  },
+
   supabase: {
     url: process.env.NUXT_PUBLIC_SUPABASE_URL,
     key: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -24,6 +42,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
     storageBucket: process.env.SUPABASE_BUCKET,
+    leonardoApiKey: process.env.LEONARDO_API_KEY,
+    leonardoModelId: process.env.LEONARDO_MODEL_ID,
+    leonardoStyleId: process.env.LEONARDO_STYLE_ID,
     public: {
       supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
       supabaseAnonKey: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,

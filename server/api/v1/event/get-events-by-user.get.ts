@@ -1,11 +1,12 @@
 import { ERROR_STATUS_MAP, type ApiResponse } from "~~/server/types/core";
-import { createAuthClient, prismaClient } from "~~/server/clients";
-import type { EventResponse } from "~~/server/types/events";
+import { createAuthClient } from "~~/server/clients";
+import type { EventResponse } from "~~/server/types/event";
 import { handleApiError } from "~~/server/utils/auth";
 import {
   createErrorResponse,
   createSuccessResponse,
 } from "~~/server/utils/core";
+import { getEventsByProfile } from "~~/server/model";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<EventResponse[]>> => {
@@ -39,12 +40,8 @@ export default defineEventHandler(
         });
       }
 
-      const events = await prismaClient.event.findMany({
-        where: { userId: user.id, isDeleted: false },
-        orderBy: { createdAt: "desc" },
-      });
-
-      const mapped: EventResponse[] = events.map((ev) => ({
+      const userEvents = await getEventsByProfile(user.id, "desc");
+      const mapped: EventResponse[] = userEvents.map((ev) => ({
         id: ev.id,
         name: ev.name,
         logoUrl: ev.logoUrl,

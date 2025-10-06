@@ -17,7 +17,7 @@ export const createAuthClient = () => {
   return createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       autoRefreshToken: true,
-      persistSession: false,
+      persistSession: true,
     },
   });
 };

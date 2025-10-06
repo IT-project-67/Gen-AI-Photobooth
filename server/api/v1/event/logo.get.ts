@@ -1,12 +1,13 @@
 import { defineEventHandler, getQuery, createError, setHeader, send } from "h3";
-import { createAdminClient, prismaClient } from "~~/server/clients";
+import { createAdminClient } from "~~/server/clients";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import { ERROR_STATUS_MAP, ErrorType } from "~~/server/types/core";
-import { config } from "~~/server/config";
 import {
   createErrorResponse,
   createSuccessResponse,
 } from "~~/server/utils/core";
+import { getStorageBucket } from "~~/server/utils/storage/path.utils";
+import { getEventById } from "~~/server/model";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -30,8 +31,8 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const ev = await prismaClient.event.findUnique({ where: { id: eventId } });
-    if (!ev || ev.isDeleted) {
+    const userEvent = await getEventById(eventId, user.id);
+    if (!userEvent) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
         statusMessage: "Event not found",
@@ -43,19 +44,7 @@ export default defineEventHandler(async (event) => {
         }),
       });
     }
-    if (ev.userId !== user.id) {
-      throw createError({
-        statusCode: ERROR_STATUS_MAP.FORBIDDEN,
-        statusMessage: "Forbidden",
-        data: createErrorResponse({
-          type: ErrorType.FORBIDDEN,
-          code: "ACCESS_DENIED",
-          message: "Access denied to this event",
-          statusCode: ERROR_STATUS_MAP.FORBIDDEN,
-        }),
-      });
-    }
-    if (!ev.logoUrl) {
+    if (!userEvent.logoUrl) {
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
         statusMessage: "Logo not set",
@@ -69,11 +58,13 @@ export default defineEventHandler(async (event) => {
     }
 
     const supabase = createAdminClient();
+    const bucket = getStorageBucket();
+
     if (mode === "signed") {
       const seconds = Math.min(Math.max(Number(expires) || 600, 10), 3600);
       const { data, error } = await supabase.storage
-        .from(config().STORAGE_BUCKET)
-        .createSignedUrl(ev.logoUrl, seconds);
+        .from(bucket)
+        .createSignedUrl(userEvent.logoUrl, seconds);
 
       if (error || !data?.signedUrl) {
         throw createError({
@@ -97,9 +88,11 @@ export default defineEventHandler(async (event) => {
     }
 
     const { data, error } = await supabase.storage
-      .from(config().STORAGE_BUCKET)
-      .download(ev.logoUrl);
+      .from(bucket)
+      .download(userEvent.logoUrl);
+
     if (error || !data) {
+      console.error("Logo download error:", error);
       throw createError({
         statusCode: ERROR_STATUS_MAP.NOT_FOUND,
         statusMessage: "Logo not found",
@@ -111,6 +104,7 @@ export default defineEventHandler(async (event) => {
         }),
       });
     }
+
     const arrayBuf = await data.arrayBuffer();
     const buf = Buffer.from(arrayBuf);
     setHeader(event, "Content-Type", data.type || "application/octet-stream");

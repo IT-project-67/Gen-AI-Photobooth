@@ -15,7 +15,7 @@ const props = defineProps<{
 <style scoped>
 .previewWrapper {
   width: 85%;
-  aspect-ratio: 3/4;
+  aspect-ratio: 2/3;
   margin: 0 auto;
   background-color: white;
   border-radius: 7px;
@@ -28,7 +28,7 @@ const props = defineProps<{
   position: relative;
   margin: 6%;
   width: 88%;
-  aspect-ratio: 3/4;
+  aspect-ratio: 2/3;
   display: inline-block;
 
   /* grey and white preview background */

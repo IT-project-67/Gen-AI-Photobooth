@@ -5,7 +5,7 @@ import type {
   LogoUploadResponse,
   SignedUrlResponse,
   EventListItem,
-} from "~~/server/types/events";
+} from "~~/server/types/event";
 
 export const useEvent = () => {
   const supabase = useSupabaseClient();

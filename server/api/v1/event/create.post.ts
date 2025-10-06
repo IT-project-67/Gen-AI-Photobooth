@@ -1,11 +1,12 @@
 import { ERROR_STATUS_MAP, type ApiResponse } from "~~/server/types/core";
-import { createAuthClient, prismaClient } from "~~/server/clients";
+import { createAuthClient } from "~~/server/clients";
 import { handleApiError } from "~~/server/utils/auth";
-import type { EventRequest, EventResponse } from "~~/server/types/events";
+import type { EventRequest, EventResponse } from "~~/server/types/event";
 import {
   createErrorResponse,
   createSuccessResponse,
 } from "~~/server/utils/core";
+import { createEvent } from "~~/server/model";
 
 export default defineEventHandler(
   async (event): Promise<ApiResponse<EventResponse>> => {
@@ -76,14 +77,11 @@ export default defineEventHandler(
         });
       }
 
-      const newEvent = await prismaClient.event.create({
-        data: {
-          userId: user.id,
-          name: body.name,
-          startDate: new Date(body.startDate),
-          endDate: new Date(body.endDate),
-          logoUrl: null,
-        },
+      const newEvent = await createEvent({
+        name: body.name,
+        userId: user.id,
+        startDate: new Date(body.startDate),
+        endDate: new Date(body.endDate),
       });
 
       if (!newEvent.startDate || !newEvent.endDate) {

@@ -151,7 +151,13 @@ const handleSubmit = async () => {
         console.error("Error details:", logoError);
       }
     }
-    // navigateTo("/events/" + data.id)
+    const eventId =
+      "id" in eventResponse ? eventResponse.id : eventResponse.data?.id;
+    if (eventId) {
+      await navigateTo(`/cameraPage?eventId=${eventId}`);
+    } else {
+      console.error("Failed to get event ID");
+    }
   } catch (err) {
     console.error("Error submitting event:", err);
   } finally {
