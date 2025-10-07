@@ -10,7 +10,7 @@
 
       <div v-else-if="error" class="error-container">
         <p>{{ error }}</p>
-        <button @click="loadAiPhotos" class="retry-button">Retry</button>
+        <button class="retry-button" @click="loadAiPhotos">Retry</button>
       </div>
 
       <HomePageCarousel

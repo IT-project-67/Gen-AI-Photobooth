@@ -10,12 +10,12 @@
 
 <script lang="ts">
 import AppFooter from "~/components/AppFooter.vue";
-import AppNavbar from "~/components/AppNavbar.vue";
+// import AppNavbar from "~/components/AppNavbar.vue";
 
 export default {
   name: "DefaultLayout",
   components: {
-    AppNavbar,
+    // AppNavbar,
     AppFooter,
   },
 };

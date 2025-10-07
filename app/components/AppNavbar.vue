@@ -106,7 +106,7 @@ onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
 });
 
-defineExpose({ handleLogout })
+defineExpose({ handleLogout });
 </script>
 
 <style scoped>

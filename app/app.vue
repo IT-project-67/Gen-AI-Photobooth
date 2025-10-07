@@ -7,49 +7,49 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from "vue";
+import AppNavbar from "@/components/AppNavbar.vue";
+
 const user = useSupabaseUser();
 const { handleOAuthProfile } = useOAuth();
 const providers = ["google", "discord"];
 const lastProcessedUserId = ref<string | null>(null);
 
-import { ref, onMounted, onUnmounted } from 'vue'
-import AppNavbar from '@/components/AppNavbar.vue'
-
 interface AppNavbarExpose {
-  handleLogout: () => Promise<void>
+  handleLogout: () => Promise<void>;
 }
 
-const navbarRef = ref<AppNavbarExpose | null>(null)
-const LOGOUT_DELAY = 1000 * 60 * 180 // 3 hours
-let logoutTimer: number | null = null
+const navbarRef = ref<AppNavbarExpose | null>(null);
+const LOGOUT_DELAY = 1000 * 60 * 180; // 3 hours
+let logoutTimer: number | null = null;
 
 function resetLogoutTimer(): void {
   if (logoutTimer !== null) {
-    clearTimeout(logoutTimer)
+    clearTimeout(logoutTimer);
   }
 
   logoutTimer = window.setTimeout(async () => {
     if (navbarRef.value?.handleLogout) {
       // console.log("auto logged out")
-      await navbarRef.value.handleLogout()
+      await navbarRef.value.handleLogout();
     }
-  }, LOGOUT_DELAY)
+  }, LOGOUT_DELAY);
 }
 
 onMounted(() => {
-  const events = ['click', 'mousemove', 'keydown', 'scroll']
-  events.forEach(evt => window.addEventListener(evt, resetLogoutTimer))
-  resetLogoutTimer()
-})
+  const events = ["click", "mousemove", "keydown", "scroll"];
+  events.forEach((evt) => window.addEventListener(evt, resetLogoutTimer));
+  resetLogoutTimer();
+});
 
 onUnmounted(() => {
-  const events = ['click', 'mousemove', 'keydown', 'scroll']
-  events.forEach(evt => window.removeEventListener(evt, resetLogoutTimer))
+  const events = ["click", "mousemove", "keydown", "scroll"];
+  events.forEach((evt) => window.removeEventListener(evt, resetLogoutTimer));
 
   if (logoutTimer !== null) {
-    clearTimeout(logoutTimer)
+    clearTimeout(logoutTimer);
   }
-})
+});
 
 watch(
   user,
