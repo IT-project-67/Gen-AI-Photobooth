@@ -131,9 +131,7 @@ export const useProfile = () => {
     }
   };
 
-  const updateOrganization = async (
-    organization: string,
-  ): Promise<boolean> => {
+  const updateOrganization = async (organization: string): Promise<boolean> => {
     try {
       isLoading.value = true;
       error.value = null;
@@ -405,5 +403,3 @@ export const useProfile = () => {
     clearBlobUrls,
   };
 };
-
-
