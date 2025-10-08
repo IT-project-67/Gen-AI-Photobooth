@@ -80,6 +80,7 @@ const toggleUserMenu = () => {
   showUserMenu.value = true;
 };
 const handleLogout = async () => {
+  localStorage.removeItem("lastActive");
   const { error } = await logout();
   if (error) {
     console.error("Logout error:", error);
