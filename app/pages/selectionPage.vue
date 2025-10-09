@@ -73,11 +73,11 @@ const clickShare = async () => {
       eventId,
       aiphotoId: selectedPhoto.id,
     });
-    
+
     if (!shareData) {
       throw new Error("Failed to create share data");
     }
-    
+
     router.push({
       path: "/share",
       query: {

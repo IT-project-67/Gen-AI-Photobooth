@@ -95,7 +95,7 @@ defineExpose({
   currentSlide,
   nextSlide,
   prevSlide,
-  goToSlide
+  goToSlide,
 });
 </script>
 

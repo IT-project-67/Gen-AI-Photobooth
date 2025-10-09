@@ -41,14 +41,10 @@
         {{ isSubmitting ? "Processing..." : "Submit" }}
       </button>
 
-      <button
-        class="submit-button"
-        @click="navigateTo('/createEvent')"
-      >
+      <button class="submit-button" @click="navigateTo('/createEvent')">
         Create a New Event
       </button>
     </div>
-    
 
     <div v-if="submittedEventID !== ''" class="wrapper">
       <!-- title -->
@@ -277,5 +273,4 @@ select:hover {
   margin: 0 6px;
   color: #9ca3af;
 }
-
 </style>
