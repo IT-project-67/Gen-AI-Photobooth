@@ -8,6 +8,8 @@ const qrSrc = ref<string | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
 async function loadQr() {
+  qrSrc.value =
+    "https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=Hello%20World";
   loading.value = true;
   error.value = null;
   try {
@@ -42,6 +44,9 @@ onMounted(loadQr);
         <!-- heading -->
         <h1>Scan the QR Code for Your Photo!</h1>
         <img :src="qrSrc" />
+        <button class="retry-button" @click="navigateTo('/cameraPage')">
+          Back to Camera
+        </button>
       </div>
 
       <!-- QR code image -->
@@ -82,5 +87,9 @@ onMounted(loadQr);
   color: white;
   margin-top: 15px;
   width: 100%;
+}
+
+h1 {
+  margin-bottom: 15px;
 }
 </style>
