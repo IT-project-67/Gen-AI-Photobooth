@@ -681,10 +681,10 @@ describe("Error Handler Utils", () => {
         error_code: "invalid_credentials",
         message: "Invalid credentials",
       };
-      
+
       const authError = handleAuthError(supabaseError);
       expect(authError.code).toBe("INVALID_CREDENTIALS");
-      
+
       const apiError = handleApiError(authError);
       expect(apiError.code).toBe("INVALID_CREDENTIALS");
       expect(apiError.message).toBe("Invalid email or password");
@@ -694,7 +694,7 @@ describe("Error Handler Utils", () => {
       const unknownError = { random: "data" };
       const result1 = handleApiError(unknownError);
       expect(result1.code).toBe("INTERNAL_ERROR");
-      
+
       const result2 = handleApiError(result1);
       expect(result2.code).toBe("INTERNAL_ERROR");
       expect(result2.statusCode).toBe(ERROR_STATUS_MAP.INTERNAL_ERROR);

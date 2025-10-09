@@ -12,10 +12,13 @@ type SupabaseUserResponse = {
       updated_at: string | null | undefined;
     } | null;
   };
-  error: {
-    error_code?: string;
-    message?: string;
-  } | null | undefined;
+  error:
+    | {
+        error_code?: string;
+        message?: string;
+      }
+    | null
+    | undefined;
 };
 
 type MockEvent = {
@@ -35,8 +38,12 @@ type AuthErrorResult = {
 };
 
 const mockGetUser = jest.fn<() => Promise<SupabaseUserResponse>>();
-const mockGetHeader = jest.fn<(event: MockEvent, name: string) => string | undefined>();
-const mockCreateError = jest.fn<(opts: { statusCode: number; statusMessage: string }) => ErrorResponse>();
+const mockGetHeader =
+  jest.fn<(event: MockEvent, name: string) => string | undefined>();
+const mockCreateError =
+  jest.fn<
+    (opts: { statusCode: number; statusMessage: string }) => ErrorResponse
+  >();
 const mockHandleAuthError = jest.fn<(error: unknown) => AuthErrorResult>();
 
 jest.mock("~~/server/clients/supabase.client", () => ({
@@ -60,7 +67,9 @@ let optionalAuth: (event: unknown) => Promise<UserData | null>;
 beforeAll(async () => {
   const module = await import("~/server/utils/auth/auth-guard.utils");
   requireAuth = module.requireAuth as (event: unknown) => Promise<UserData>;
-  optionalAuth = module.optionalAuth as (event: unknown) => Promise<UserData | null>;
+  optionalAuth = module.optionalAuth as (
+    event: unknown,
+  ) => Promise<UserData | null>;
 });
 
 const makeEvent = (authHeader?: string): MockEvent => ({
@@ -77,10 +86,10 @@ describe("Auth Guard Utils", () => {
     describe("authorization header validation", () => {
       it("should throw 401 when authorization header is missing", async () => {
         mockGetHeader.mockImplementation(
-          (event: MockEvent, name: string) => event.headers?.[name]
+          (event: MockEvent, name: string) => event.headers?.[name],
         );
         mockCreateError.mockImplementation(
-          (opts: { statusCode: number; statusMessage: string }) => opts
+          (opts: { statusCode: number; statusMessage: string }) => opts,
         );
 
         const ev = makeEvent();
@@ -98,10 +107,10 @@ describe("Auth Guard Utils", () => {
 
       it("should throw 401 when authorization header does not start with Bearer", async () => {
         mockGetHeader.mockImplementation(
-          (event: MockEvent, name: string) => event.headers?.[name]
+          (event: MockEvent, name: string) => event.headers?.[name],
         );
         mockCreateError.mockImplementation(
-          (opts: { statusCode: number; statusMessage: string }) => opts
+          (opts: { statusCode: number; statusMessage: string }) => opts,
         );
 
         const ev = makeEvent("Token abc");
@@ -115,7 +124,7 @@ describe("Auth Guard Utils", () => {
     describe("successful authentication", () => {
       it("should return user data and set it in event context", async () => {
         mockGetHeader.mockImplementation(
-          (event: MockEvent, name: string) => event.headers?.[name]
+          (event: MockEvent, name: string) => event.headers?.[name],
         );
 
         const now = new Date().toISOString();
@@ -150,10 +159,10 @@ describe("Auth Guard Utils", () => {
     describe("supabase error handling", () => {
       it("should throw error using handleAuthError when Supabase returns error", async () => {
         mockGetHeader.mockImplementation(
-          (event: MockEvent, name: string) => event.headers?.[name]
+          (event: MockEvent, name: string) => event.headers?.[name],
         );
         mockCreateError.mockImplementation(
-          (opts: { statusCode: number; statusMessage: string }) => opts
+          (opts: { statusCode: number; statusMessage: string }) => opts,
         );
 
         const supaErr = { error_code: "invalid_credentials", message: "bad" };
@@ -179,10 +188,10 @@ describe("Auth Guard Utils", () => {
 
       it("should handle null user with undefined error using default mapping", async () => {
         mockGetHeader.mockImplementation(
-          (event: MockEvent, name: string) => event.headers?.[name]
+          (event: MockEvent, name: string) => event.headers?.[name],
         );
         mockCreateError.mockImplementation(
-          (opts: { statusCode: number; statusMessage: string }) => opts
+          (opts: { statusCode: number; statusMessage: string }) => opts,
         );
 
         mockGetUser.mockResolvedValue({
@@ -205,10 +214,10 @@ describe("Auth Guard Utils", () => {
 
       it("should use default 401 status code when authError statusCode is falsy", async () => {
         mockGetHeader.mockImplementation(
-          (event: MockEvent, name: string) => event.headers?.[name]
+          (event: MockEvent, name: string) => event.headers?.[name],
         );
         mockCreateError.mockImplementation(
-          (opts: { statusCode: number; statusMessage: string }) => opts
+          (opts: { statusCode: number; statusMessage: string }) => opts,
         );
 
         mockGetUser.mockResolvedValue({
@@ -233,7 +242,7 @@ describe("Auth Guard Utils", () => {
     describe("exception handling", () => {
       it("should re-throw H3Error when thrown internally", async () => {
         mockGetHeader.mockImplementation(
-          (event: MockEvent, name: string) => event.headers?.[name]
+          (event: MockEvent, name: string) => event.headers?.[name],
         );
 
         const h3err = { statusCode: 403, statusMessage: "Forbidden" };
@@ -247,10 +256,10 @@ describe("Auth Guard Utils", () => {
 
       it("should throw generic auth error for non-H3Error exceptions", async () => {
         mockGetHeader.mockImplementation(
-          (event: MockEvent, name: string) => event.headers?.[name]
+          (event: MockEvent, name: string) => event.headers?.[name],
         );
         mockCreateError.mockImplementation(
-          (opts: { statusCode: number; statusMessage: string }) => opts
+          (opts: { statusCode: number; statusMessage: string }) => opts,
         );
 
         mockGetUser.mockImplementation(() => {
@@ -273,7 +282,7 @@ describe("Auth Guard Utils", () => {
     describe("user data field handling", () => {
       it("should use empty string when user email is null", async () => {
         mockGetHeader.mockImplementation(
-          (event: MockEvent, name: string) => event.headers?.[name]
+          (event: MockEvent, name: string) => event.headers?.[name],
         );
 
         const now = new Date().toISOString();
@@ -299,7 +308,7 @@ describe("Auth Guard Utils", () => {
 
       it("should use current time when created_at and updated_at are null", async () => {
         mockGetHeader.mockImplementation(
-          (event: MockEvent, name: string) => event.headers?.[name]
+          (event: MockEvent, name: string) => event.headers?.[name],
         );
 
         const confirmedAt = new Date().toISOString();
@@ -329,7 +338,7 @@ describe("Auth Guard Utils", () => {
 
       it("should handle all optional fields as null or undefined", async () => {
         mockGetHeader.mockImplementation(
-          (event: MockEvent, name: string) => event.headers?.[name]
+          (event: MockEvent, name: string) => event.headers?.[name],
         );
 
         mockGetUser.mockResolvedValue({
@@ -361,7 +370,7 @@ describe("Auth Guard Utils", () => {
     beforeEach(() => {
       jest.clearAllMocks();
       mockGetHeader.mockImplementation(
-        (event: MockEvent, name: string) => event.headers?.[name]
+        (event: MockEvent, name: string) => event.headers?.[name],
       );
     });
 
@@ -387,10 +396,10 @@ describe("Auth Guard Utils", () => {
 
     it("should return null when authentication fails", async () => {
       mockGetHeader.mockImplementation(
-        (event: MockEvent, name: string) => event.headers?.[name]
+        (event: MockEvent, name: string) => event.headers?.[name],
       );
       mockCreateError.mockImplementation(
-        (opts: { statusCode: number; statusMessage: string }) => opts
+        (opts: { statusCode: number; statusMessage: string }) => opts,
       );
 
       mockGetUser.mockResolvedValue({
