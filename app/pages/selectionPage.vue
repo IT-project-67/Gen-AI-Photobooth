@@ -33,13 +33,13 @@
 <script setup lang="ts">
 import HomePageCarousel from "~/components/HomePageCarousel.vue";
 import { useAiPhoto, type AIPhoto } from "~/composables/useAiPhoto";
-const { getSessionAiPhotos, getAiPhotosBlobs, isLoading, error } = useAiPhoto();
-
 // import { useShare } from "~/composables/useShare";
+import { ref, watchEffect, onMounted } from "vue";
+
+const { getSessionAiPhotos, getAiPhotosBlobs, isLoading, error } = useAiPhoto();
 // const { createShare } = useShare();
 
-import { ref, watchEffect, onMounted } from "vue";
-const carouselRef = ref<any>(null);
+const carouselRef = ref<{ currentSlide: number } | null>(null);
 const currentIndex = ref(0);
 
 const route = useRoute();
