@@ -2,7 +2,7 @@ import { ERROR_STATUS_MAP, type H3Error } from "~~/server/types/core";
 import { createAuthClient } from "~~/server/clients/supabase.client";
 import type { UserData } from "~~/server/types/domain";
 import { handleAuthError } from "./error-handler.utils";
-import type { H3Event } from "h3";
+import { getHeader, createError, type H3Event } from "h3";
 
 // Extend H3Event context to include user
 declare module "h3" {

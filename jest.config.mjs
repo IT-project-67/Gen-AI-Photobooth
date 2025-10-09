@@ -15,10 +15,15 @@ export default {
         "^~~/server/clients$": "<rootDir>/tests/mocks/clients/index.ts",
       },
       collectCoverageFrom: [
-        "server/**/*.ts",
-        "!server/**/*.d.ts",
-        "!server/test/**",
-        "!server/types/**",
+        "<rootDir>/server/**/*.ts",
+        "!<rootDir>/server/**/*.d.ts",
+        "!<rootDir>/server/test/**",
+        "!<rootDir>/server/types/**",
+      ],
+      coveragePathIgnorePatterns: [
+        "<rootDir>/server/types/",
+        "<rootDir>/server/clients/",
+        "/node_modules/",
       ],
       transform: {
         "^.+\\.tsx?$": [
