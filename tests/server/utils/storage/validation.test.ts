@@ -89,6 +89,16 @@ describe("Storage Validation Utils", () => {
       const result = inferMimeFromFilename("my.photo.file.webp");
       expect(result).toBe("image/webp");
     });
+
+    it("should handle empty filename", () => {
+      const result = inferMimeFromFilename("");
+      expect(result).toBe("image/jpeg");
+    });
+
+    it("should handle filename with only dots", () => {
+      const result = inferMimeFromFilename("...");
+      expect(result).toBe("image/jpeg");
+    });
   });
 
   describe("getExtLower", () => {
@@ -101,11 +111,7 @@ describe("Storage Validation Utils", () => {
     const cases: Case[] = [
       { name: "lowercase extension", filename: "file.png", expected: "png" },
       { name: "uppercase extension", filename: "FILE.PNG", expected: "png" },
-      {
-        name: "mixed case extension",
-        filename: "Image.JpEg",
-        expected: "jpeg",
-      },
+      { name: "mixed case extension", filename: "Image.JpEg", expected: "jpeg" },
       { name: "multiple dots", filename: "my.file.name.jpg", expected: "jpg" },
     ];
 
@@ -162,6 +168,19 @@ describe("Storage Validation Utils", () => {
     it("should return null when data is missing", () => {
       const filePart: FilePart = {
         filename: "test.png",
+      };
+
+      const result = normalizeFilePart(filePart);
+
+      expect(result).toBeNull();
+    });
+
+    it("should return null when filename is valid but data is missing (tests OR right side)", () => {
+      // This test specifically ensures the right side of the OR condition is evaluated
+      const filePart: FilePart = {
+        filename: "validfile.png",
+        type: "image/png",
+        // data is intentionally omitted
       };
 
       const result = normalizeFilePart(filePart);
@@ -233,6 +252,63 @@ describe("Storage Validation Utils", () => {
       };
 
       const result = normalizeFilePart(filePart);
+
+      expect(result).toBeNull();
+    });
+
+    it("should handle empty string filename", () => {
+      const filePart: FilePart = {
+        filename: "",
+        data: Buffer.from("data"),
+      };
+
+      const result = normalizeFilePart(filePart);
+
+      expect(result).toBeNull();
+    });
+
+    it("should handle undefined filename", () => {
+      const filePart: FilePart = {
+        filename: undefined,
+        data: Buffer.from("data"),
+      };
+
+      const result = normalizeFilePart(filePart);
+
+      expect(result).toBeNull();
+    });
+
+    it("should handle empty data", () => {
+      const filePart: FilePart = {
+        filename: "test.png",
+        data: "",
+      };
+
+      const result = normalizeFilePart(filePart);
+
+      // Empty string is falsy, should return null
+      expect(result).toBeNull();
+    });
+
+    it("should handle undefined data", () => {
+      const filePart: FilePart = {
+        filename: "test.png",
+        data: undefined,
+      };
+
+      const result = normalizeFilePart(filePart);
+
+      expect(result).toBeNull();
+    });
+
+    it("should handle null filePart", () => {
+      const result = normalizeFilePart(null as unknown as FilePart);
+
+      expect(result).toBeNull();
+    });
+
+    it("should handle undefined filePart", () => {
+      const result = normalizeFilePart(undefined as unknown as FilePart);
 
       expect(result).toBeNull();
     });
@@ -325,11 +401,7 @@ describe("Storage Validation Utils", () => {
 
     it("should validate exact MIME type match", () => {
       expect(() => {
-        validateFileType("image/jpeg", [
-          "image/png",
-          "image/jpeg",
-          "image/webp",
-        ]);
+        validateFileType("image/jpeg", ["image/png", "image/jpeg", "image/webp"]);
       }).not.toThrow();
     });
   });
@@ -417,7 +489,11 @@ describe("Storage Validation Utils", () => {
       });
 
       it("should not throw for file at maximum size", () => {
-        const file = createMockFile("large.png", "image/png", MAX_FILE_SIZE);
+        const file = createMockFile(
+          "large.png",
+          "image/png",
+          MAX_FILE_SIZE,
+        );
         expect(() => {
           validateFileOrThrow(file);
         }).not.toThrow();
@@ -476,7 +552,11 @@ describe("Storage Validation Utils", () => {
 
     describe("invalid size", () => {
       it("should throw for file exceeding size limit", () => {
-        const file = createMockFile("huge.png", "image/png", MAX_FILE_SIZE + 1);
+        const file = createMockFile(
+          "huge.png",
+          "image/png",
+          MAX_FILE_SIZE + 1,
+        );
         expect(() => {
           validateFileOrThrow(file);
         }).toThrow(
@@ -595,10 +675,7 @@ describe("Storage Validation Utils", () => {
         fail("Should have thrown an error");
       } catch (error) {
         const validationError = error as ValidationError;
-        expect(validationError).toHaveProperty(
-          "statusCode",
-          ERROR_STATUS_MAP.VALIDATION_ERROR,
-        );
+        expect(validationError).toHaveProperty("statusCode", ERROR_STATUS_MAP.VALIDATION_ERROR);
         expect(validationError).toHaveProperty("statusMessage");
         expect(validationError).toHaveProperty("data");
         expect(validationError.data).toHaveProperty("success", false);
@@ -619,15 +696,10 @@ describe("Storage Validation Utils", () => {
         fail("Should have thrown an error");
       } catch (error) {
         const validationError = error as ValidationError;
-        expect(validationError.data.error).toHaveProperty(
-          "code",
-          "INVALID_FILE_EXTENSION",
-        );
-        expect(validationError.data.error).toHaveProperty(
-          "type",
-          "VALIDATION_ERROR",
-        );
+        expect(validationError.data.error).toHaveProperty("code", "INVALID_FILE_EXTENSION");
+        expect(validationError.data.error).toHaveProperty("type", "VALIDATION_ERROR");
       }
     });
   });
 });
+
