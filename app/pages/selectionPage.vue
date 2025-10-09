@@ -33,11 +33,11 @@
 <script setup lang="ts">
 import HomePageCarousel from "~/components/HomePageCarousel.vue";
 import { useAiPhoto, type AIPhoto } from "~/composables/useAiPhoto";
-// import { useShare } from "~/composables/useShare";
+import { useShare } from "~/composables/useShare";
 import { ref, watchEffect, onMounted } from "vue";
 
 const { getSessionAiPhotos, getAiPhotosBlobs, isLoading, error } = useAiPhoto();
-// const { createShare } = useShare();
+const { createShare } = useShare();
 
 const carouselRef = ref<{ currentSlide: number } | null>(null);
 const currentIndex = ref(0);
@@ -47,12 +47,13 @@ const router = useRouter();
 const eventId = route.query.eventId as string;
 const sessionId = route.query.sessionId as string;
 
-const aiPhotos = ref<{ img: string; id?: string; style?: string }[]>([
-  { img: "/assets/images/selection.png" },
-  { img: "/assets/images/selection.png" },
-  { img: "/assets/images/selection.png" },
-  { img: "/assets/images/selection.png" },
-]);
+// const aiPhotos = ref<{ img: string; id?: string; style?: string }[]>([
+//   { img: "/assets/images/selection.png" },
+//   { img: "/assets/images/selection.png" },
+//   { img: "/assets/images/selection.png" },
+//   { img: "/assets/images/selection.png" },
+// ]);
+const aiPhotos = ref<{ img: string; id?: string; style?: string }[]>([]);
 
 const clickShare = async () => {
   const selectedPhoto = aiPhotos.value[currentIndex.value];
@@ -62,23 +63,30 @@ const clickShare = async () => {
     return;
   }
 
+  if (!selectedPhoto.id) {
+    console.error("Selected photo has no ID");
+    return;
+  }
+
   try {
-    // const shareData = await createShare({
-    //   eventId,
-    //   aiphotoId: selectedPhoto.id,
-    // });
-    // if (!shareData) {
-    //   throw new Error("Failed to create share data");
-    // }
-    // router.push({
-    //   path: "/share",
-    //   query: {
-    //     shareId: shareData.shareId,
-    //     qrCodeUrl: shareData.qrCodeUrl,
-    //     expiresAt: shareData.expiresAt,
-    //     shareUrl: shareData.shareUrl,
-    //   },
-    // });
+    const shareData = await createShare({
+      eventId,
+      aiphotoId: selectedPhoto.id,
+    });
+    
+    if (!shareData) {
+      throw new Error("Failed to create share data");
+    }
+    
+    router.push({
+      path: "/share",
+      query: {
+        shareId: shareData.shareId,
+        qrCodeUrl: shareData.qrCodeUrl,
+        expiresAt: shareData.expiresAt,
+        shareUrl: shareData.shareUrl,
+      },
+    });
   } catch (err) {
     console.error("Error during share: ", err);
   }
@@ -99,11 +107,18 @@ const loadAiPhotos = async () => {
 
     const blobUrls = await getAiPhotosBlobs(sessionData.photos);
 
-    aiPhotos.value = sessionData.photos.map((photo: AIPhoto) => ({
+    // aiPhotos.value = sessionData.photos.map((photo: AIPhoto) => ({
+    //   img: blobUrls[photo.id] || "/assets/images/selection.png",
+    //   id: photo.id,
+    //   style: photo.style,
+    // }));
+    const loadedPhotos = sessionData.photos.map((photo: AIPhoto) => ({
       img: blobUrls[photo.id] || "/assets/images/selection.png",
       id: photo.id,
       style: photo.style,
     }));
+
+    aiPhotos.value = loadedPhotos;
   } catch (err) {
     console.error("Error loading AI photos:", err);
   }

@@ -169,7 +169,7 @@ export const useShare = () => {
 
       const headers = await getAuthHeaders();
       const response = await fetch(
-        `/api/v1/share/qr-code?shareId=${encodeURIComponent(shareId)}`,
+        `/api/v1/share/qrcode?shareId=${encodeURIComponent(shareId)}`,
         {
           headers,
         },

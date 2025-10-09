@@ -1,9 +1,10 @@
 
 <script setup lang="ts">
    import { ref } from 'vue'
-   // import { useShare } from ~/composables/useShare.ts
-   // const { getQRCodeBlob } = useShare();
-
+   import { useShare } from '~/composables/useShare'
+   
+   const { getQRCodeBlob } = useShare();
+   const route = useRoute();
    const qrSrc  = ref<string | null>(null);
    const loading = ref(true);
    const error = ref<string | null>(null);
@@ -11,9 +12,13 @@
       loading.value = true
       error.value = null
       try {
-         qrSrc.value = await getQRCodeBlob()   // expects a string URL
-      } catch (e: any) {
-         error.value = e?.message ?? 'Failed to load QR'
+         const shareId = route.query.shareId as string;
+         if (!shareId) {
+            throw new Error('Share ID is missing');
+         }
+         qrSrc.value = await getQRCodeBlob(shareId) 
+      } catch (e: unknown) {
+         error.value = e instanceof Error ? e.message : 'Failed to load QR'
       } finally {
          loading.value = false
       }
