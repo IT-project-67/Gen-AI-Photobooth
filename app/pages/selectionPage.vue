@@ -35,8 +35,8 @@ import HomePageCarousel from "~/components/HomePageCarousel.vue";
 import { useAiPhoto, type AIPhoto } from "~/composables/useAiPhoto";
 const { getSessionAiPhotos, getAiPhotosBlobs, isLoading, error } = useAiPhoto();
 
-import { useShare } from "~/composables/useShare";
-const { createShare } = useShare();
+// import { useShare } from "~/composables/useShare";
+// const { createShare } = useShare();
 
 import { ref, watchEffect, onMounted } from "vue";
 const carouselRef = ref<any>(null);
@@ -63,24 +63,22 @@ const clickShare = async () => {
   }
 
   try {
-    const shareData = await createShare({
-      eventId,
-      aiphotoId: selectedPhoto.id,
-    });
-
-    if (!shareData) {
-      throw new Error("Failed to create share data");
-    }
-
-    router.push({
-      path: "/share",
-      query: {
-        shareId: shareData.shareId,
-        qrCodeUrl: shareData.qrCodeUrl,
-        expiresAt: shareData.expiresAt,
-        shareUrl: shareData.shareUrl,
-      },
-    });
+    // const shareData = await createShare({
+    //   eventId,
+    //   aiphotoId: selectedPhoto.id,
+    // });
+    // if (!shareData) {
+    //   throw new Error("Failed to create share data");
+    // }
+    // router.push({
+    //   path: "/share",
+    //   query: {
+    //     shareId: shareData.shareId,
+    //     qrCodeUrl: shareData.qrCodeUrl,
+    //     expiresAt: shareData.expiresAt,
+    //     shareUrl: shareData.shareUrl,
+    //   },
+    // });
   } catch (err) {
     console.error("Error during share: ", err);
   }
