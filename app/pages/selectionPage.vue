@@ -15,6 +15,7 @@
 
       <HomePageCarousel
         v-else
+        ref="carouselRef"
         :slides="aiPhotos"
         :autoplay="false"
         class="ai-carousel"
@@ -34,26 +35,55 @@ import HomePageCarousel from "~/components/HomePageCarousel.vue";
 import { useAiPhoto, type AIPhoto } from "~/composables/useAiPhoto";
 const { getSessionAiPhotos, getAiPhotosBlobs, isLoading, error } = useAiPhoto();
 
+import { useShare } from "~/composables/useShare";
+const { createShare } = useShare();
+
+import { ref, watchEffect, onMounted } from "vue";
+const carouselRef = ref<any>(null);
+const currentIndex = ref(0);
+
 const route = useRoute();
 const router = useRouter();
 const eventId = route.query.eventId as string;
 const sessionId = route.query.sessionId as string;
 
-const aiPhotos = ref([
+const aiPhotos = ref<{ img: string; id?: string; style?: string }[]>([
   { img: "/assets/images/selection.png" },
   { img: "/assets/images/selection.png" },
   { img: "/assets/images/selection.png" },
   { img: "/assets/images/selection.png" },
 ]);
 
-const clickShare = () => {
-  navigateTo({
-    path: "/sharePhoto",
-    query: {
+const clickShare = async () => {
+  const selectedPhoto = aiPhotos.value[currentIndex.value];
+
+  if (!selectedPhoto) {
+    console.log("No photo selected");
+    return;
+  }
+
+  try {
+    const shareData = await createShare({
       eventId,
-      sessionId,
-    },
-  });
+      aiphotoId: selectedPhoto.id,
+    });
+
+    if (!shareData) {
+      throw new Error("Failed to create share data");
+    }
+
+    router.push({
+      path: "/share",
+      query: {
+        shareId: shareData.shareId,
+        qrCodeUrl: shareData.qrCodeUrl,
+        expiresAt: shareData.expiresAt,
+        shareUrl: shareData.shareUrl,
+      },
+    });
+  } catch (err) {
+    console.error("Error during share: ", err);
+  }
 };
 
 const loadAiPhotos = async () => {
@@ -82,6 +112,12 @@ const loadAiPhotos = async () => {
 };
 
 onMounted(() => {
+  watchEffect(() => {
+    if (carouselRef.value?.currentSlide !== undefined) {
+      currentIndex.value = carouselRef.value.currentSlide;
+    }
+  });
+
   loadAiPhotos();
 });
 
