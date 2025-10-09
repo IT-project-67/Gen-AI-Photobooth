@@ -6,7 +6,8 @@
       "~/*": ["./*"],
       "@/*": ["./*"]
     },
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "esModuleInterop": true
   },
   "include": [
     "**/*.ts",
