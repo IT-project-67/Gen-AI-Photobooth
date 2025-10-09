@@ -111,7 +111,11 @@ describe("Storage Validation Utils", () => {
     const cases: Case[] = [
       { name: "lowercase extension", filename: "file.png", expected: "png" },
       { name: "uppercase extension", filename: "FILE.PNG", expected: "png" },
-      { name: "mixed case extension", filename: "Image.JpEg", expected: "jpeg" },
+      {
+        name: "mixed case extension",
+        filename: "Image.JpEg",
+        expected: "jpeg",
+      },
       { name: "multiple dots", filename: "my.file.name.jpg", expected: "jpg" },
     ];
 
@@ -401,7 +405,11 @@ describe("Storage Validation Utils", () => {
 
     it("should validate exact MIME type match", () => {
       expect(() => {
-        validateFileType("image/jpeg", ["image/png", "image/jpeg", "image/webp"]);
+        validateFileType("image/jpeg", [
+          "image/png",
+          "image/jpeg",
+          "image/webp",
+        ]);
       }).not.toThrow();
     });
   });
@@ -489,11 +497,7 @@ describe("Storage Validation Utils", () => {
       });
 
       it("should not throw for file at maximum size", () => {
-        const file = createMockFile(
-          "large.png",
-          "image/png",
-          MAX_FILE_SIZE,
-        );
+        const file = createMockFile("large.png", "image/png", MAX_FILE_SIZE);
         expect(() => {
           validateFileOrThrow(file);
         }).not.toThrow();
@@ -552,11 +556,7 @@ describe("Storage Validation Utils", () => {
 
     describe("invalid size", () => {
       it("should throw for file exceeding size limit", () => {
-        const file = createMockFile(
-          "huge.png",
-          "image/png",
-          MAX_FILE_SIZE + 1,
-        );
+        const file = createMockFile("huge.png", "image/png", MAX_FILE_SIZE + 1);
         expect(() => {
           validateFileOrThrow(file);
         }).toThrow(
@@ -675,7 +675,10 @@ describe("Storage Validation Utils", () => {
         fail("Should have thrown an error");
       } catch (error) {
         const validationError = error as ValidationError;
-        expect(validationError).toHaveProperty("statusCode", ERROR_STATUS_MAP.VALIDATION_ERROR);
+        expect(validationError).toHaveProperty(
+          "statusCode",
+          ERROR_STATUS_MAP.VALIDATION_ERROR,
+        );
         expect(validationError).toHaveProperty("statusMessage");
         expect(validationError).toHaveProperty("data");
         expect(validationError.data).toHaveProperty("success", false);
@@ -696,10 +699,15 @@ describe("Storage Validation Utils", () => {
         fail("Should have thrown an error");
       } catch (error) {
         const validationError = error as ValidationError;
-        expect(validationError.data.error).toHaveProperty("code", "INVALID_FILE_EXTENSION");
-        expect(validationError.data.error).toHaveProperty("type", "VALIDATION_ERROR");
+        expect(validationError.data.error).toHaveProperty(
+          "code",
+          "INVALID_FILE_EXTENSION",
+        );
+        expect(validationError.data.error).toHaveProperty(
+          "type",
+          "VALIDATION_ERROR",
+        );
       }
     });
   });
 });
-
