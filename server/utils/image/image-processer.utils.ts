@@ -204,7 +204,12 @@ export async function addWhiteBorder(
       .jpeg({ quality: opts.quality })
       .toBuffer();
 
-    const mimeType = opts.outputFormat === "jpeg" ? "image/jpeg" : opts.outputFormat === "png" ? "image/png" : "image/webp";
+    const mimeType =
+      opts.outputFormat === "jpeg"
+        ? "image/jpeg"
+        : opts.outputFormat === "png"
+          ? "image/png"
+          : "image/webp";
 
     return {
       data: finalImage,

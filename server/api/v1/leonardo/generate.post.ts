@@ -158,7 +158,7 @@ export default defineEventHandler(async (event) => {
     } catch (error) {
       console.warn(`Failed to download logo for event ${eventId}:`, error);
     }
-  } 
+  }
 
   const uploadResults = await Promise.all(
     imageUrls.map(async (leonardoUrl, index) => {
