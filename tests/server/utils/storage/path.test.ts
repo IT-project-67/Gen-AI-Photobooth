@@ -99,11 +99,7 @@ describe("Storage Path Utils", () => {
       mockGetExtLower.mockReturnValue("webp");
       const file = createMockFile("image.webp");
 
-      const result = generateFilePath(
-        "path/to/file.{ext}",
-        {},
-        file,
-      );
+      const result = generateFilePath("path/to/file.{ext}", {}, file);
 
       expect(result).toBe("path/to/file.webp");
     });
@@ -182,9 +178,7 @@ describe("Storage Path Utils", () => {
         file,
       );
 
-      expect(result).toBe(
-        "user123/event456/Photos/session789/photo001.png",
-      );
+      expect(result).toBe("user123/event456/Photos/session789/photo001.png");
       expect(mockGetExtLower).toHaveBeenCalledWith("photo.png");
     });
 
@@ -293,7 +287,9 @@ describe("Storage Path Utils", () => {
     });
 
     it("should return default bucket when config fails", () => {
-      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+      const consoleErrorSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
       mockConfig.mockImplementation(() => {
         throw new Error("Config error");
       });
@@ -382,7 +378,9 @@ describe("Storage Path Utils", () => {
     });
 
     it("should use bucket from getStorageBucket when config fails", () => {
-      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+      const consoleErrorSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
       mockConfig.mockImplementation(() => {
         throw new Error("Config error");
       });
@@ -467,4 +465,3 @@ describe("Storage Path Utils", () => {
     });
   });
 });
-

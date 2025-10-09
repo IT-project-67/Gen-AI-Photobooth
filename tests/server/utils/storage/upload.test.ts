@@ -8,7 +8,8 @@ type SupabaseResponse<T> = {
   error: { message: string } | null;
 };
 
-const mockGeneratePublicUrl = jest.fn<(supabaseUrl: string, path: string) => string>();
+const mockGeneratePublicUrl =
+  jest.fn<(supabaseUrl: string, path: string) => string>();
 
 jest.mock("~/server/utils/storage/path.utils", () => ({
   generatePublicUrl: mockGeneratePublicUrl,
@@ -43,7 +44,11 @@ let getFileInfoFromSupabase: (
   supabase: SupabaseClient,
   bucket: string,
   path: string,
-) => Promise<{ size: number; lastModified: string; contentType: string } | null>;
+) => Promise<{
+  size: number;
+  lastModified: string;
+  contentType: string;
+} | null>;
 
 beforeAll(async () => {
   const module = await import("~/server/utils/storage/upload.utils");
@@ -74,7 +79,8 @@ describe("Storage Upload Utils", () => {
         path: "test/path.png",
       };
 
-      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload =
+        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: { path: options.path },
         error: null,
@@ -107,7 +113,8 @@ describe("Storage Upload Utils", () => {
         cacheControl: "7200",
       };
 
-      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload =
+        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: { path: options.path },
         error: null,
@@ -138,7 +145,8 @@ describe("Storage Upload Utils", () => {
         upsert: false,
       };
 
-      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload =
+        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: { path: options.path },
         error: null,
@@ -172,7 +180,8 @@ describe("Storage Upload Utils", () => {
       };
 
       const uploadError = { message: "Upload failed" };
-      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload =
+        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: null,
         error: uploadError,
@@ -186,7 +195,9 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      await expect(uploadToSupabase(mockSupabase, file, options)).rejects.toMatchObject({
+      await expect(
+        uploadToSupabase(mockSupabase, file, options),
+      ).rejects.toMatchObject({
         statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
         statusMessage: "Upload failed",
       });
@@ -208,7 +219,8 @@ describe("Storage Upload Utils", () => {
         path: "test/path.png",
       };
 
-      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload =
+        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: null,
         error: { message: "Storage quota exceeded" },
@@ -254,7 +266,8 @@ describe("Storage Upload Utils", () => {
         path: "test/path.png",
       };
 
-      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload =
+        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: { path: options.path },
         error: null,
@@ -299,7 +312,8 @@ describe("Storage Upload Utils", () => {
         path: "test/path.png",
       };
 
-      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload =
+        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: null,
         error: { message: "Network error" },
@@ -846,7 +860,8 @@ describe("Storage Upload Utils", () => {
         cacheControl: "3600",
       };
 
-      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload =
+        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: { path: options.path },
         error: null,
