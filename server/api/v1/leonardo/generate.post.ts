@@ -91,27 +91,27 @@ export default defineEventHandler(async (event) => {
       initImageId: imageId,
       isLandscape,
     }),
-    client.generateFromImageId({
-      prompt: prompts[1],
-      modelId: modelId,
-      styleId: styleId,
-      initImageId: imageId,
-      isLandscape,
-    }),
-    client.generateFromImageId({
-      prompt: prompts[2],
-      modelId: modelId,
-      styleId: styleId,
-      initImageId: imageId,
-      isLandscape,
-    }),
-    client.generateFromImageId({
-      prompt: prompts[3],
-      modelId: modelId,
-      styleId: styleId,
-      initImageId: imageId,
-      isLandscape,
-    }),
+    // client.generateFromImageId({
+    //   prompt: prompts[1],
+    //   modelId: modelId,
+    //   styleId: styleId,
+    //   initImageId: imageId,
+    //   isLandscape,
+    // }),
+    // client.generateFromImageId({
+    //   prompt: prompts[2],
+    //   modelId: modelId,
+    //   styleId: styleId,
+    //   initImageId: imageId,
+    //   isLandscape,
+    // }),
+    // client.generateFromImageId({
+    //   prompt: prompts[3],
+    //   modelId: modelId,
+    //   styleId: styleId,
+    //   initImageId: imageId,
+    //   isLandscape,
+    // }),
   ]);
 
   const generationIds = (generations as GenerationResponse[]).map(
