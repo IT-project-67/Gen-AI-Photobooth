@@ -70,9 +70,7 @@ export const requireAuth = async (event: H3Event): Promise<UserData> => {
 };
 
 // Optional auth middleware (doesn't throw error if not authenticated)
-export const optionalAuth = async (
-  event: H3Event,
-): Promise<UserData | null> => {
+export const optionalAuth = async (event: H3Event): Promise<UserData | null> => {
   try {
     return await requireAuth(event);
   } catch {

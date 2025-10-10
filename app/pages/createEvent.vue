@@ -48,22 +48,13 @@
       @change="handleFileChange"
     />
 
-    <AppButton
-      :text="logoUrl ? 'Re-Select Logo' : 'Upload Logo'"
-      @click="ClickUpload"
-    />
+    <AppButton :text="logoUrl ? 'Re-Select Logo' : 'Upload Logo'" @click="ClickUpload" />
 
     <PreviewBox v-if="logoUrl" :logo-url="logoUrl" />
 
     <AppButton
       class="AppButton"
-      :text="
-        isSubmitting
-          ? 'Processing...'
-          : logoUrl
-            ? 'Continue'
-            : 'Continue without Logo'
-      "
+      :text="isSubmitting ? 'Processing...' : logoUrl ? 'Continue' : 'Continue without Logo'"
       :disabled="isSubmitting"
       @click="handleSubmit"
     />
@@ -139,8 +130,7 @@ const handleSubmit = async () => {
 
     if (selectedFile.value) {
       try {
-        const eventId =
-          "id" in eventResponse ? eventResponse.id : eventResponse.data?.id;
+        const eventId = "id" in eventResponse ? eventResponse.id : eventResponse.data?.id;
         if (!eventId) {
           throw new Error("No event ID available for logo upload");
         }
@@ -151,8 +141,7 @@ const handleSubmit = async () => {
         console.error("Error details:", logoError);
       }
     }
-    const eventId =
-      "id" in eventResponse ? eventResponse.id : eventResponse.data?.id;
+    const eventId = "id" in eventResponse ? eventResponse.id : eventResponse.data?.id;
     if (eventId) {
       await navigateTo(`/cameraPage?eventId=${eventId}`);
     } else {

@@ -19,11 +19,7 @@ export function generateFilePath(
   return path;
 }
 
-export function generateLogoPath(
-  userId: string,
-  eventId: string,
-  file: UploadFile,
-): string {
+export function generateLogoPath(userId: string, eventId: string, file: UploadFile): string {
   return generateFilePath(
     PATH_TEMPLATES.LOGO,
     {
@@ -69,6 +65,23 @@ export function generateAIPhotoPath(
       sessionId,
       style: style.toLowerCase(),
       filename,
+    },
+    file,
+  );
+}
+
+export function generateQRCodePath(
+  userId: string,
+  eventId: string,
+  sessionId: string,
+  file: UploadFile,
+): string {
+  return generateFilePath(
+    PATH_TEMPLATES.QR_CODE,
+    {
+      userId,
+      eventId,
+      sessionId,
     },
     file,
   );

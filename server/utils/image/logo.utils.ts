@@ -7,14 +7,10 @@ export async function downloadEventLogo(logoUrl: string): Promise<UploadFile> {
     const supabase = createAdminClient();
     const bucket = getStorageBucket();
 
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .download(logoUrl);
+    const { data, error } = await supabase.storage.from(bucket).download(logoUrl);
 
     if (error || !data) {
-      throw new Error(
-        `Failed to download logo: ${error?.message || "Logo not found"}`,
-      );
+      throw new Error(`Failed to download logo: ${error?.message || "Logo not found"}`);
     }
 
     const arrayBuffer = await data.arrayBuffer();

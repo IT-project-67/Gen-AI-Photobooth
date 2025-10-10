@@ -32,9 +32,7 @@ export default defineEventHandler(async (event) => {
 
     if (!existingProfile) {
       const displayName =
-        user.user_metadata?.displayName ||
-        user.user_metadata?.full_name ||
-        "user";
+        user.user_metadata?.displayName || user.user_metadata?.full_name || "user";
       const newProfile = await createProfile(user.id, displayName);
       return {
         success: true,
@@ -51,12 +49,8 @@ export default defineEventHandler(async (event) => {
     }
   } catch (error: unknown) {
     throw createError({
-      statusCode:
-        (error as OAuthError)?.statusCode || ERROR_STATUS_MAP.INTERNAL_ERROR,
-      statusMessage:
-        error instanceof Error
-          ? error.message
-          : "OAuth profile creation failed",
+      statusCode: (error as OAuthError)?.statusCode || ERROR_STATUS_MAP.INTERNAL_ERROR,
+      statusMessage: error instanceof Error ? error.message : "OAuth profile creation failed",
     });
   }
 });

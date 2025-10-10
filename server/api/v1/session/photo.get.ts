@@ -85,9 +85,7 @@ export default defineEventHandler(async (event) => {
       );
     }
 
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .download(photoSession.photoUrl);
+    const { data, error } = await supabase.storage.from(bucket).download(photoSession.photoUrl);
 
     if (error || !data) {
       console.error("Photo download error:", error);

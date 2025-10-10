@@ -33,9 +33,7 @@ export const usePhoto = () => {
     };
   };
 
-  const createPhotoSession = async (
-    eventId: string,
-  ): Promise<SessionData | null> => {
+  const createPhotoSession = async (eventId: string): Promise<SessionData | null> => {
     try {
       isLoading.value = true;
       error.value = null;
@@ -74,20 +72,15 @@ export const usePhoto = () => {
     }
   };
 
-  const getPhotoSession = async (
-    sessionId: string,
-  ): Promise<SessionData | null> => {
+  const getPhotoSession = async (sessionId: string): Promise<SessionData | null> => {
     try {
       isLoading.value = true;
       error.value = null;
 
       const headers = await getAuthHeaders();
-      const response = await $fetch(
-        `/api/v1/session/get?sessionId=${sessionId}`,
-        {
-          headers,
-        },
-      );
+      const response = await $fetch(`/api/v1/session/get?sessionId=${sessionId}`, {
+        headers,
+      });
 
       if (response.success && response.data) {
         return response.data;
@@ -161,12 +154,9 @@ export const usePhoto = () => {
       error.value = null;
 
       const headers = await getAuthHeaders();
-      const response = await fetch(
-        `/api/v1/session/photo?sessionId=${sessionId}&mode=blob`,
-        {
-          headers,
-        },
-      );
+      const response = await fetch(`/api/v1/session/photo?sessionId=${sessionId}&mode=blob`, {
+        headers,
+      });
 
       if (!response.ok) {
         throw new Error(`Failed to get photo: ${response.statusText}`);

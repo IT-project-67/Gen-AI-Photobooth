@@ -2,12 +2,7 @@
   <div class="navbar">
     <div class="navbar-logo">
       <!-- app icon -->
-      <img
-        class="icon"
-        src="/assets/images/icon-white.png"
-        alt="icon"
-        @click="goToHomePage"
-      />
+      <img class="icon" src="/assets/images/icon-white.png" alt="icon" @click="goToHomePage" />
     </div>
     <div class="navbar-user">
       <!-- User not logged in -->
@@ -27,11 +22,7 @@
       <template v-else>
         <span class="welcome-text">Welcome Back!</span>
         <div class="user-menu" @click="toggleUserMenu">
-          <img
-            class="user-menu-icon"
-            src="/assets/images/user-icon.png"
-            alt="user-icon"
-          />
+          <img class="user-menu-icon" src="/assets/images/user-icon.png" alt="user-icon" />
           <span class="down-arrow">▼</span>
         </div>
 
@@ -80,6 +71,7 @@ const toggleUserMenu = () => {
   showUserMenu.value = true;
 };
 const handleLogout = async () => {
+  localStorage.removeItem("lastActive");
   const { error } = await logout();
   if (error) {
     console.error("Logout error:", error);
@@ -105,6 +97,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
 });
+
+defineExpose({ handleLogout });
 </script>
 
 <style scoped>

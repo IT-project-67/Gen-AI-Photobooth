@@ -10,23 +10,13 @@
         muted
       ></video>
 
-      <button
-        class="flip-button"
-        :disabled="!canFlip"
-        title="flipCamera"
-        @click="flipCamera"
-      >
+      <button class="flip-button" :disabled="!canFlip" title="flipCamera" @click="flipCamera">
         <p class="flip-content">🔄</p>
       </button>
     </div>
 
     <div class="camera-control">
-      <button
-        class="camera-button"
-        :disabled="!isReady"
-        title="takePhoto"
-        @click="takePhoto"
-      >
+      <button class="camera-button" :disabled="!isReady" title="takePhoto" @click="takePhoto">
         <div class="button-inner"></div>
       </button>
     </div>
@@ -61,9 +51,7 @@ const currentFacingMode = ref<"user" | "environment">("environment");
 const canFlip = ref(false);
 const isReady = ref(false);
 
-const initCamera = async (
-  facingMode: "user" | "environment" = "environment",
-) => {
+const initCamera = async (facingMode: "user" | "environment" = "environment") => {
   try {
     // stop previous stream if exists
     if (stream.value) {
@@ -126,9 +114,7 @@ const initCamera = async (
 const checkCameraFlip = async () => {
   try {
     const devices = await navigator.mediaDevices.enumerateDevices();
-    const videoDevices = devices.filter(
-      (device) => device.kind === "videoinput",
-    );
+    const videoDevices = devices.filter((device) => device.kind === "videoinput");
     canFlip.value = videoDevices.length > 1;
   } catch (error) {
     console.error("Failed to check camera:", error);
@@ -139,8 +125,7 @@ const checkCameraFlip = async () => {
 const flipCamera = async () => {
   if (!canFlip.value) return;
 
-  const newFacingMode =
-    currentFacingMode.value === "user" ? "environment" : "user";
+  const newFacingMode = currentFacingMode.value === "user" ? "environment" : "user";
   await initCamera(newFacingMode);
 };
 
@@ -202,17 +187,7 @@ const takePhoto = () => {
       outputHeight,
     );
   } else {
-    ctx.drawImage(
-      video,
-      cropX,
-      cropY,
-      cropWidth,
-      cropHeight,
-      0,
-      0,
-      outputWidth,
-      outputHeight,
-    );
+    ctx.drawImage(video, cropX, cropY, cropWidth, cropHeight, 0, 0, outputWidth, outputHeight);
   }
 
   const dataUrl = canvas.toDataURL("image/jpeg", 0.9);

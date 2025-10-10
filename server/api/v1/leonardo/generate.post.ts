@@ -1,8 +1,5 @@
 import { config } from "~~/server/config";
-import type {
-  GenerationResponse,
-  GenerationStatusResponse,
-} from "~~/server/types/leonardo";
+import type { GenerationResponse, GenerationStatusResponse } from "~~/server/types/leonardo";
 import sharp from "sharp";
 import { ERROR_STATUS_MAP } from "~~/server/types/core";
 import { Style } from "@prisma/client";
@@ -15,11 +12,7 @@ import {
 import { createAdminClient } from "~~/server/clients";
 import { uploadAIPhoto, type UploadFile } from "~~/server/utils/storage";
 import { requireAuth } from "~~/server/utils/auth";
-import {
-  hasEventLogo,
-  downloadEventLogo,
-  mergeImages,
-} from "~~/server/utils/image";
+import { hasEventLogo, downloadEventLogo, mergeImages } from "~~/server/utils/image";
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event);
@@ -91,27 +84,27 @@ export default defineEventHandler(async (event) => {
       initImageId: imageId,
       isLandscape,
     }),
-    // client.generateFromImageId({
-    //   prompt: prompts[1],
-    //   modelId: modelId,
-    //   styleId: styleId,
-    //   initImageId: imageId,
-    //   isLandscape,
-    // }),
-    // client.generateFromImageId({
-    //   prompt: prompts[2],
-    //   modelId: modelId,
-    //   styleId: styleId,
-    //   initImageId: imageId,
-    //   isLandscape,
-    // }),
-    // client.generateFromImageId({
-    //   prompt: prompts[3],
-    //   modelId: modelId,
-    //   styleId: styleId,
-    //   initImageId: imageId,
-    //   isLandscape,
-    // }),
+    client.generateFromImageId({
+      prompt: prompts[1],
+      modelId: modelId,
+      styleId: styleId,
+      initImageId: imageId,
+      isLandscape,
+    }),
+    client.generateFromImageId({
+      prompt: prompts[2],
+      modelId: modelId,
+      styleId: styleId,
+      initImageId: imageId,
+      isLandscape,
+    }),
+    client.generateFromImageId({
+      prompt: prompts[3],
+      modelId: modelId,
+      styleId: styleId,
+      initImageId: imageId,
+      isLandscape,
+    }),
   ]);
 
   const generationIds = (generations as GenerationResponse[]).map(
@@ -119,15 +112,11 @@ export default defineEventHandler(async (event) => {
   );
 
   const styles = Object.values(Style) as Style[];
-  const aiPhotos = await Promise.all(
-    styles.map((style) => createAIPhoto(sessionId, style)),
-  );
+  const aiPhotos = await Promise.all(styles.map((style) => createAIPhoto(sessionId, style)));
 
   async function waitForGenerations(generationId: string): Promise<string> {
     while (true) {
-      const result = (await client.getGeneration(
-        generationId,
-      )) as GenerationStatusResponse;
+      const result = (await client.getGeneration(generationId)) as GenerationStatusResponse;
 
       if (result.generations_by_pk.status === "COMPLETE") {
         return result.generations_by_pk.generated_images[0].url;
@@ -140,9 +129,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const imageUrls = await Promise.all(
-    generationIds.map((id) => waitForGenerations(id)),
-  );
+  const imageUrls = await Promise.all(generationIds.map((id) => waitForGenerations(id)));
 
   const supabase = createAdminClient();
   const runtimeConfig = useRuntimeConfig();
@@ -191,10 +178,7 @@ export default defineEventHandler(async (event) => {
             };
             console.log(`Successfully merged logo with ${style} photo`);
           } catch (mergeError) {
-            console.warn(
-              `Failed to merge logo with ${style} photo:`,
-              mergeError,
-            );
+            console.warn(`Failed to merge logo with ${style} photo:`, mergeError);
           }
         }
 

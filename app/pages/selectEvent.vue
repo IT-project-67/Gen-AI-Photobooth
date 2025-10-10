@@ -8,26 +8,16 @@
       <label class="select-label" for="event-select">Select an event: </label>
 
       <!-- drop down box -->
-      <select
-        v-model="selectedEventID"
-        class="event-select"
-        :disabled="isLoadingEvents"
-      >
+      <select v-model="selectedEventID" class="event-select" :disabled="isLoadingEvents">
         <!-- placeholder -->
         <option disabled value="">
-          {{
-            isLoadingEvents
-              ? "Loading events..."
-              : "-- Please choose an event --"
-          }}
+          {{ isLoadingEvents ? "Loading events..." : "-- Please choose an event --" }}
         </option>
 
         <!-- options -->
         <option v-for="event in events" :key="event.id" :value="event.id">
           {{ event.name }} ({{
-            event.startDate
-              ? new Date(event.startDate).toLocaleDateString()
-              : "No date"
+            event.startDate ? new Date(event.startDate).toLocaleDateString() : "No date"
           }})
         </option>
       </select>
@@ -40,6 +30,8 @@
       >
         {{ isSubmitting ? "Processing..." : "Submit" }}
       </button>
+
+      <button class="submit-button" @click="navigateTo('/createEvent')">Create a New Event</button>
     </div>
 
     <div v-if="submittedEventID !== ''" class="wrapper">
@@ -56,9 +48,7 @@
         <span class="dot">•</span>
         End Date:
         {{
-          selectedEvent?.endDate
-            ? new Date(selectedEvent.endDate).toLocaleDateString()
-            : "Unknown"
+          selectedEvent?.endDate ? new Date(selectedEvent.endDate).toLocaleDateString() : "Unknown"
         }}
       </p>
       <p v-if="eventLogoUrl !== ''">
@@ -67,10 +57,7 @@
       <p v-else>Please confirm the event details below before continuing.</p>
     </div>
     <!-- preview box -->
-    <PreviewBox
-      v-if="submittedEventID !== '' && eventLogoUrl !== ''"
-      :logo-url="eventLogoUrl"
-    />
+    <PreviewBox v-if="submittedEventID !== '' && eventLogoUrl !== ''" :logo-url="eventLogoUrl" />
 
     <!-- continue button -->
     <AppButton
@@ -94,11 +81,7 @@
 
 <script setup lang="ts">
 import AppButton from "~/components/AppButton.vue";
-import type {
-  EventListItem,
-  EventResponse,
-  SignedUrlResponse,
-} from "~~/server/types/event";
+import type { EventListItem, EventResponse, SignedUrlResponse } from "~~/server/types/event";
 
 const selectedEventID = ref("");
 const submittedEventID = ref("");
@@ -145,9 +128,7 @@ const handleSubmit = async (): Promise<void> => {
     // Get event logo if available
     if (event?.logoUrl) {
       try {
-        const signedUrlResponse = await getEventLogoSignedUrl(
-          selectedEventID.value,
-        );
+        const signedUrlResponse = await getEventLogoSignedUrl(selectedEventID.value);
         const signedUrl = (signedUrlResponse as SignedUrlResponse).url;
         eventLogoUrl.value = signedUrl || "";
       } catch (logoError) {

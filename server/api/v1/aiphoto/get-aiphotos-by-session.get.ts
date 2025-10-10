@@ -1,10 +1,7 @@
 import { defineEventHandler, getQuery, createError } from "h3";
 import { requireAuth } from "~~/server/utils/auth";
 import { ERROR_STATUS_MAP } from "~~/server/types/core";
-import {
-  createErrorResponse,
-  createSuccessResponse,
-} from "~~/server/utils/core";
+import { createErrorResponse, createSuccessResponse } from "~~/server/utils/core";
 import { getAIPhotosBySession, getPhotoSessionById } from "~~/server/model";
 
 export default defineEventHandler(async (event) => {

@@ -1,0 +1,7 @@
+node_modules
+.nuxt
+dist
+.build
+coverage
+.env*
+README.md

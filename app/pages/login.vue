@@ -24,13 +24,7 @@ const { loginWithEmail } = useAuth();
 const loginError = ref("");
 const isSubmitting = ref(false);
 
-const handleSubmit = async ({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) => {
+const handleSubmit = async ({ email, password }: { email: string; password: string }) => {
   isSubmitting.value = true;
   loginError.value = "";
 
@@ -48,8 +42,7 @@ const handleSubmit = async ({
     }
   } catch (err: unknown) {
     console.error("Login error:", err);
-    const errorMessage =
-      err instanceof Error ? err.message : "An error occurred during sign in";
+    const errorMessage = err instanceof Error ? err.message : "An error occurred during sign in";
     loginError.value = errorMessage;
   } finally {
     isSubmitting.value = false;
