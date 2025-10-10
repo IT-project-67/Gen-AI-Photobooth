@@ -2,10 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "regions": ["syd1"],
   "functions": {
-    "api/**": {
-      "memory": 1024,
-      "maxDuration": 10
-    },
     "server/**": {
       "memory": 1024,
       "maxDuration": 10
