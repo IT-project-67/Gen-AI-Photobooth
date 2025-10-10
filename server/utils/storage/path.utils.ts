@@ -70,6 +70,23 @@ export function generateAIPhotoPath(
   );
 }
 
+export function generateQRCodePath(
+  userId: string,
+  eventId: string,
+  sessionId: string,
+  file: UploadFile,
+): string {
+  return generateFilePath(
+    PATH_TEMPLATES.QR_CODE,
+    {
+      userId,
+      eventId,
+      sessionId,
+    },
+    file,
+  );
+}
+
 export function getStorageBucket(): string {
   try {
     return config().STORAGE_BUCKET;

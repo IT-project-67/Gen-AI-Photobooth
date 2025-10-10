@@ -81,6 +81,13 @@ onMounted(() => {
 onBeforeUnmount(() => {
   stopAutoPlay();
 });
+
+defineExpose({
+  currentSlide,
+  nextSlide,
+  prevSlide,
+  goToSlide,
+});
 </script>
 
 <style scoped>
