@@ -1,9 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type {
-  UploadFile,
-  UploadOptions,
-  UploadResult,
-} from "~~/server/types/storage";
+import type { UploadFile, UploadOptions, UploadResult } from "~~/server/types/storage";
 import { createErrorResponse } from "~~/server/utils/core";
 import { ERROR_STATUS_MAP } from "~~/server/types/core";
 import { generatePublicUrl } from "./path.utils";
@@ -14,13 +10,11 @@ export async function uploadToSupabase(
   options: UploadOptions,
 ): Promise<UploadResult> {
   const { bucket, path, upsert = true, cacheControl = "3600" } = options;
-  const { error } = await supabase.storage
-    .from(bucket)
-    .upload(path, file.data, {
-      contentType: file.type,
-      cacheControl,
-      upsert,
-    });
+  const { error } = await supabase.storage.from(bucket).upload(path, file.data, {
+    contentType: file.type,
+    cacheControl,
+    upsert,
+  });
 
   if (error) {
     console.error("Supabase upload error:", error);

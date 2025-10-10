@@ -11,10 +11,8 @@ export const config = (): AppConfig => {
   return {
     STORAGE_BUCKET: rc.storageBucket ?? "PhotoBooth",
     LEONARDO_API_KEY: rc.leonardoApiKey,
-    LEONARDO_MODEL_ID:
-      rc.leonardoModelId ?? "28aeddf8-bd19-4803-80fc-79602d1a9989",
-    LEONARDO_STYLE_ID:
-      rc.leonardoStyleId ?? "111dc692-d470-4eec-b791-3475abac4c46",
+    LEONARDO_MODEL_ID: rc.leonardoModelId ?? "28aeddf8-bd19-4803-80fc-79602d1a9989",
+    LEONARDO_STYLE_ID: rc.leonardoStyleId ?? "111dc692-d470-4eec-b791-3475abac4c46",
     LEONARDO_DEFAULT_PROMPTS: [
       "Anime style: Keep everything from the original photo (people, faces, expressions, composition, background). Only change the art style into anime style.",
       "Watercolor painting: Keep everything from the original photo (people, faces, expressions, composition, background). Only change the art style into soft watercolor painting style.",

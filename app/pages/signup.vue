@@ -43,23 +43,14 @@ const handleSignUpError = (msg: string) => {
   signupError.value = msg;
 };
 
-const handleSignUp = async ({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) => {
+const handleSignUp = async ({ email, password }: { email: string; password: string }) => {
   isSubmitting.value = true;
 
   // reset error message
   signupError.value = "";
 
   try {
-    const { data, error: registerError } = await registerWithEmail(
-      email,
-      password,
-    );
+    const { data, error: registerError } = await registerWithEmail(email, password);
 
     if (registerError) {
       // registerError is already a string, use it directly
@@ -90,9 +81,7 @@ const handleSignUp = async ({
   } catch (err: unknown) {
     console.error("Registration error:", err);
     const errorMessage =
-      err instanceof Error
-        ? err.message
-        : "An error occurred during registration";
+      err instanceof Error ? err.message : "An error occurred during registration";
     signupError.value = errorMessage;
   } finally {
     isSubmitting.value = false;

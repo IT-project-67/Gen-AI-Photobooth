@@ -11,10 +11,7 @@
     <AppButton text="Start Now!" @click="clickStart" />
 
     <!-- Announcer textbox (Tutorial) -->
-    <AppTextbox
-      :title="'Quick Start Guide!'"
-      :paragraphs="tutorialParagraphs"
-    />
+    <AppTextbox :title="'Quick Start Guide!'" :paragraphs="tutorialParagraphs" />
   </div>
 </template>
 

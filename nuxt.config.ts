@@ -3,13 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: false },
 
-  modules: [
-    "@nuxt/eslint",
-    "@nuxt/image",
-    "@nuxt/test-utils",
-    "@nuxt/ui",
-    "@nuxtjs/supabase",
-  ],
+  modules: ["@nuxt/eslint", "@nuxt/image", "@nuxt/test-utils", "@nuxt/ui", "@nuxtjs/supabase"],
 
   nitro: {
     experimental: {
@@ -51,10 +45,7 @@ export default defineNuxtConfig({
     },
   },
 
-  css: [
-    "~/assets/css/main.css",
-    "@fortawesome/fontawesome-free/css/all.min.css",
-  ],
+  css: ["~/assets/css/main.css", "@fortawesome/fontawesome-free/css/all.min.css"],
 
   app: {
     head: {

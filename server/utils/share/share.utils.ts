@@ -31,10 +31,7 @@ export async function generateAndUploadQRCode(
   try {
     const supabase = createAdminClient();
 
-    const signedUrl = await createSignedUrlForAIPhoto(
-      aiPhotoUrl,
-      expiresInSeconds,
-    );
+    const signedUrl = await createSignedUrlForAIPhoto(aiPhotoUrl, expiresInSeconds);
     const qrCodeFile = await generateQRCodeFile(signedUrl, "qr.png");
 
     const qrCodePath = `qr.png`;
@@ -53,15 +50,11 @@ export async function generateAndUploadQRCode(
   }
 }
 
-export async function getQRCodeFromStorage(
-  qrCodePath: string,
-): Promise<Buffer | null> {
+export async function getQRCodeFromStorage(qrCodePath: string): Promise<Buffer | null> {
   const supabase = createAdminClient();
   const bucket = getStorageBucket();
 
-  const { data, error } = await supabase.storage
-    .from(bucket)
-    .download(qrCodePath);
+  const { data, error } = await supabase.storage.from(bucket).download(qrCodePath);
 
   if (error || !data) {
     console.error("QR Code download error:", error);

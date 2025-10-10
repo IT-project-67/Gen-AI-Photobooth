@@ -11,20 +11,12 @@ export const useApiError = () => {
 
   // Check if error is a validation error
   const isValidationError = (error: Errors): boolean => {
-    return (
-      error.code?.includes("VALIDATION") ||
-      error.code?.includes("INVALID") ||
-      false
-    );
+    return error.code?.includes("VALIDATION") || error.code?.includes("INVALID") || false;
   };
 
   // Check if error is an auth error
   const isAuthError = (error: Errors): boolean => {
-    return (
-      error.code?.includes("AUTH") ||
-      error.code?.includes("CREDENTIALS") ||
-      false
-    );
+    return error.code?.includes("AUTH") || error.code?.includes("CREDENTIALS") || false;
   };
 
   // Get user-friendly error message based on error code

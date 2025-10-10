@@ -79,9 +79,7 @@ onMounted(async () => {
       initAutoLogout();
     } else {
       const events = ["click", "mousemove", "keydown", "scroll"];
-      events.forEach((evt) =>
-        window.removeEventListener(evt, updateLastActiveTime),
-      );
+      events.forEach((evt) => window.removeEventListener(evt, updateLastActiveTime));
       isMonitoring = false;
       // console.log("no user, isMonitoring = false, eventlistener removed")
     }
@@ -90,9 +88,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   const events = ["click", "mousemove", "keydown", "scroll"];
-  events.forEach((evt) =>
-    window.removeEventListener(evt, updateLastActiveTime),
-  );
+  events.forEach((evt) => window.removeEventListener(evt, updateLastActiveTime));
 
   if (logoutTimer !== null) {
     clearTimeout(logoutTimer);
@@ -107,8 +103,7 @@ watch(
     if (newUser && !oldUser) {
       const provider = newUser.app_metadata?.provider;
       const isOAuthUser = provider && providers.includes(provider);
-      const isOAuthLogin =
-        isOAuthUser && newUser.id !== lastProcessedUserId.value;
+      const isOAuthLogin = isOAuthUser && newUser.id !== lastProcessedUserId.value;
       if (isOAuthLogin) {
         setTimeout(() => {
           handleOAuthProfile();

@@ -62,8 +62,7 @@ export const handleAuthError = (error: SupabaseAuthError | unknown): Errors => {
       return {
         ...baseError,
         code: "USER_ALREADY_EXISTS",
-        message:
-          "This email is already registered. Please try logging in instead.",
+        message: "This email is already registered. Please try logging in instead.",
         statusCode: ERROR_STATUS_MAP.USER_ALREADY_EXISTS,
       };
     case "invalid_token":
@@ -71,8 +70,7 @@ export const handleAuthError = (error: SupabaseAuthError | unknown): Errors => {
       return {
         ...baseError,
         code: "INVALID_RESET_TOKEN",
-        message:
-          "Invalid or expired reset token. Please request a new password reset.",
+        message: "Invalid or expired reset token. Please request a new password reset.",
         statusCode: ERROR_STATUS_MAP.INVALID_RESET_TOKEN,
       };
     case "email_not_found":

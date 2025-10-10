@@ -22,8 +22,7 @@ export class ImageMerger {
       const mainSharp = sharp(mainImage.data);
       const mainMetadata = await mainSharp.metadata();
 
-      const isLandscape =
-        (mainMetadata.width || 0) >= (mainMetadata.height || 0);
+      const isLandscape = (mainMetadata.width || 0) >= (mainMetadata.height || 0);
       const targetWidth = isLandscape ? 1248 : 832;
       const targetHeight = isLandscape ? 832 : 1248;
 
@@ -32,10 +31,7 @@ export class ImageMerger {
       );
       console.log(`Target size: ${targetWidth}x${targetHeight}`);
 
-      if (
-        mainMetadata.width !== targetWidth ||
-        mainMetadata.height !== targetHeight
-      ) {
+      if (mainMetadata.width !== targetWidth || mainMetadata.height !== targetHeight) {
         console.log(
           `Resizing main image from ${mainMetadata.width}x${mainMetadata.height} to ${targetWidth}x${targetHeight}`,
         );
@@ -43,14 +39,10 @@ export class ImageMerger {
       }
 
       const logoSharp = sharp(logoImage.data);
-      const logoResized = logoSharp.resize(
-        opts.logoSize.width,
-        opts.logoSize.height,
-        {
-          fit: "contain",
-          background: { r: 255, g: 255, b: 255, alpha: 0 },
-        },
-      );
+      const logoResized = logoSharp.resize(opts.logoSize.width, opts.logoSize.height, {
+        fit: "contain",
+        background: { r: 255, g: 255, b: 255, alpha: 0 },
+      });
 
       const borderWidth = opts.borderWidth;
       const canvasWidth = targetWidth + borderWidth * 2;

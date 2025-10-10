@@ -44,9 +44,7 @@ onMounted(loadQr);
         <!-- heading -->
         <h1>Scan the QR Code for Your Photo!</h1>
         <img :src="qrSrc" />
-        <button class="retry-button" @click="navigateTo('/cameraPage')">
-          Back to Camera
-        </button>
+        <button class="retry-button" @click="navigateTo('/cameraPage')">Back to Camera</button>
       </div>
 
       <!-- QR code image -->

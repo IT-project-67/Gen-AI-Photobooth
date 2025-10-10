@@ -2,10 +2,7 @@ import { defineEventHandler, getQuery, createError, setHeader } from "h3";
 import { createAdminClient } from "~~/server/clients";
 import { requireAuth } from "~~/server/utils/auth";
 import { ERROR_STATUS_MAP } from "~~/server/types/core";
-import {
-  createErrorResponse,
-  createSuccessResponse,
-} from "~~/server/utils/core";
+import { createErrorResponse, createSuccessResponse } from "~~/server/utils/core";
 import { getStorageBucket } from "~~/server/utils/storage/path.utils";
 import { getAIPhotoById } from "~~/server/model";
 
@@ -89,9 +86,7 @@ export default defineEventHandler(async (event) => {
       );
     }
 
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .download(aiPhoto.generatedUrl);
+    const { data, error } = await supabase.storage.from(bucket).download(aiPhoto.generatedUrl);
 
     if (error || !data) {
       console.error("AI Photo download error:", error);

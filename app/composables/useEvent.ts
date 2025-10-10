@@ -27,14 +27,11 @@ export const useEvent = () => {
       console.log(`${key}:`, value, typeof value);
     }
 
-    const resp: ApiResponse<LogoUploadResponse> = await $fetch(
-      "/api/v1/event/logo",
-      {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd,
-      },
-    );
+    const resp: ApiResponse<LogoUploadResponse> = await $fetch("/api/v1/event/logo", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    });
     return resp?.data ?? resp;
   };
 
@@ -43,14 +40,10 @@ export const useEvent = () => {
     if (!token) throw new Error("No access token");
     if (!eventId) throw new Error("Missing eventId");
 
-    const res = await fetch(
-      `/api/v1/event/logo?eventId=${encodeURIComponent(eventId)}&mode=blob`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
-    if (!res.ok)
-      throw new Error(`Failed to fetch logo: ${res.status} ${res.statusText}`);
+    const res = await fetch(`/api/v1/event/logo?eventId=${encodeURIComponent(eventId)}&mode=blob`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error(`Failed to fetch logo: ${res.status} ${res.statusText}`);
     return res.blob();
   };
 
@@ -85,17 +78,14 @@ export const useEvent = () => {
     const token = await getAccessToken();
     if (!token) throw new Error("No access token");
 
-    const resp: ApiResponse<EventResponse> = await $fetch(
-      "/api/v1/event/create",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: eventData,
+    const resp: ApiResponse<EventResponse> = await $fetch("/api/v1/event/create", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-    );
+      body: eventData,
+    });
     return resp?.data ?? resp;
   };
 
@@ -103,12 +93,9 @@ export const useEvent = () => {
     const token = await getAccessToken();
     if (!token) throw new Error("No access token");
 
-    const resp: ApiResponse<EventListItem[]> = await $fetch(
-      "/api/v1/event/get-events-by-user",
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
+    const resp: ApiResponse<EventListItem[]> = await $fetch("/api/v1/event/get-events-by-user", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     return resp?.data ?? resp;
   };
 

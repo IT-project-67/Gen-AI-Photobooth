@@ -2,10 +2,7 @@ import { defineEventHandler, getQuery, createError, setHeader, send } from "h3";
 import { createAdminClient } from "~~/server/clients";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import { ERROR_STATUS_MAP, ErrorType } from "~~/server/types/core";
-import {
-  createErrorResponse,
-  createSuccessResponse,
-} from "~~/server/utils/core";
+import { createErrorResponse, createSuccessResponse } from "~~/server/utils/core";
 import { getStorageBucket } from "~~/server/utils/storage/path.utils";
 import { getEventById } from "~~/server/model";
 
@@ -87,9 +84,7 @@ export default defineEventHandler(async (event) => {
       );
     }
 
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .download(userEvent.logoUrl);
+    const { data, error } = await supabase.storage.from(bucket).download(userEvent.logoUrl);
 
     if (error || !data) {
       console.error("Logo download error:", error);

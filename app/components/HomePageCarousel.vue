@@ -1,17 +1,9 @@
 <template>
   <div class="carousel">
-    <div
-      class="carousel-track"
-      :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
-    >
+    <div class="carousel-track" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
       <div v-for="(slide, index) in slides" :key="index" class="carousel-slide">
         <div class="carousel-content">
-          <img
-            v-if="slide.img"
-            :src="slide.img"
-            alt="Banner Image"
-            class="carousel-image"
-          />
+          <img v-if="slide.img" :src="slide.img" alt="Banner Image" class="carousel-image" />
           <div v-else>{{ slide.content || "" }}</div>
         </div>
       </div>
@@ -61,8 +53,7 @@ const nextSlide = () => {
 
 const prevSlide = () => {
   if (!props.slides.length) return;
-  currentSlide.value =
-    (currentSlide.value - 1 + props.slides.length) % props.slides.length;
+  currentSlide.value = (currentSlide.value - 1 + props.slides.length) % props.slides.length;
 };
 
 const goToSlide = (index: number) => {

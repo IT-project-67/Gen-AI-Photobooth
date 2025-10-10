@@ -7,10 +7,7 @@ export class LeonardoClient {
     if (baseURL) this.baseURL = baseURL;
   }
 
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {},
-  ): Promise<T> {
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const res = await fetch(`${this.baseURL}${endpoint}`, {
       ...options,
       headers: {
@@ -29,9 +26,7 @@ export class LeonardoClient {
         body: options.body,
         response: errorText,
       });
-      throw new Error(
-        `Leonardo API error: ${res.status} ${res.statusText} - ${errorText}`,
-      );
+      throw new Error(`Leonardo API error: ${res.status} ${res.statusText} - ${errorText}`);
     }
 
     return res.json();

@@ -48,10 +48,7 @@ export async function getAIPhotoById(aiPhotoId: string, userId: string) {
   }
 }
 
-export async function getAIPhotosBySession(
-  photoSessionId: string,
-  userId: string,
-) {
+export async function getAIPhotosBySession(photoSessionId: string, userId: string) {
   try {
     const aiPhotos = await prismaClient.aIPhoto.findMany({
       where: {
@@ -67,9 +64,7 @@ export async function getAIPhotosBySession(
       },
     });
     const styleOrder = Object.values(Style) as Style[];
-    aiPhotos.sort(
-      (a, b) => styleOrder.indexOf(a.style) - styleOrder.indexOf(b.style),
-    );
+    aiPhotos.sort((a, b) => styleOrder.indexOf(a.style) - styleOrder.indexOf(b.style));
     return aiPhotos;
   } catch (error) {
     console.error("Error fetching AI photos:", error);

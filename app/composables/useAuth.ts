@@ -36,13 +36,10 @@ export const useAuth = () => {
   const loginWithEmail = async (email: string, password: string) => {
     try {
       const loginData: LoginRequest = { email, password };
-      const response = await $fetch<AuthApi<LoginResponse>>(
-        "/api/v1/auth/login",
-        {
-          method: "POST",
-          body: loginData,
-        },
-      );
+      const response = await $fetch<AuthApi<LoginResponse>>("/api/v1/auth/login", {
+        method: "POST",
+        body: loginData,
+      });
 
       if (!response.success) {
         return {
@@ -88,13 +85,10 @@ export const useAuth = () => {
     try {
       const registerData: RegisterRequest = { email, password };
 
-      const response = await $fetch<AuthApi<RegisterResponse>>(
-        "/api/v1/auth/register",
-        {
-          method: "POST",
-          body: registerData,
-        },
-      );
+      const response = await $fetch<AuthApi<RegisterResponse>>("/api/v1/auth/register", {
+        method: "POST",
+        body: registerData,
+      });
 
       if (!response.success) {
         return {
@@ -184,11 +178,7 @@ export const useAuth = () => {
   };
 
   // Reset password
-  const resetPassword = async (
-    accessToken: string,
-    refreshToken: string,
-    newPassword: string,
-  ) => {
+  const resetPassword = async (accessToken: string, refreshToken: string, newPassword: string) => {
     try {
       // First, set the session using the tokens
       const { error: sessionError } = await supabase.auth.setSession({
@@ -223,8 +213,7 @@ export const useAuth = () => {
         error: null,
       };
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to reset password";
+      const errorMessage = error instanceof Error ? error.message : "Failed to reset password";
 
       return {
         data: null,
@@ -246,8 +235,7 @@ export const useAuth = () => {
       await navigateTo("/");
       return { error: null };
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Logout failed";
+      const errorMessage = error instanceof Error ? error.message : "Logout failed";
       return { error: errorMessage };
     }
   };

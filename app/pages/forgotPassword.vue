@@ -76,9 +76,7 @@ const handleSubmit = async (event: Event) => {
   } catch (err: unknown) {
     console.error("Forgot password error:", err);
     const errorMessage =
-      err instanceof Error
-        ? err.message
-        : "An error occurred while sending reset email";
+      err instanceof Error ? err.message : "An error occurred while sending reset email";
     error.value = errorMessage;
   } finally {
     isSubmitting.value = false;

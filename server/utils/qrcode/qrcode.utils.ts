@@ -23,10 +23,7 @@ export async function generateQRCode(
   }
 }
 
-export function createQRCodeFile(
-  buffer: Buffer,
-  filename: string = "qr.png",
-): UploadFile {
+export function createQRCodeFile(buffer: Buffer, filename: string = "qr.png"): UploadFile {
   return {
     name: filename,
     type: "image/png",

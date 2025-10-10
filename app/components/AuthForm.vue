@@ -5,13 +5,7 @@
       <!-- Email Input -->
       <div class="form-group">
         <label for="email">Email</label>
-        <input
-          id="email"
-          v-model="email"
-          type="email"
-          placeholder="Enter your email"
-          required
-        />
+        <input id="email" v-model="email" type="email" placeholder="Enter your email" required />
       </div>
 
       <!-- Password Input -->
@@ -41,8 +35,8 @@
       <!-- Confirmation message-->
       <p v-if="verify" class="verification-message">
         <span v-if="successMessage === 'verify_email'">
-          We've sent you a verification email. Please check your inbox and click
-          the link to verify your email address.
+          We've sent you a verification email. Please check your inbox and click the link to verify
+          your email address.
         </span>
         <span v-else-if="successMessage === 'verify_recovered'">
           Account recovered successfully! Redirecting login to continue...
@@ -86,27 +80,13 @@
 
     <!-- Social Media Login -->
     <div class="social-login">
-      <button
-        class="social-button google"
-        @click="emit('social-login', 'google')"
-      >
-        <img
-          src="/assets/images/googleLoco.png"
-          alt="Google"
-          class="social-icon"
-        />
+      <button class="social-button google" @click="emit('social-login', 'google')">
+        <img src="/assets/images/googleLoco.png" alt="Google" class="social-icon" />
         <span>Continue with Google</span>
       </button>
 
-      <button
-        class="social-button discord"
-        @click="emit('social-login', 'discord')"
-      >
-        <img
-          src="/assets/images/discordLogo.svg"
-          alt="Discord"
-          class="social-icon"
-        />
+      <button class="social-button discord" @click="emit('social-login', 'discord')">
+        <img src="/assets/images/discordLogo.svg" alt="Discord" class="social-icon" />
         <span>Continue with Discord</span>
       </button>
     </div>

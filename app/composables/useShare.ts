@@ -50,25 +50,20 @@ export const useShare = () => {
     };
   };
 
-  const createShare = async (
-    shareData: CreateShareRequest,
-  ): Promise<CreateShareData | null> => {
+  const createShare = async (shareData: CreateShareRequest): Promise<CreateShareData | null> => {
     try {
       isLoading.value = true;
       error.value = null;
 
       const headers = await getAuthHeaders();
-      const response = await $fetch<ShareApi<CreateShareResponse>>(
-        "/api/v1/share/create",
-        {
-          method: "POST",
-          headers: {
-            ...headers,
-            "Content-Type": "application/json",
-          },
-          body: shareData,
+      const response = await $fetch<ShareApi<CreateShareResponse>>("/api/v1/share/create", {
+        method: "POST",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json",
         },
-      );
+        body: shareData,
+      });
 
       if (response.success && response.data) {
         return {
@@ -150,9 +145,7 @@ export const useShare = () => {
           aiPhoto: share.aiPhoto,
         }));
       }
-      throw new Error(
-        response.error?.message || "Failed to get shares by event",
-      );
+      throw new Error(response.error?.message || "Failed to get shares by event");
     } catch (err: unknown) {
       console.error("Error getting shares by event:", err);
       error.value = handleError(err, "Failed to get shares by event");
@@ -168,12 +161,9 @@ export const useShare = () => {
       error.value = null;
 
       const headers = await getAuthHeaders();
-      const response = await fetch(
-        `/api/v1/share/qrcode?shareId=${encodeURIComponent(shareId)}`,
-        {
-          headers,
-        },
-      );
+      const response = await fetch(`/api/v1/share/qrcode?shareId=${encodeURIComponent(shareId)}`, {
+        headers,
+      });
 
       if (!response.ok) {
         throw new Error(`Failed to get QR code: ${response.statusText}`);

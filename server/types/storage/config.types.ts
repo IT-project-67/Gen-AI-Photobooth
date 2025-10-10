@@ -7,14 +7,7 @@ export const ALLOWED_TYPES: string[] = [
   "image/x-icon",
 ];
 
-export const ALLOWED_EXTS: string[] = [
-  "png",
-  "jpg",
-  "jpeg",
-  "webp",
-  "svg",
-  "ico",
-];
+export const ALLOWED_EXTS: string[] = ["png", "jpg", "jpeg", "webp", "svg", "ico"];
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -32,7 +25,6 @@ export const MIME_MAP: Record<string, string> = {
 export const PATH_TEMPLATES = {
   LOGO: "{userId}/{eventId}/Logo/logo.{ext}",
   PHOTO: "{userId}/{eventId}/Photos/{sessionId}/photo.{ext}",
-  AI_PHOTO:
-    "{userId}/{eventId}/Photos/{sessionId}/GenPhotos/{style}/{filename}.{ext}",
+  AI_PHOTO: "{userId}/{eventId}/Photos/{sessionId}/GenPhotos/{style}/{filename}.{ext}",
   QR_CODE: "{userId}/{eventId}/Photos/{sessionId}/qr.{ext}",
 } as const;
