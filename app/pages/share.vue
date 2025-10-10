@@ -8,8 +8,8 @@ const qrSrc = ref<string | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
 async function loadQr() {
-//   qrSrc.value =
-//     "https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=Hello%20World";
+  //   qrSrc.value =
+  //     "https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=Hello%20World";
   loading.value = true;
   error.value = null;
   try {

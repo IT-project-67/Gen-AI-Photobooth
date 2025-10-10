@@ -105,7 +105,7 @@ export default defineEventHandler(async (event) => {
     //   initImageId: imageId,
     //   isLandscape,
     // }),
-    // client.generateFromImageId({ 
+    // client.generateFromImageId({
     //   prompt: prompts[3],
     //   modelId: modelId,
     //   styleId: styleId,
