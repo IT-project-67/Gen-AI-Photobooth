@@ -462,18 +462,18 @@ npm run lint
 - **Access Control**: Only authenticated users can upload photos and generate QR codes
 
 ### Data Protection
-- **HTTPS Transmission**: All data transmitted over secure HTTPS connections
-- **Row-Level Security (RLS)**: Database-level security policies in Supabase
+- **HTTPS Transmission**: All data transmitted over secure HTTPS connections (enforced by hosting platform)
 - **Environment Variables**: Sensitive data stored in secure environment variables
-- **Input Validation**: Comprehensive validation on all API endpoints
-- **CORS Configuration**: Proper cross-origin resource sharing setup
+- **Input Validation**: Comprehensive validation on all API endpoints with type checking
+- **CORS Configuration**: Proper cross-origin resource sharing setup in Nuxt config
+- **Secure File Upload**: File type and size validation for all uploads
 
 ### Privacy & User Rights
-- **Data Control**: Users can access, export, and delete their personal data
-- **No Third-Party Sharing**: Data is not shared with third parties without explicit consent
+- **Data Control**: Users can access, update, and delete their personal data via profile API
 - **Secure Storage**: Direct storage URLs are never exposed; only signed URLs via QR codes
 - **Time-Limited Access**: QR codes expire after 7 days for enhanced privacy
-- **Compliance**: Designed to meet data protection regulations and requirements
+- **Authentication Required**: Only authenticated users can upload photos and generate QR codes
+- **Session Management**: Automatic token refresh and secure session handling via Supabase
 
 ---
 
