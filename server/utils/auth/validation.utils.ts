@@ -43,10 +43,7 @@ export const validatePassword = (password: string): Errors | null => {
 };
 
 // Validate login request
-export const validateLoginRequest = (
-  email: string,
-  password: string,
-): Errors | null => {
+export const validateLoginRequest = (email: string, password: string): Errors | null => {
   const emailError = validateEmail(email);
   if (emailError) return emailError;
   const passwordError = validatePassword(password);
@@ -55,10 +52,7 @@ export const validateLoginRequest = (
 };
 
 // Validate register request
-export const validateRegisterRequest = (
-  email: string,
-  password: string,
-): Errors | null => {
+export const validateRegisterRequest = (email: string, password: string): Errors | null => {
   return validateLoginRequest(email, password); // Same validation for now
 };
 

@@ -26,10 +26,7 @@ export default {
         "/node_modules/",
       ],
       transform: {
-        "^.+\\.tsx?$": [
-          "ts-jest",
-          { useESM: true, tsconfig: "./tests/tsconfig.json" },
-        ],
+        "^.+\\.tsx?$": ["ts-jest", { useESM: true, tsconfig: "./tests/tsconfig.json" }],
       },
     },
     {
@@ -49,10 +46,7 @@ export default {
         "^@/(.*)$": "<rootDir>/$1",
       },
       transform: {
-        "^.+\\.tsx?$": [
-          "ts-jest",
-          { useESM: true, tsconfig: "./tests/tsconfig.json" },
-        ],
+        "^.+\\.tsx?$": ["ts-jest", { useESM: true, tsconfig: "./tests/tsconfig.json" }],
         ".*\\.(vue)$": "@vue/vue3-jest",
       },
     },
@@ -64,10 +58,7 @@ export default {
       testMatch: ["**/*.test.ts"],
       moduleFileExtensions: ["ts", "js", "json", "node"],
       transform: {
-        "^.+\\.tsx?$": [
-          "ts-jest",
-          { useESM: true, tsconfig: "./tests/tsconfig.json" },
-        ],
+        "^.+\\.tsx?$": ["ts-jest", { useESM: true, tsconfig: "./tests/tsconfig.json" }],
       },
     },
   ],

@@ -115,9 +115,7 @@ describe("Logo Utils", () => {
     });
 
     it("should throw error when download fails with error", async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
       const mockDownload = jest.fn<() => Promise<SupabaseDownloadResponse>>();
       mockDownload.mockResolvedValue({
@@ -147,9 +145,7 @@ describe("Logo Utils", () => {
     });
 
     it("should throw error when data is null", async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
       const mockDownload = jest.fn<() => Promise<SupabaseDownloadResponse>>();
       mockDownload.mockResolvedValue({
@@ -174,9 +170,7 @@ describe("Logo Utils", () => {
     });
 
     it("should handle non-Error exceptions", async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
       mockGetStorageBucket.mockReturnValue("test-bucket");
       mockCreateAdminClient.mockImplementation(() => {

@@ -4,13 +4,9 @@
       <div class="footer-links">
         <a href="#" class="footer-link" @click="goToAboutUs">About Us</a>
         <a href="#" class="footer-link" @click="goToContactUs">Contact Us</a>
-        <a href="#" class="footer-link" @click="goToPrivacyPolicy"
-          >Privacy Policy</a
-        >
+        <a href="#" class="footer-link" @click="goToPrivacyPolicy">Privacy Policy</a>
       </div>
-      <div class="footer-extra-infos">
-        Created by unimelb IT Project Group67.
-      </div>
+      <div class="footer-extra-infos">Created by unimelb IT Project Group67.</div>
     </div>
   </footer>
 </template>

@@ -84,8 +84,7 @@ export const useLeonardo = () => {
         error: null,
       };
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to generate images";
+      const errorMessage = error instanceof Error ? error.message : "Failed to generate images";
 
       status.value = {
         isGenerating: false,

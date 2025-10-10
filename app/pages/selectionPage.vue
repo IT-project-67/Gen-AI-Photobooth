@@ -13,12 +13,7 @@
         <button @click="loadAiPhotos" class="retry-button">Retry</button>
       </div>
 
-      <HomePageCarousel
-        v-else
-        :slides="aiPhotos"
-        :autoplay="false"
-        class="ai-carousel"
-      />
+      <HomePageCarousel v-else :slides="aiPhotos" :autoplay="false" class="ai-carousel" />
 
       <div class="button-class">
         <AppButton text="Retake" class="retake-button" @click="clickRetake" />

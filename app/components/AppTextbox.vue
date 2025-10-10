@@ -2,11 +2,7 @@
   <div class="textbox">
     <h2 class="text-title">{{ title }}</h2>
     <div class="text-content">
-      <p
-        v-for="(paragraph, index) in paragraphs"
-        :key="index"
-        class="text-paragraph"
-      >
+      <p v-for="(paragraph, index) in paragraphs" :key="index" class="text-paragraph">
         {{ paragraph }}
       </p>
       <p v-if="paragraphs.length === 0" class="text-paragraph">

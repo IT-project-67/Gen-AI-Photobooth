@@ -17,11 +17,7 @@ let generateFilePath: (
   params: Record<string, string>,
   file: UploadFile,
 ) => string;
-let generateLogoPath: (
-  userId: string,
-  eventId: string,
-  file: UploadFile,
-) => string;
+let generateLogoPath: (userId: string, eventId: string, file: UploadFile) => string;
 let generatePhotoPath: (
   userId: string,
   eventId: string,
@@ -129,9 +125,7 @@ describe("Storage Path Utils", () => {
         file,
       );
 
-      expect(result).toBe(
-        "user-123/event_456/Photos/session@789/GenPhotos/anime/photo-001.jpeg",
-      );
+      expect(result).toBe("user-123/event_456/Photos/session@789/GenPhotos/anime/photo-001.jpeg");
     });
   });
 
@@ -170,13 +164,7 @@ describe("Storage Path Utils", () => {
       mockGetExtLower.mockReturnValue("png");
       const file = createMockFile("photo.png");
 
-      const result = generatePhotoPath(
-        "user123",
-        "event456",
-        "session789",
-        "photo001",
-        file,
-      );
+      const result = generatePhotoPath("user123", "event456", "session789", "photo001", file);
 
       expect(result).toBe("user123/event456/Photos/session789/photo001.png");
       expect(mockGetExtLower).toHaveBeenCalledWith("photo.png");
@@ -215,9 +203,7 @@ describe("Storage Path Utils", () => {
         file,
       );
 
-      expect(result).toBe(
-        "user123/event456/Photos/session789/GenPhotos/anime/photo001.png",
-      );
+      expect(result).toBe("user123/event456/Photos/session789/GenPhotos/anime/photo001.png");
       expect(mockGetExtLower).toHaveBeenCalledWith("generated.png");
     });
 
@@ -225,14 +211,7 @@ describe("Storage Path Utils", () => {
       mockGetExtLower.mockReturnValue("jpg");
       const file = createMockFile("test.jpg");
 
-      const result = generateAIPhotoPath(
-        "u1",
-        "e1",
-        "s1",
-        "WATERCOLOR",
-        "img1",
-        file,
-      );
+      const result = generateAIPhotoPath("u1", "e1", "s1", "WATERCOLOR", "img1", file);
 
       expect(result).toBe("u1/e1/Photos/s1/GenPhotos/watercolor/img1.jpg");
     });
@@ -250,27 +229,16 @@ describe("Storage Path Utils", () => {
         file,
       );
 
-      expect(result).toBe(
-        "user1/event1/Photos/session1/GenPhotos/oilpainting/gen001.webp",
-      );
+      expect(result).toBe("user1/event1/Photos/session1/GenPhotos/oilpainting/gen001.webp");
     });
 
     it("should handle hyphenated filenames", () => {
       mockGetExtLower.mockReturnValue("png");
       const file = createMockFile("image.png");
 
-      const result = generateAIPhotoPath(
-        "u1",
-        "e1",
-        "s1",
-        "anime",
-        "photo-2024-01-01",
-        file,
-      );
+      const result = generateAIPhotoPath("u1", "e1", "s1", "anime", "photo-2024-01-01", file);
 
-      expect(result).toBe(
-        "u1/e1/Photos/s1/GenPhotos/anime/photo-2024-01-01.png",
-      );
+      expect(result).toBe("u1/e1/Photos/s1/GenPhotos/anime/photo-2024-01-01.png");
     });
   });
 
@@ -287,9 +255,7 @@ describe("Storage Path Utils", () => {
     });
 
     it("should return default bucket when config fails", () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
       mockConfig.mockImplementation(() => {
         throw new Error("Config error");
       });
@@ -334,10 +300,7 @@ describe("Storage Path Utils", () => {
     });
 
     it("should generate correct public URL", () => {
-      const result = generatePublicUrl(
-        "https://example.supabase.co",
-        "path/to/file.png",
-      );
+      const result = generatePublicUrl("https://example.supabase.co", "path/to/file.png");
 
       expect(result).toBe(
         "https://example.supabase.co/storage/v1/object/public/TestBucket/path/to/file.png",
@@ -345,10 +308,7 @@ describe("Storage Path Utils", () => {
     });
 
     it("should handle URL without trailing slash", () => {
-      const result = generatePublicUrl(
-        "https://example.supabase.co",
-        "image.jpg",
-      );
+      const result = generatePublicUrl("https://example.supabase.co", "image.jpg");
 
       expect(result).toBe(
         "https://example.supabase.co/storage/v1/object/public/TestBucket/image.jpg",
@@ -356,10 +316,7 @@ describe("Storage Path Utils", () => {
     });
 
     it("should handle path with leading slash", () => {
-      const result = generatePublicUrl(
-        "https://example.supabase.co",
-        "/path/to/file.png",
-      );
+      const result = generatePublicUrl("https://example.supabase.co", "/path/to/file.png");
 
       expect(result).toBe(
         "https://example.supabase.co/storage/v1/object/public/TestBucket//path/to/file.png",
@@ -378,17 +335,12 @@ describe("Storage Path Utils", () => {
     });
 
     it("should use bucket from getStorageBucket when config fails", () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
       mockConfig.mockImplementation(() => {
         throw new Error("Config error");
       });
 
-      const result = generatePublicUrl(
-        "https://example.supabase.co",
-        "file.png",
-      );
+      const result = generatePublicUrl("https://example.supabase.co", "file.png");
 
       expect(result).toBe(
         "https://example.supabase.co/storage/v1/object/public/PhotoBooth/file.png",
@@ -446,19 +398,10 @@ describe("Storage Path Utils", () => {
       mockGetExtLower.mockReturnValue("webp");
       const file = createMockFile("generated.webp");
 
-      const path = generateAIPhotoPath(
-        "user1",
-        "event1",
-        "session1",
-        "Anime",
-        "gen001",
-        file,
-      );
+      const path = generateAIPhotoPath("user1", "event1", "session1", "Anime", "gen001", file);
       const url = generatePublicUrl("https://test.supabase.co", path);
 
-      expect(path).toBe(
-        "user1/event1/Photos/session1/GenPhotos/anime/gen001.webp",
-      );
+      expect(path).toBe("user1/event1/Photos/session1/GenPhotos/anime/gen001.webp");
       expect(url).toBe(
         "https://test.supabase.co/storage/v1/object/public/PhotoBooth/user1/event1/Photos/session1/GenPhotos/anime/gen001.webp",
       );

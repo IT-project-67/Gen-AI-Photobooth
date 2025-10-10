@@ -1,13 +1,7 @@
 import type { EventStruct } from "~~/server/types/event/model.types";
 import { prismaClient } from "~~/server/clients/prisma.client";
 
-export const createEvent = async ({
-  name,
-  userId,
-  logoUrl,
-  startDate,
-  endDate,
-}: EventStruct) => {
+export const createEvent = async ({ name, userId, logoUrl, startDate, endDate }: EventStruct) => {
   try {
     const newEvent = await prismaClient.event.create({
       data: {
@@ -43,10 +37,7 @@ export const getEventById = async (id: string, userId: string) => {
   }
 };
 
-export const getEventsByProfile = async (
-  userId: string,
-  order: "asc" | "desc" = "desc",
-) => {
+export const getEventsByProfile = async (userId: string, order: "asc" | "desc" = "desc") => {
   try {
     const targetEvent = await prismaClient.event.findMany({
       where: {

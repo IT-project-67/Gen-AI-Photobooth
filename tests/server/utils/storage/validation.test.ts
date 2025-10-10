@@ -405,11 +405,7 @@ describe("Storage Validation Utils", () => {
 
     it("should validate exact MIME type match", () => {
       expect(() => {
-        validateFileType("image/jpeg", [
-          "image/png",
-          "image/jpeg",
-          "image/webp",
-        ]);
+        validateFileType("image/jpeg", ["image/png", "image/jpeg", "image/webp"]);
       }).not.toThrow();
     });
   });
@@ -470,11 +466,7 @@ describe("Storage Validation Utils", () => {
   });
 
   describe("validateFileOrThrow", () => {
-    const createMockFile = (
-      name: string,
-      type: string,
-      size: number,
-    ): UploadFile => ({
+    const createMockFile = (name: string, type: string, size: number): UploadFile => ({
       name,
       type,
       data: Buffer.alloc(size),
@@ -675,10 +667,7 @@ describe("Storage Validation Utils", () => {
         fail("Should have thrown an error");
       } catch (error) {
         const validationError = error as ValidationError;
-        expect(validationError).toHaveProperty(
-          "statusCode",
-          ERROR_STATUS_MAP.VALIDATION_ERROR,
-        );
+        expect(validationError).toHaveProperty("statusCode", ERROR_STATUS_MAP.VALIDATION_ERROR);
         expect(validationError).toHaveProperty("statusMessage");
         expect(validationError).toHaveProperty("data");
         expect(validationError.data).toHaveProperty("success", false);
@@ -699,14 +688,8 @@ describe("Storage Validation Utils", () => {
         fail("Should have thrown an error");
       } catch (error) {
         const validationError = error as ValidationError;
-        expect(validationError.data.error).toHaveProperty(
-          "code",
-          "INVALID_FILE_EXTENSION",
-        );
-        expect(validationError.data.error).toHaveProperty(
-          "type",
-          "VALIDATION_ERROR",
-        );
+        expect(validationError.data.error).toHaveProperty("code", "INVALID_FILE_EXTENSION");
+        expect(validationError.data.error).toHaveProperty("type", "VALIDATION_ERROR");
       }
     });
   });

@@ -8,8 +8,7 @@ type SupabaseResponse<T> = {
   error: { message: string } | null;
 };
 
-const mockGeneratePublicUrl =
-  jest.fn<(supabaseUrl: string, path: string) => string>();
+const mockGeneratePublicUrl = jest.fn<(supabaseUrl: string, path: string) => string>();
 
 jest.mock("~/server/utils/storage/path.utils", () => ({
   generatePublicUrl: mockGeneratePublicUrl,
@@ -28,11 +27,7 @@ let uploadToSupabaseWithUrl: (
   supabaseUrl: string,
 ) => Promise<{ path: string; url: string }>;
 
-let deleteFromSupabase: (
-  supabase: SupabaseClient,
-  bucket: string,
-  path: string,
-) => Promise<void>;
+let deleteFromSupabase: (supabase: SupabaseClient, bucket: string, path: string) => Promise<void>;
 
 let fileExistsInSupabase: (
   supabase: SupabaseClient,
@@ -79,8 +74,7 @@ describe("Storage Upload Utils", () => {
         path: "test/path.png",
       };
 
-      const mockUpload =
-        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: { path: options.path },
         error: null,
@@ -113,8 +107,7 @@ describe("Storage Upload Utils", () => {
         cacheControl: "7200",
       };
 
-      const mockUpload =
-        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: { path: options.path },
         error: null,
@@ -145,8 +138,7 @@ describe("Storage Upload Utils", () => {
         upsert: false,
       };
 
-      const mockUpload =
-        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: { path: options.path },
         error: null,
@@ -170,9 +162,7 @@ describe("Storage Upload Utils", () => {
     });
 
     it("should throw error when upload fails", async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
       const file = createMockFile();
       const options: UploadOptions = {
         bucket: "test-bucket",
@@ -180,8 +170,7 @@ describe("Storage Upload Utils", () => {
       };
 
       const uploadError = { message: "Upload failed" };
-      const mockUpload =
-        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: null,
         error: uploadError,
@@ -195,32 +184,24 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      await expect(
-        uploadToSupabase(mockSupabase, file, options),
-      ).rejects.toMatchObject({
+      await expect(uploadToSupabase(mockSupabase, file, options)).rejects.toMatchObject({
         statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
         statusMessage: "Upload failed",
       });
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Supabase upload error:",
-        uploadError,
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Supabase upload error:", uploadError);
       consoleErrorSpy.mockRestore();
     });
 
     it("should include error data in thrown error", async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
       const file = createMockFile();
       const options: UploadOptions = {
         bucket: "test-bucket",
         path: "test/path.png",
       };
 
-      const mockUpload =
-        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: null,
         error: { message: "Storage quota exceeded" },
@@ -244,14 +225,8 @@ describe("Storage Upload Utils", () => {
           data: { success: boolean; error: { code: string; message: string } };
         };
         expect(uploadError.data).toHaveProperty("success", false);
-        expect(uploadError.data.error).toHaveProperty(
-          "code",
-          "STORAGE_UPLOAD_ERROR",
-        );
-        expect(uploadError.data.error).toHaveProperty(
-          "message",
-          "Storage quota exceeded",
-        );
+        expect(uploadError.data.error).toHaveProperty("code", "STORAGE_UPLOAD_ERROR");
+        expect(uploadError.data.error).toHaveProperty("message", "Storage quota exceeded");
       }
 
       consoleErrorSpy.mockRestore();
@@ -266,8 +241,7 @@ describe("Storage Upload Utils", () => {
         path: "test/path.png",
       };
 
-      const mockUpload =
-        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: { path: options.path },
         error: null,
@@ -303,17 +277,14 @@ describe("Storage Upload Utils", () => {
     });
 
     it("should propagate upload errors", async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
       const file = createMockFile();
       const options: UploadOptions = {
         bucket: "test-bucket",
         path: "test/path.png",
       };
 
-      const mockUpload =
-        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: null,
         error: { message: "Network error" },
@@ -328,12 +299,7 @@ describe("Storage Upload Utils", () => {
       } as unknown as SupabaseClient;
 
       await expect(
-        uploadToSupabaseWithUrl(
-          mockSupabase,
-          file,
-          options,
-          "https://example.supabase.co",
-        ),
+        uploadToSupabaseWithUrl(mockSupabase, file, options, "https://example.supabase.co"),
       ).rejects.toMatchObject({
         statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
         statusMessage: "Upload failed",
@@ -415,14 +381,8 @@ describe("Storage Upload Utils", () => {
           data: { success: boolean; error: { code: string; message: string } };
         };
         expect(deleteError.data).toHaveProperty("success", false);
-        expect(deleteError.data.error).toHaveProperty(
-          "code",
-          "STORAGE_DELETE_ERROR",
-        );
-        expect(deleteError.data.error).toHaveProperty(
-          "message",
-          "Permission denied",
-        );
+        expect(deleteError.data.error).toHaveProperty("code", "STORAGE_DELETE_ERROR");
+        expect(deleteError.data.error).toHaveProperty("message", "Permission denied");
       }
     });
   });
@@ -443,11 +403,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await fileExistsInSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await fileExistsInSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result).toBe(true);
       expect(mockSupabase.storage.from).toHaveBeenCalledWith("test-bucket");
@@ -469,11 +425,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await fileExistsInSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await fileExistsInSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result).toBe(false);
     });
@@ -493,11 +445,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await fileExistsInSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await fileExistsInSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result).toBe(false);
     });
@@ -517,11 +465,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await fileExistsInSupabase(
-        mockSupabase,
-        "test-bucket",
-        "file.png",
-      );
+      const result = await fileExistsInSupabase(mockSupabase, "test-bucket", "file.png");
 
       expect(result).toBe(true);
       expect(mockList).toHaveBeenCalledWith("", { search: "file.png" });
@@ -581,11 +525,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await getFileInfoFromSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await getFileInfoFromSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result).toEqual({
         size: 1024,
@@ -615,11 +555,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await getFileInfoFromSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await getFileInfoFromSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result?.lastModified).toBe("2024-01-01T10:00:00Z");
     });
@@ -645,11 +581,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await getFileInfoFromSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await getFileInfoFromSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result).toEqual({
         size: 0,
@@ -673,11 +605,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await getFileInfoFromSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await getFileInfoFromSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result).toBeNull();
     });
@@ -697,11 +625,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await getFileInfoFromSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await getFileInfoFromSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result).toBeNull();
     });
@@ -721,11 +645,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await getFileInfoFromSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await getFileInfoFromSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result).toBeNull();
     });
@@ -750,11 +670,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await getFileInfoFromSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await getFileInfoFromSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result?.lastModified).toBe("");
     });
@@ -780,11 +696,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await getFileInfoFromSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await getFileInfoFromSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result?.size).toBe(0);
     });
@@ -810,11 +722,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await getFileInfoFromSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await getFileInfoFromSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result?.contentType).toBe("application/octet-stream");
     });
@@ -839,11 +747,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const result = await getFileInfoFromSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/path.png",
-      );
+      const result = await getFileInfoFromSupabase(mockSupabase, "test-bucket", "test/path.png");
 
       expect(result?.size).toBe(0);
       expect(result?.contentType).toBe("application/octet-stream");
@@ -860,8 +764,7 @@ describe("Storage Upload Utils", () => {
         cacheControl: "3600",
       };
 
-      const mockUpload =
-        jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
+      const mockUpload = jest.fn<() => Promise<SupabaseResponse<{ path: string }>>>();
       mockUpload.mockResolvedValue({
         data: { path: options.path },
         error: null,
@@ -905,11 +808,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      const exists = await fileExistsInSupabase(
-        mockSupabase,
-        "test-bucket",
-        "test/existing.png",
-      );
+      const exists = await fileExistsInSupabase(mockSupabase, "test-bucket", "test/existing.png");
 
       expect(exists).toBe(true);
     });
@@ -943,11 +842,7 @@ describe("Storage Upload Utils", () => {
         },
       } as unknown as SupabaseClient;
 
-      await deleteFromSupabase(
-        mockSupabaseDelete,
-        "test-bucket",
-        "test/deleted.png",
-      );
+      await deleteFromSupabase(mockSupabaseDelete, "test-bucket", "test/deleted.png");
 
       const exists = await fileExistsInSupabase(
         mockSupabaseCheck,

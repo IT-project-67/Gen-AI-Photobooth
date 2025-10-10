@@ -26,9 +26,7 @@ describe("Auth Validation Utils", () => {
       expected: Errors | null;
     };
 
-    const makeEmailError = (
-      msg = "Please provide a valid email address",
-    ): Errors => ({
+    const makeEmailError = (msg = "Please provide a valid email address"): Errors => ({
       code: "EMAIL_INVALID",
       message: msg,
       statusCode: ERROR_STATUS_MAP.EMAIL_INVALID,
@@ -46,12 +44,8 @@ describe("Auth Validation Utils", () => {
       "space in email": "user@ example.com",
     } as const satisfies Record<string, string>;
 
-    const invalidCases: Array<
-      InvalidCase<keyof typeof invalidEmailMap, string>
-    > = (
-      Object.entries(invalidEmailMap) as Array<
-        [keyof typeof invalidEmailMap, string]
-      >
+    const invalidCases: Array<InvalidCase<keyof typeof invalidEmailMap, string>> = (
+      Object.entries(invalidEmailMap) as Array<[keyof typeof invalidEmailMap, string]>
     ).map(([name, email]) => ({
       name,
       email,
@@ -85,9 +79,7 @@ describe("Auth Validation Utils", () => {
     } as const satisfies Record<string, string>;
 
     const validCases: Array<ValidCase<keyof typeof validEmailMap, string>> = (
-      Object.entries(validEmailMap) as Array<
-        [keyof typeof validEmailMap, string]
-      >
+      Object.entries(validEmailMap) as Array<[keyof typeof validEmailMap, string]>
     ).map(([name, email]) => ({
       name,
       email,
@@ -132,12 +124,8 @@ describe("Auth Validation Utils", () => {
       "short password with speical character": "@#$!.",
     };
 
-    const invalidCases: Array<
-      InvalidCase<keyof typeof invalidPasswordMap, string>
-    > = (
-      Object.entries(invalidPasswordMap) as Array<
-        [keyof typeof invalidPasswordMap, string]
-      >
+    const invalidCases: Array<InvalidCase<keyof typeof invalidPasswordMap, string>> = (
+      Object.entries(invalidPasswordMap) as Array<[keyof typeof invalidPasswordMap, string]>
     ).map(([name, password]) => ({
       name,
       password,
@@ -158,14 +146,7 @@ describe("Auth Validation Utils", () => {
     });
 
     describe("valid passwords", () => {
-      const validPasswords = [
-        "123456",
-        "abcdef",
-        "ABCDEF",
-        "abc123",
-        "Abc_123!",
-        "a b c 1 2 3",
-      ];
+      const validPasswords = ["123456", "abcdef", "ABCDEF", "abc123", "Abc_123!", "a b c 1 2 3"];
       validPasswords.forEach((password) => {
         it(`should return null for valid password: "${password}"`, () => {
           const result = validatePassword(password);

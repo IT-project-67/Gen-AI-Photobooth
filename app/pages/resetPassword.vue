@@ -72,21 +72,18 @@ onMounted(() => {
       accessToken.value = accessTokenParam;
       refreshToken.value = refreshTokenParam;
     } else {
-      error.value =
-        "Invalid or missing reset tokens. Please request a new password reset.";
+      error.value = "Invalid or missing reset tokens. Please request a new password reset.";
     }
   } else {
     // Fallback to query parameters
-    const accessTokenParam =
-      (route.query.access_token as string) || (route.query.token as string);
+    const accessTokenParam = (route.query.access_token as string) || (route.query.token as string);
     const refreshTokenParam = route.query.refresh_token as string;
 
     if (accessTokenParam && typeof accessTokenParam === "string") {
       accessToken.value = accessTokenParam;
       refreshToken.value = (refreshTokenParam as string) || accessTokenParam;
     } else {
-      error.value =
-        "Invalid or missing reset tokens. Please request a new password reset.";
+      error.value = "Invalid or missing reset tokens. Please request a new password reset.";
     }
   }
 });
@@ -144,9 +141,7 @@ const handleSubmit = async (event: Event) => {
   } catch (err: unknown) {
     console.error("Reset password error:", err);
     const errorMessage =
-      err instanceof Error
-        ? err.message
-        : "An error occurred while resetting password";
+      err instanceof Error ? err.message : "An error occurred while resetting password";
     error.value = errorMessage;
   } finally {
     isSubmitting.value = false;

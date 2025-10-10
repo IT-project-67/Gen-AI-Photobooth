@@ -9,11 +9,5 @@
     "types": ["jest", "node"],
     "esModuleInterop": true
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.d.ts",
-    "../types/**/*.d.ts",
-    "../app/**/*.d.ts"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts", "../types/**/*.d.ts", "../app/**/*.d.ts"]
 }

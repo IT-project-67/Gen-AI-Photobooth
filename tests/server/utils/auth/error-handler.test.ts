@@ -1,8 +1,5 @@
 import { describe, expect, it } from "@jest/globals";
-import {
-  handleAuthError,
-  handleApiError,
-} from "~/server/utils/auth/error-handler.utils";
+import { handleAuthError, handleApiError } from "~/server/utils/auth/error-handler.utils";
 import type { Errors, SupabaseAuthError } from "~~/server/types/core";
 import { ERROR_STATUS_MAP, STATUS_CODES } from "~~/server/types/core";
 
@@ -84,8 +81,7 @@ describe("Error Handler Utils", () => {
           },
           expected: {
             code: "USER_ALREADY_EXISTS",
-            message:
-              "This email is already registered. Please try logging in instead.",
+            message: "This email is already registered. Please try logging in instead.",
             statusCode: ERROR_STATUS_MAP.USER_ALREADY_EXISTS,
           },
         },
@@ -97,8 +93,7 @@ describe("Error Handler Utils", () => {
           },
           expected: {
             code: "USER_ALREADY_EXISTS",
-            message:
-              "This email is already registered. Please try logging in instead.",
+            message: "This email is already registered. Please try logging in instead.",
             statusCode: ERROR_STATUS_MAP.USER_ALREADY_EXISTS,
           },
         },
@@ -110,8 +105,7 @@ describe("Error Handler Utils", () => {
           },
           expected: {
             code: "INVALID_RESET_TOKEN",
-            message:
-              "Invalid or expired reset token. Please request a new password reset.",
+            message: "Invalid or expired reset token. Please request a new password reset.",
             statusCode: ERROR_STATUS_MAP.INVALID_RESET_TOKEN,
           },
         },
@@ -123,8 +117,7 @@ describe("Error Handler Utils", () => {
           },
           expected: {
             code: "INVALID_RESET_TOKEN",
-            message:
-              "Invalid or expired reset token. Please request a new password reset.",
+            message: "Invalid or expired reset token. Please request a new password reset.",
             statusCode: ERROR_STATUS_MAP.INVALID_RESET_TOKEN,
           },
         },

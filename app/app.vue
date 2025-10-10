@@ -17,8 +17,7 @@ watch(
     if (newUser && !oldUser) {
       const provider = newUser.app_metadata?.provider;
       const isOAuthUser = provider && providers.includes(provider);
-      const isOAuthLogin =
-        isOAuthUser && newUser.id !== lastProcessedUserId.value;
+      const isOAuthLogin = isOAuthUser && newUser.id !== lastProcessedUserId.value;
       if (isOAuthLogin) {
         setTimeout(() => {
           handleOAuthProfile();

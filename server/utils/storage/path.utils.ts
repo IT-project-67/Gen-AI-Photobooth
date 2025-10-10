@@ -19,11 +19,7 @@ export function generateFilePath(
   return path;
 }
 
-export function generateLogoPath(
-  userId: string,
-  eventId: string,
-  file: UploadFile,
-): string {
+export function generateLogoPath(userId: string, eventId: string, file: UploadFile): string {
   return generateFilePath(
     PATH_TEMPLATES.LOGO,
     {

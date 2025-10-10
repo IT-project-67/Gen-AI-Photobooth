@@ -58,10 +58,7 @@ let mergeImages: (
   logoImage: UploadFile,
   options?: MergeOptions,
 ) => Promise<ImageMergeResult>;
-let addWhiteBorder: (
-  mainImage: UploadFile,
-  options?: MergeOptions,
-) => Promise<ImageMergeResult>;
+let addWhiteBorder: (mainImage: UploadFile, options?: MergeOptions) => Promise<ImageMergeResult>;
 
 beforeAll(async () => {
   const module = await import("~/server/utils/image/image-processer.utils");
@@ -132,18 +129,14 @@ describe("Image Processer Utils", () => {
           size: 0,
         };
 
-        expect(() => merger.validateImageFile(file)).toThrow(
-          "Image file data is empty",
-        );
+        expect(() => merger.validateImageFile(file)).toThrow("Image file data is empty");
       });
 
       it("should throw error for unsupported file type", () => {
         const merger = new ImageMerger();
         const file = createMockFile("test.gif", "image/gif");
 
-        expect(() => merger.validateImageFile(file)).toThrow(
-          "Unsupported image type: image/gif",
-        );
+        expect(() => merger.validateImageFile(file)).toThrow("Unsupported image type: image/gif");
       });
 
       it("should throw error for PDF file", () => {
@@ -159,9 +152,7 @@ describe("Image Processer Utils", () => {
         const merger = new ImageMerger();
         const file = createMockFile("test.txt", "text/plain");
 
-        expect(() => merger.validateImageFile(file)).toThrow(
-          "Unsupported image type: text/plain",
-        );
+        expect(() => merger.validateImageFile(file)).toThrow("Unsupported image type: text/plain");
       });
     });
 
@@ -200,9 +191,7 @@ describe("Image Processer Utils", () => {
           .mockResolvedValueOnce(mockLogoBuffer)
           .mockResolvedValueOnce(mockFinalBuffer);
 
-        const consoleLogSpy = jest
-          .spyOn(console, "log")
-          .mockImplementation(() => {});
+        const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
         const result = await merger.mergeImages(mainFile, logoFile);
 
@@ -230,13 +219,9 @@ describe("Image Processer Utils", () => {
         const mockFinalBuffer = Buffer.from("final image");
 
         mockMetadata.mockResolvedValueOnce({ width: 832, height: 1248 });
-        mockToBuffer
-          .mockResolvedValue(Buffer.from("mock"))
-          .mockResolvedValueOnce(mockFinalBuffer);
+        mockToBuffer.mockResolvedValue(Buffer.from("mock")).mockResolvedValueOnce(mockFinalBuffer);
 
-        const consoleLogSpy = jest
-          .spyOn(console, "log")
-          .mockImplementation(() => {});
+        const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
         const result = await merger.mergeImages(mainFile, logoFile);
 
@@ -256,9 +241,7 @@ describe("Image Processer Utils", () => {
         mockMetadata.mockResolvedValueOnce({ width: 1920, height: 1080 });
         mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-        const consoleLogSpy = jest
-          .spyOn(console, "log")
-          .mockImplementation(() => {});
+        const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
         await merger.mergeImages(mainFile, logoFile);
 
@@ -277,18 +260,13 @@ describe("Image Processer Utils", () => {
         const mockError = new Error("Sharp processing failed");
         mockMetadata.mockRejectedValueOnce(mockError);
 
-        const consoleErrorSpy = jest
-          .spyOn(console, "error")
-          .mockImplementation(() => {});
+        const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
         await expect(merger.mergeImages(mainFile, logoFile)).rejects.toThrow(
           "Failed to merge images: Sharp processing failed",
         );
 
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
-          "Image merge error:",
-          mockError,
-        );
+        expect(consoleErrorSpy).toHaveBeenCalledWith("Image merge error:", mockError);
 
         consoleErrorSpy.mockRestore();
       });
@@ -300,9 +278,7 @@ describe("Image Processer Utils", () => {
 
         mockMetadata.mockRejectedValueOnce("String error");
 
-        const consoleErrorSpy = jest
-          .spyOn(console, "error")
-          .mockImplementation(() => {});
+        const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
         await expect(merger.mergeImages(mainFile, logoFile)).rejects.toThrow(
           "Failed to merge images: Unknown error",
@@ -319,9 +295,7 @@ describe("Image Processer Utils", () => {
         mockMetadata.mockResolvedValueOnce({ width: undefined, height: 1080 });
         mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-        const consoleLogSpy = jest
-          .spyOn(console, "log")
-          .mockImplementation(() => {});
+        const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
         await merger.mergeImages(mainFile, logoFile);
 
@@ -340,9 +314,7 @@ describe("Image Processer Utils", () => {
         mockMetadata.mockResolvedValueOnce({ width: 1920, height: undefined });
         mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-        const consoleLogSpy = jest
-          .spyOn(console, "log")
-          .mockImplementation(() => {});
+        const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
         await merger.mergeImages(mainFile, logoFile);
 
@@ -361,9 +333,7 @@ describe("Image Processer Utils", () => {
         mockMetadata.mockResolvedValueOnce({ width: 1248, height: 832 });
         mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-        const consoleLogSpy = jest
-          .spyOn(console, "log")
-          .mockImplementation(() => {});
+        const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
         await merger.mergeImages(mainFile, logoFile);
 
@@ -390,15 +360,9 @@ describe("Image Processer Utils", () => {
         mockMetadata.mockResolvedValueOnce({ width: 1248, height: 832 });
         mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-        const consoleLogSpy = jest
-          .spyOn(console, "log")
-          .mockImplementation(() => {});
+        const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
-        const result = await merger.mergeImages(
-          mainFile,
-          logoFile,
-          customOptions,
-        );
+        const result = await merger.mergeImages(mainFile, logoFile, customOptions);
         expect(result.mimeType).toBe("image/jpeg");
 
         consoleLogSpy.mockRestore();
@@ -429,9 +393,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 1248, height: 832 });
       mockToBuffer.mockResolvedValue(mockBuffer);
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       const result = await mergeImages(mainFile, logoFile);
 
@@ -468,9 +430,7 @@ describe("Image Processer Utils", () => {
       };
       const logoFile = createMockFile();
 
-      await expect(mergeImages(mainFile, logoFile)).rejects.toThrow(
-        "Image file data is empty",
-      );
+      await expect(mergeImages(mainFile, logoFile)).rejects.toThrow("Image file data is empty");
     });
 
     it("should throw error for empty logo image", async () => {
@@ -482,9 +442,7 @@ describe("Image Processer Utils", () => {
         size: 0,
       };
 
-      await expect(mergeImages(mainFile, logoFile)).rejects.toThrow(
-        "Image file data is empty",
-      );
+      await expect(mergeImages(mainFile, logoFile)).rejects.toThrow("Image file data is empty");
     });
   });
 
@@ -497,9 +455,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 1248, height: 832 });
       mockToBuffer.mockResolvedValue(mockFinalBuffer);
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       const result = await addWhiteBorder(mainFile);
 
@@ -523,9 +479,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 832, height: 1248 });
       mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       const result = await addWhiteBorder(mainFile);
 
@@ -543,9 +497,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 1920, height: 1080 });
       mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       await addWhiteBorder(mainFile);
 
@@ -565,9 +517,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 1248, height: 832 });
       mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       const result = await addWhiteBorder(mainFile, options);
 
@@ -588,9 +538,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 1248, height: 832 });
       mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       await addWhiteBorder(mainFile, options);
 
@@ -608,9 +556,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 1248, height: 832 });
       mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       const result = await addWhiteBorder(mainFile, options);
 
@@ -628,9 +574,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 1248, height: 832 });
       mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       const result = await addWhiteBorder(mainFile, options);
 
@@ -645,18 +589,13 @@ describe("Image Processer Utils", () => {
       const mockError = new Error("Sharp failed");
       mockMetadata.mockRejectedValueOnce(mockError);
 
-      const consoleErrorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
       await expect(addWhiteBorder(mainFile)).rejects.toThrow(
         "Failed to add white border: Sharp failed",
       );
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Add white border error:",
-        mockError,
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Add white border error:", mockError);
 
       consoleErrorSpy.mockRestore();
     });
@@ -666,9 +605,7 @@ describe("Image Processer Utils", () => {
 
       mockMetadata.mockRejectedValueOnce("String error");
 
-      const consoleErrorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
       await expect(addWhiteBorder(mainFile)).rejects.toThrow(
         "Failed to add white border: Unknown error",
@@ -683,9 +620,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: undefined, height: 1080 });
       mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       await addWhiteBorder(mainFile);
 
@@ -702,9 +637,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 1920, height: undefined });
       mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       await addWhiteBorder(mainFile);
 
@@ -721,9 +654,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 1248, height: 832 });
       mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       await addWhiteBorder(mainFile);
 
@@ -738,9 +669,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 1248, height: 832 });
       mockToBuffer.mockResolvedValue(Buffer.from("mock"));
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       const result = await addWhiteBorder(mainFile, {
         outputFormat: "jpeg",
@@ -762,9 +691,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 1248, height: 832 });
       mockToBuffer.mockResolvedValue(mockFinalBuffer);
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       const result = await mergeImages(mainFile, logoFile, {
         logoSize: { width: 180, height: 180 },
@@ -787,9 +714,7 @@ describe("Image Processer Utils", () => {
       mockMetadata.mockResolvedValueOnce({ width: 1248, height: 832 });
       mockToBuffer.mockResolvedValue(mockFinalBuffer);
 
-      const consoleLogSpy = jest
-        .spyOn(console, "log")
-        .mockImplementation(() => {});
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       const result = await addWhiteBorder(mainFile, {
         borderWidth: 10,

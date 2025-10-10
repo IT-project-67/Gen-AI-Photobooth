@@ -17,8 +17,7 @@ export const useOAuth = () => {
       }
       return { error: null };
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Google OAuth login failed";
+      const errorMessage = error instanceof Error ? error.message : "Google OAuth login failed";
       return { error: errorMessage };
     }
   };
@@ -39,8 +38,7 @@ export const useOAuth = () => {
 
       return { error: null };
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Discord OAuth login failed";
+      const errorMessage = error instanceof Error ? error.message : "Discord OAuth login failed";
       return { error: errorMessage };
     }
   };
