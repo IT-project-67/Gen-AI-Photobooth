@@ -1,0 +1,12 @@
+{
+  "functions": {
+    "api/**": {
+      "regions": ["syd1"],
+      "memory": 1024
+    },
+    "server/**": {
+      "regions": ["syd1"],
+      "memory": 1024
+    }
+  }
+}
