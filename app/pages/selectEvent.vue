@@ -40,6 +40,10 @@
       >
         {{ isSubmitting ? "Processing..." : "Submit" }}
       </button>
+
+      <button class="submit-button" @click="navigateTo('/createEvent')">
+        Create a New Event
+      </button>
     </div>
 
     <div v-if="submittedEventID !== ''" class="wrapper">
