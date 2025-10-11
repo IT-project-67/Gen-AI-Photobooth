@@ -26,4 +26,3 @@ globalThis.defineEventHandler = mockDefineEventHandler;
 globalThis.createError = mockCreateError;
 globalThis.readMultipartFormData = mockReadMultipartFormData;
 globalThis.useRuntimeConfig = mockUseRuntimeConfig;
-

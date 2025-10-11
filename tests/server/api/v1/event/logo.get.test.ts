@@ -130,7 +130,7 @@ describe("API: GET /api/v1/event/logo", () => {
   describe("Authentication", () => {
     it("should call requireAuth with event", async () => {
       mockRequireAuth.mockRejectedValue(new Error("Unauthorized") as never);
-      
+
       mockHandleApiError.mockReturnValue({
         code: "UNAUTHORIZED",
         message: "Unauthorized",
@@ -656,7 +656,9 @@ describe("API: GET /api/v1/event/logo", () => {
 
       await expect(handler(mockEvent)).rejects.toThrow("Logo not found");
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Logo download error:", { message: "File not found" });
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Logo download error:", {
+        message: "File not found",
+      });
     });
 
     it("should handle missing data in download response", async () => {
@@ -821,12 +823,7 @@ describe("API: GET /api/v1/event/logo", () => {
     it("should handle different blob types", async () => {
       const mockUser = createMockUser();
       const mockEventData = createMockEvent();
-      const blobTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/webp",
-        "image/gif",
-      ];
+      const blobTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
       for (const blobType of blobTypes) {
         const mockBlob = new Blob(["data"], { type: blobType });
@@ -866,4 +863,3 @@ describe("API: GET /api/v1/event/logo", () => {
     });
   });
 });
-

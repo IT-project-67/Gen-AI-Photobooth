@@ -516,12 +516,7 @@ describe("API: GET /api/v1/event/get-event-by-id", () => {
     it("should handle different eventId formats", async () => {
       const mockUser = createMockUser();
       const mockEventData = createMockEvent();
-      const eventIds = [
-        "event-123",
-        "uuid-abc-def-123",
-        "12345",
-        "event_with_underscore",
-      ];
+      const eventIds = ["event-123", "uuid-abc-def-123", "12345", "event_with_underscore"];
 
       for (const eventId of eventIds) {
         mockGetQuery.mockReturnValue({ id: eventId });
@@ -704,4 +699,3 @@ describe("API: GET /api/v1/event/get-event-by-id", () => {
     });
   });
 });
-

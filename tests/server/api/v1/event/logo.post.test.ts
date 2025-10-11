@@ -339,7 +339,9 @@ describe("API: POST /api/v1/event/logo", () => {
     it("should require logo file field", async () => {
       const mockUser = createMockUser();
       mockRequireAuth.mockResolvedValue(mockUser as never);
-      mockReadMultipartFormData.mockResolvedValue([{ name: "eventId", data: "event-123" }] as never);
+      mockReadMultipartFormData.mockResolvedValue([
+        { name: "eventId", data: "event-123" },
+      ] as never);
 
       mockHandleApiError.mockReturnValue({
         type: "VALIDATION_ERROR",
@@ -881,7 +883,10 @@ describe("API: POST /api/v1/event/logo", () => {
 
       await handler(mockEvent);
 
-      expect(mockUpdateEventLogoUrl).toHaveBeenCalledWith("event-123", "logos/user-123/event-123/test-logo.png");
+      expect(mockUpdateEventLogoUrl).toHaveBeenCalledWith(
+        "event-123",
+        "logos/user-123/event-123/test-logo.png",
+      );
     });
 
     it("should handle updateEventLogoUrl errors", async () => {
@@ -1229,7 +1234,9 @@ describe("API: POST /api/v1/event/logo", () => {
         mockNormalizeFilePart.mockReturnValue(mockFile);
         mockValidateFileOrThrow.mockReturnValue(undefined);
         mockGetEventById.mockResolvedValue(mockEventData);
-        mockUploadLogo.mockResolvedValue({ path: `logos/${combo.userId}/${combo.eventId}/logo.png` });
+        mockUploadLogo.mockResolvedValue({
+          path: `logos/${combo.userId}/${combo.eventId}/logo.png`,
+        });
         mockUpdateEventLogoUrl.mockResolvedValue(mockEventData);
 
         await handler(mockEvent);
@@ -1364,4 +1371,3 @@ describe("API: POST /api/v1/event/logo", () => {
     });
   });
 });
-

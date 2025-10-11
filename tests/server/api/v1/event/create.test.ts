@@ -471,7 +471,11 @@ describe("API: POST /api/v1/event/create", () => {
     });
 
     it("should handle body with null name", async () => {
-      mockReadBody.mockResolvedValue({ name: null, startDate: "2024-01-01", endDate: "2024-12-31" });
+      mockReadBody.mockResolvedValue({
+        name: null,
+        startDate: "2024-01-01",
+        endDate: "2024-12-31",
+      });
       mockGetHeader.mockReturnValue("Bearer valid-token");
 
       mockHandleApiError.mockReturnValue({
@@ -1025,4 +1029,3 @@ describe("API: POST /api/v1/event/create", () => {
     });
   });
 });
-

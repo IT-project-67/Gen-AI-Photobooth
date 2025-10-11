@@ -591,4 +591,3 @@ describe("API: GET /api/v1/event/get-events-by-user", () => {
     });
   });
 });
-
