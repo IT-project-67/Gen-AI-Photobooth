@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for utils/auth/validation.utils.ts</title>
+    <title>Code coverage report for utils/auth/error-handler.utils.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">utils/auth</a> validation.utils.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">utils/auth</a> error-handler.utils.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>40/40</span>
+                <span class='fraction'>36/36</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">98.07% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>51/52</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>32/32</span>
+                <span class='fraction'>34/34</span>
             </div>
         
             
@@ -158,195 +158,306 @@
 <a name='L93'></a><a href='#L93'>93</a>
 <a name='L94'></a><a href='#L94'>94</a>
 <a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { ERROR_STATUS_MAP } from "~~/server/types/core";
-import type { Errors } from "~~/server/types/core";
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">38x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { STATUS_CODES, ERROR_STATUS_MAP } from "~~/server/types/core";
+import type {
+  Errors,
+  GenericError,
+  SupabaseAuthError,
+  CreateErrorObject,
+} from "~~/server/types/core";
 &nbsp;
-// Email validation
-export const validateEmail = (email: string): Errors | null =&gt; {
-  if (!email) {
-    return {
-      code: "EMAIL_REQUIRED",
-      message: "Email is required",
-      statusCode: ERROR_STATUS_MAP.EMAIL_REQUIRED,
-    };
-  }
+// Handle Supabase Auth Errors
+export const handleAuthError = (error: SupabaseAuthError | unknown): Errors =&gt; {
+  // Type guard to check if error has expected properties
+  const isSupabaseError = (err: unknown): err is SupabaseAuthError =&gt; {
+    return typeof err === "object" &amp;&amp; err !== null;
+  };
+  const supabaseError = isSupabaseError(error) ? error : {};
 &nbsp;
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return {
-      code: "EMAIL_INVALID",
-      message: "Please provide a valid email address",
-      statusCode: ERROR_STATUS_MAP.EMAIL_INVALID,
-    };
+  const baseError: Errors = {
+    code: supabaseError.error_code || supabaseError.code || "UNKNOWN_ERROR",
+    message: supabaseError.message || "An authentication error occurred",
+    statusCode: STATUS_CODES.BAD_REQUEST,
+  };
+&nbsp;
+  // Map common Supabase error codes to user-friendly messages
+  switch (supabaseError.error_code || supabaseError.code) {
+    case "invalid_credentials":
+      return {
+        ...baseError,
+        code: "INVALID_CREDENTIALS",
+        message: "Invalid email or password",
+        statusCode: ERROR_STATUS_MAP.INVALID_CREDENTIALS,
+      };
+    case "email_not_confirmed":
+      return {
+        ...baseError,
+        code: "EMAIL_NOT_CONFIRMED",
+        message: "Please confirm your email address",
+        statusCode: ERROR_STATUS_MAP.EMAIL_NOT_CONFIRMED,
+      };
+    case "signup_disabled":
+      return {
+        ...baseError,
+        code: "SIGNUP_DISABLED",
+        message: "Sign up is currently disabled",
+        statusCode: ERROR_STATUS_MAP.SIGNUP_DISABLED,
+      };
+    case "email_address_invalid":
+      return {
+        ...baseError,
+        code: "EMAIL_INVALID",
+        message: "Please provide a valid email address",
+        statusCode: ERROR_STATUS_MAP.EMAIL_INVALID,
+      };
+    case "password_too_short":
+      return {
+        ...baseError,
+        code: "PASSWORD_TOO_SHORT",
+        message: "Password must be at least 6 characters long",
+        statusCode: ERROR_STATUS_MAP.PASSWORD_TOO_SHORT,
+      };
+    case "user_already_registered":
+    case "email_address_already_registered":
+      return {
+        ...baseError,
+        code: "USER_ALREADY_EXISTS",
+        message: "This email is already registered. Please try logging in instead.",
+        statusCode: ERROR_STATUS_MAP.USER_ALREADY_EXISTS,
+      };
+    case "invalid_token":
+    case "token_expired":
+      return {
+        ...baseError,
+        code: "INVALID_RESET_TOKEN",
+        message: "Invalid or expired reset token. Please request a new password reset.",
+        statusCode: ERROR_STATUS_MAP.INVALID_RESET_TOKEN,
+      };
+    case "email_not_found":
+      return {
+        ...baseError,
+        code: "EMAIL_NOT_FOUND",
+        message: "No account found with this email address.",
+        statusCode: ERROR_STATUS_MAP.EMAIL_NOT_FOUND,
+      };
+    default:
+      return baseError;
   }
-  return null;
 };
 &nbsp;
-// Password validation
-export const validatePassword = (password: string): Errors | null =&gt; {
-  if (!password) {
-    return {
-      code: "PASSWORD_REQUIRED",
-      message: "Password is required",
-      statusCode: ERROR_STATUS_MAP.PASSWORD_REQUIRED,
-    };
+// Type guard for createError objects
+const isCreateErrorObject = (err: unknown): err is CreateErrorObject =&gt; {
+  if (typeof err !== "object" || err === null) {
+    return false;
   }
 &nbsp;
-  if (password.length &lt; 6) {
-    return {
-      code: "PASSWORD_TOO_SHORT",
-      message: "Password must be at least 6 characters long",
-      statusCode: ERROR_STATUS_MAP.PASSWORD_TOO_SHORT,
-    };
+  if (!("data" in err)) {
+    return false;
   }
-  return null;
+&nbsp;
+  const data = (err as Record&lt;string, unknown&gt;).data;
+  if (typeof data !== "object" || data === null) {
+    return false;
+  }
+  return "error" in data;
 };
 &nbsp;
-// Validate login request
-export const validateLoginRequest = (email: string, password: string): Errors | null =&gt; {
-  const emailError = validateEmail(email);
-  if (emailError) return emailError;
-  const passwordError = validatePassword(password);
-  if (passwordError) return passwordError;
-  return null;
-};
-&nbsp;
-// Validate register request
-export const validateRegisterRequest = (email: string, password: string): Errors | null =&gt; {
-  return validateLoginRequest(email, password); // Same validation for now
-};
-&nbsp;
-// Validate forgot password request
-export const validateForgotPasswordRequest = (email: string): Errors | null =&gt; {
-  return validateEmail(email);
-};
-&nbsp;
-// Validate reset password request
-export const validateResetPasswordRequest = (
-  access_token: string,
-  refresh_token: string,
-  password: string,
-): Errors | null =&gt; {
-  if (!access_token &amp;&amp; !refresh_token) {
-    return {
-      code: "TOKENS_REQUIRED",
-      message: "Reset tokens are required",
-      statusCode: ERROR_STATUS_MAP.TOKENS_REQUIRED,
-    };
+// Generic API error handler
+export const handleApiError = (error: GenericError | unknown): Errors =&gt; {
+  // Check if it's a Nuxt createError object
+  if (isCreateErrorObject(error)) {
+    // Extract error info from createError's data field
+    if (error.data<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>rror) {
+      const errorData = error.data.error;
+      return {
+        code: errorData.code || "INTERNAL_ERROR",
+        message: errorData.message || "An unexpected error occurred",
+        statusCode: errorData.statusCode || ERROR_STATUS_MAP.INTERNAL_ERROR,
+      };
+    }
   }
 &nbsp;
-  if (!access_token) {
-    return {
-      code: "ACCESS_TOKEN_REQUIRED",
-      message: "Reset access token is required",
-      statusCode: ERROR_STATUS_MAP.ACCESS_TOKEN_REQUIRED,
-    };
-  }
+  // Type guard for generic errors
+  const isGenericError = (err: unknown): err is GenericError =&gt; {
+    return typeof err === "object" &amp;&amp; err !== null &amp;&amp; "code" in err;
+  };
 &nbsp;
-  if (!refresh_token) {
-    return {
-      code: "REFRESH_TOKEN_REQUIRED",
-      message: "Reset refresh token is required",
-      statusCode: ERROR_STATUS_MAP.REFRESH_TOKEN_REQUIRED,
-    };
-  }
+  const genericError = isGenericError(error) ? error : {};
 &nbsp;
-  return validatePassword(password);
+  return {
+    code: genericError.code || "INTERNAL_ERROR",
+    message: genericError.message || "An unexpected error occurred",
+    statusCode: genericError.statusCode || ERROR_STATUS_MAP.INTERNAL_ERROR,
+  };
 };
 &nbsp;</pre></td></tr></table></pre>
 

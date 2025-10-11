@@ -24,6 +24,7 @@ export default {
         "<rootDir>/server/types/",
         "<rootDir>/server/clients/",
         "/node_modules/",
+        "<rootDir>/tests/server/mocks/",
       ],
       transform: {
         "^.+\\.tsx?$": ["ts-jest", { useESM: true, tsconfig: "./tests/tsconfig.json" }],

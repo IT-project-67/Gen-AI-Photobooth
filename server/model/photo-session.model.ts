@@ -1,4 +1,4 @@
-import { prismaClient } from "~~/server/clients/prisma.client";
+import { prismaClient } from "~~/server/clients";
 
 export const createPhotoSession = async (eventId: string) => {
   try {
