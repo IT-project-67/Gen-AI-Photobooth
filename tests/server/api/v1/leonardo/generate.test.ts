@@ -327,7 +327,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -346,7 +346,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -359,10 +362,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
 
       await handler(mockEvent);
 
-      expect(mockLeonardoUploadImage).toHaveBeenCalledWith(
-        expect.any(Buffer),
-        "jpg"
-      );
+      expect(mockLeonardoUploadImage).toHaveBeenCalledWith(expect.any(Buffer), "jpg");
     });
 
     it("should generate 4 styles from uploaded image", async () => {
@@ -379,7 +379,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -398,7 +398,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -428,7 +431,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -459,12 +462,12 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
       });
-      
+
       mockLeonardoGetGeneration
         .mockResolvedValueOnce({
           generations_by_pk: {
@@ -486,7 +489,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -499,9 +505,9 @@ describe("API: POST /api/v1/leonardo/generate", () => {
 
       jest.useFakeTimers();
       const result = handler(mockEvent);
-      
+
       await jest.runAllTimersAsync();
-      
+
       await result;
       jest.useRealTimers();
 
@@ -522,7 +528,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -562,7 +568,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -594,7 +600,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       await expect(handler(mockEvent)).rejects.toThrow();
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         expect.stringContaining("Failed to process"),
-        expect.any(Error)
+        expect.any(Error),
       );
     });
   });
@@ -614,7 +620,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockMetadata.mockResolvedValueOnce({ width: 1280, height: 720 } as never);
 
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
@@ -635,7 +641,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -651,7 +660,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       expect(mockLeonardoGenerateFromImageId).toHaveBeenCalledWith(
         expect.objectContaining({
           isLandscape: true,
-        })
+        }),
       );
     });
 
@@ -669,7 +678,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -688,7 +697,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -725,7 +737,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -745,7 +757,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -778,7 +793,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -798,7 +813,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -813,7 +831,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         expect.stringContaining("Failed to download logo"),
-        expect.any(Error)
+        expect.any(Error),
       );
       expect(mockAddWhiteBorder).toHaveBeenCalled();
     });
@@ -838,7 +856,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -854,7 +872,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       mockHasEventLogo.mockReturnValue(true);
       mockDownloadEventLogo.mockResolvedValue(mockLogo);
       mockMergeImages.mockRejectedValue(new Error("Merge failed"));
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -866,10 +887,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       globalThis.fetch = mockFetch;
 
       const result = await handler(mockEvent);
-      
+
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         expect.stringContaining("Failed to merge logo"),
-        expect.any(Error)
+        expect.any(Error),
       );
       expect(result).toBeDefined();
     });
@@ -888,7 +909,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -903,7 +924,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       mockCreateAIPhoto.mockResolvedValue(createMockAIPhoto("Anime"));
       mockHasEventLogo.mockReturnValue(false);
       mockAddWhiteBorder.mockRejectedValue(new Error("Border addition failed"));
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -915,10 +939,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       globalThis.fetch = mockFetch;
 
       const result = await handler(mockEvent);
-      
+
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         expect.stringContaining("Failed to add border"),
-        expect.any(Error)
+        expect.any(Error),
       );
       expect(result).toBeDefined();
     });
@@ -939,7 +963,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockMetadata.mockResolvedValueOnce({ width: 720, height: 1280 } as never);
 
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
@@ -960,7 +984,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -976,7 +1003,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       expect(mockLeonardoGenerateFromImageId).toHaveBeenCalledWith(
         expect.objectContaining({
           isLandscape: false,
-        })
+        }),
       );
     });
 
@@ -994,7 +1021,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockMetadata.mockResolvedValueOnce({ height: 1280 } as never);
 
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
@@ -1015,7 +1042,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -1031,7 +1061,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       expect(mockLeonardoGenerateFromImageId).toHaveBeenCalledWith(
         expect.objectContaining({
           isLandscape: false,
-        })
+        }),
       );
     });
 
@@ -1049,7 +1079,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockMetadata.mockResolvedValueOnce({ width: 1280 } as never);
 
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
@@ -1070,7 +1100,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -1086,7 +1119,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       expect(mockLeonardoGenerateFromImageId).toHaveBeenCalledWith(
         expect.objectContaining({
           isLandscape: true,
-        })
+        }),
       );
     });
 
@@ -1104,7 +1137,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockMetadata.mockResolvedValueOnce({ width: 1024, height: 1024 } as never);
 
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
@@ -1125,7 +1158,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -1141,7 +1177,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       expect(mockLeonardoGenerateFromImageId).toHaveBeenCalledWith(
         expect.objectContaining({
           isLandscape: false,
-        })
+        }),
       );
     });
   });
@@ -1161,7 +1197,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -1180,7 +1216,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -1193,10 +1232,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
 
       await handler(mockEvent);
 
-      expect(mockLeonardoUploadImage).toHaveBeenCalledWith(
-        expect.any(Buffer),
-        "jpg"
-      );
+      expect(mockLeonardoUploadImage).toHaveBeenCalledWith(expect.any(Buffer), "jpg");
     });
 
     it("should extract extension from filename", async () => {
@@ -1213,7 +1249,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -1232,7 +1268,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -1245,10 +1284,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
 
       await handler(mockEvent);
 
-      expect(mockLeonardoUploadImage).toHaveBeenCalledWith(
-        expect.any(Buffer),
-        "png"
-      );
+      expect(mockLeonardoUploadImage).toHaveBeenCalledWith(expect.any(Buffer), "png");
     });
 
     it("should handle filename ending with dot", async () => {
@@ -1265,7 +1301,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -1284,7 +1320,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -1297,10 +1336,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
 
       await handler(mockEvent);
 
-      expect(mockLeonardoUploadImage).toHaveBeenCalledWith(
-        expect.any(Buffer),
-        "jpg"
-      );
+      expect(mockLeonardoUploadImage).toHaveBeenCalledWith(expect.any(Buffer), "jpg");
     });
 
     it("should handle filename starting with dot (like .gitignore)", async () => {
@@ -1317,7 +1353,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -1336,7 +1372,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -1349,10 +1388,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
 
       await handler(mockEvent);
 
-      expect(mockLeonardoUploadImage).toHaveBeenCalledWith(
-        expect.any(Buffer),
-        "hidden"
-      );
+      expect(mockLeonardoUploadImage).toHaveBeenCalledWith(expect.any(Buffer), "hidden");
     });
 
     it("should handle filename with unusual extension", async () => {
@@ -1369,7 +1405,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id");
       mockLeonardoGenerateFromImageId.mockResolvedValue({
         sdGenerationJob: { generationId: "gen-1" },
@@ -1388,7 +1424,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -1401,10 +1440,7 @@ describe("API: POST /api/v1/leonardo/generate", () => {
 
       await handler(mockEvent);
 
-      expect(mockLeonardoUploadImage).toHaveBeenCalledWith(
-        expect.any(Buffer),
-        "jpeg"
-      );
+      expect(mockLeonardoUploadImage).toHaveBeenCalledWith(expect.any(Buffer), "jpeg");
     });
   });
 
@@ -1423,22 +1459,21 @@ describe("API: POST /api/v1/leonardo/generate", () => {
       ] as never);
       mockGetEventById.mockResolvedValue(mockEventData);
       mockGetPhotoSessionById.mockResolvedValue(mockSession);
-      
+
       mockLeonardoUploadImage.mockResolvedValue("uploaded-image-id-123");
-      
+
       mockLeonardoGenerateFromImageId
         .mockResolvedValueOnce({ sdGenerationJob: { generationId: "gen-1" } })
         .mockResolvedValueOnce({ sdGenerationJob: { generationId: "gen-2" } })
         .mockResolvedValueOnce({ sdGenerationJob: { generationId: "gen-3" } })
         .mockResolvedValueOnce({ sdGenerationJob: { generationId: "gen-4" } });
 
-      mockLeonardoGetGeneration
-        .mockResolvedValue({
-          generations_by_pk: {
-            status: "COMPLETE",
-            generated_images: [{ url: "https://leonardo.ai/image.jpg", id: "img-1" }],
-          },
-        });
+      mockLeonardoGetGeneration.mockResolvedValue({
+        generations_by_pk: {
+          status: "COMPLETE",
+          generated_images: [{ url: "https://leonardo.ai/image.jpg", id: "img-1" }],
+        },
+      });
 
       mockCreateAIPhoto
         .mockResolvedValueOnce(createMockAIPhoto("Anime"))
@@ -1452,7 +1487,10 @@ describe("API: POST /api/v1/leonardo/generate", () => {
         mimeType: "image/jpeg",
         dimensions: { width: 1262, height: 846 },
       });
-      mockUploadAIPhoto.mockResolvedValue({ path: "ai-photos/test.jpg", url: "https://supabase.co/test.jpg" });
+      mockUploadAIPhoto.mockResolvedValue({
+        path: "ai-photos/test.jpg",
+        url: "https://supabase.co/test.jpg",
+      });
       mockUpdateAIPhotoUrl.mockResolvedValue(createMockAIPhoto("Anime"));
 
       const mockFetch = jest.fn();
@@ -1475,4 +1513,3 @@ describe("API: POST /api/v1/leonardo/generate", () => {
     });
   });
 });
-
