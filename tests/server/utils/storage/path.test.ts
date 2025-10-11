@@ -166,7 +166,7 @@ describe("Storage Path Utils", () => {
 
       const result = generatePhotoPath("user123", "event456", "session789", "photo001", file);
 
-      expect(result).toBe("user123/event456/Photos/session789/photo001.png");
+      expect(result).toBe("user123/event456/Photos/session789/photo.png");
       expect(mockGetExtLower).toHaveBeenCalledWith("photo.png");
     });
 
@@ -176,7 +176,7 @@ describe("Storage Path Utils", () => {
 
       const result = generatePhotoPath("u1", "e1", "s1", "p1", file);
 
-      expect(result).toBe("u1/e1/Photos/s1/p1.jpeg");
+      expect(result).toBe("u1/e1/Photos/s1/photo.jpeg");
     });
 
     it("should handle numeric IDs", () => {
@@ -185,7 +185,7 @@ describe("Storage Path Utils", () => {
 
       const result = generatePhotoPath("123", "456", "789", "001", file);
 
-      expect(result).toBe("123/456/Photos/789/001.jpg");
+      expect(result).toBe("123/456/Photos/789/photo.jpg");
     });
   });
 
@@ -388,9 +388,9 @@ describe("Storage Path Utils", () => {
       const path = generatePhotoPath("u1", "e1", "s1", "p1", file);
       const url = generatePublicUrl("https://test.supabase.co", path);
 
-      expect(path).toBe("u1/e1/Photos/s1/p1.jpg");
+      expect(path).toBe("u1/e1/Photos/s1/photo.jpg");
       expect(url).toBe(
-        "https://test.supabase.co/storage/v1/object/public/PhotoBooth/u1/e1/Photos/s1/p1.jpg",
+        "https://test.supabase.co/storage/v1/object/public/PhotoBooth/u1/e1/Photos/s1/photo.jpg",
       );
     });
 
