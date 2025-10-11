@@ -38,6 +38,8 @@ export const mockUpdateEventLogoUrl = jest.fn<() => Promise<unknown>>();
 export const mockCreateAIPhoto = jest.fn<() => Promise<unknown>>();
 export const mockUpdateAIPhotoUrl = jest.fn<() => Promise<unknown>>();
 export const mockGetPhotoSessionById = jest.fn<() => Promise<unknown>>();
+export const mockCreatePhotoSession = jest.fn<() => Promise<unknown>>();
+export const mockUpdatePhotoSessionPhotoUrl = jest.fn<() => Promise<unknown>>();
 
 export const mockDownload =
   jest.fn<() => Promise<{ data: Blob | null; error: { message?: string } | null }>>();
@@ -120,6 +122,7 @@ export const mockGetStorageBucket = jest.fn(() => "test-bucket");
 export const mockNormalizeFilePart = jest.fn();
 export const mockValidateFileOrThrow = jest.fn();
 export const mockUploadLogo = jest.fn<() => Promise<{ path: string }>>();
+export const mockUploadPhoto = jest.fn<() => Promise<{ path: string; url?: string }>>();
 export const mockUpload =
   jest.fn<() => Promise<{ data: { path: string } | null; error: { message?: string } | null }>>();
 export const mockUploadAIPhoto = jest.fn<() => Promise<{ path: string; url: string }>>();

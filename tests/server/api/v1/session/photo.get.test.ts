@@ -1,0 +1,725 @@
+import { describe, it, expect, beforeAll, beforeEach, jest } from "@jest/globals";
+import {
+  mockCreateError,
+  mockDefineEventHandler,
+  mockGetQuery,
+  mockHandleApiError,
+  mockCreateSuccessResponse,
+  mockCreateErrorResponse,
+  mockRequireAuth,
+  mockGetPhotoSessionById,
+  mockCreateSignedUrl,
+  mockDownload,
+  mockGetStorageBucket,
+} from "~/tests/server/mocks/mocks";
+import { ERROR_STATUS_MAP } from "~/server/types/core";
+
+const mockSetHeader = jest.fn();
+const mockSend = jest.fn<() => Promise<void>>();
+const mockCreateAdminClient = jest.fn();
+
+jest.mock("h3", () => ({
+  defineEventHandler: mockDefineEventHandler,
+  createError: mockCreateError,
+  getQuery: mockGetQuery,
+  setHeader: mockSetHeader,
+  send: mockSend,
+}));
+
+jest.mock("~~/server/utils/auth", () => ({
+  requireAuth: mockRequireAuth,
+  handleApiError: mockHandleApiError,
+}));
+
+jest.mock("~~/server/utils/core", () => ({
+  createSuccessResponse: mockCreateSuccessResponse,
+  createErrorResponse: mockCreateErrorResponse,
+}));
+
+jest.mock("~~/server/model", () => ({
+  getPhotoSessionById: mockGetPhotoSessionById,
+}));
+
+jest.mock("~~/server/clients", () => ({
+  createAdminClient: mockCreateAdminClient,
+}));
+
+jest.mock("~~/server/utils/storage/path.utils", () => ({
+  getStorageBucket: mockGetStorageBucket,
+}));
+
+type MockEvent = {
+  node: {
+    req: Record<string, unknown>;
+    res: Record<string, unknown>;
+  };
+};
+
+type ErrorOptions = {
+  statusCode: number;
+  statusMessage: string;
+  data: {
+    error: {
+      type?: string;
+      code: string;
+      message: string;
+      statusCode: number;
+    };
+  };
+};
+
+describe("API: GET /api/v1/session/photo", () => {
+  let handler: (event: unknown) => Promise<unknown>;
+  let mockEvent: MockEvent;
+
+  beforeAll(async () => {
+    const module = await import("~/server/api/v1/session/photo.get");
+    handler = module.default as (event: unknown) => Promise<unknown>;
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    mockEvent = {
+      node: {
+        req: {},
+        res: {},
+      },
+    };
+
+    mockGetQuery.mockReturnValue({});
+    mockGetStorageBucket.mockReturnValue("test-bucket");
+
+    const mockStorage = {
+      from: jest.fn().mockReturnValue({
+        download: mockDownload,
+        createSignedUrl: mockCreateSignedUrl,
+      }),
+    };
+
+    mockCreateAdminClient.mockReturnValue({
+      storage: mockStorage,
+    });
+
+    mockHandleApiError.mockImplementation((error: unknown) => {
+      if (error instanceof Error) {
+        return {
+          type: "ERROR",
+          code: "ERROR",
+          message: error.message,
+          statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
+        };
+      }
+      return {
+        type: "ERROR",
+        code: "ERROR",
+        message: "Unknown error",
+        statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
+      };
+    });
+
+    mockCreateSuccessResponse.mockImplementation((data, message) => ({
+      success: true,
+      data,
+      message,
+    }));
+
+    mockCreateErrorResponse.mockImplementation((error) => ({
+      success: false,
+      error,
+    }));
+
+    mockCreateError.mockImplementation((options: ErrorOptions) => {
+      const error = new Error(options.statusMessage) as Error & ErrorOptions;
+      error.statusCode = options.statusCode;
+      error.statusMessage = options.statusMessage;
+      error.data = options.data;
+      return error;
+    });
+  });
+
+  describe("Authentication", () => {
+    it("should call requireAuth", async () => {
+      mockRequireAuth.mockRejectedValue(new Error("Unauthorized") as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+
+      await expect(handler(mockEvent)).rejects.toThrow();
+
+      expect(mockRequireAuth).toHaveBeenCalledWith(mockEvent);
+    });
+
+    it("should reject unauthenticated requests", async () => {
+      mockRequireAuth.mockRejectedValue(new Error("Unauthorized") as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+
+      mockHandleApiError.mockReturnValue({
+        type: "AUTH_ERROR",
+        code: "AUTH_ERROR",
+        message: "Unauthorized",
+        statusCode: ERROR_STATUS_MAP.AUTH_ERROR,
+      });
+
+      await expect(handler(mockEvent)).rejects.toThrow("Unauthorized");
+    });
+  });
+
+  describe("Query Parameter Validation", () => {
+    const createMockUser = () => ({
+      id: "user-123",
+      email: "test@example.com",
+    });
+
+    it("should require sessionId query parameter", async () => {
+      const mockUser = createMockUser();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({});
+
+      await expect(handler(mockEvent)).rejects.toThrow("Session ID is required");
+
+      expect(mockCreateError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          statusCode: ERROR_STATUS_MAP.BAD_REQUEST,
+          statusMessage: "Session ID is required",
+        }),
+      );
+    });
+
+    it("should reject empty sessionId", async () => {
+      const mockUser = createMockUser();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "" });
+
+      await expect(handler(mockEvent)).rejects.toThrow();
+    });
+
+    it("should read query parameters", async () => {
+      const mockUser = createMockUser();
+      const mockSession = {
+        id: "session-123",
+        eventId: "event-123",
+        photoUrl: "photos/test.jpg",
+        createdAt: new Date("2024-01-01T00:00:00Z"),
+        updatedAt: new Date("2024-01-01T00:00:00Z"),
+      };
+
+      const mockBlob = new Blob(["test"], { type: "image/jpeg" });
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockDownload.mockResolvedValue({ data: mockBlob, error: null });
+      mockSend.mockResolvedValue(undefined);
+
+      await handler(mockEvent);
+
+      expect(mockGetQuery).toHaveBeenCalledWith(mockEvent);
+    });
+  });
+
+  describe("Session Verification", () => {
+    const createMockUser = () => ({
+      id: "user-123",
+      email: "test@example.com",
+    });
+
+    it("should verify session exists", async () => {
+      const mockUser = createMockUser();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockResolvedValue(null);
+
+      await expect(handler(mockEvent)).rejects.toThrow("Session not found");
+    });
+
+    it("should call getPhotoSessionById with correct parameters", async () => {
+      const mockUser = createMockUser();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockResolvedValue(null);
+
+      await expect(handler(mockEvent)).rejects.toThrow();
+
+      expect(mockGetPhotoSessionById).toHaveBeenCalledWith("session-123", "user-123");
+    });
+
+    it("should use NOT_FOUND status code", async () => {
+      const mockUser = createMockUser();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockResolvedValue(null);
+
+      mockHandleApiError.mockReturnValue({
+        type: "NOT_FOUND",
+        code: "SESSION_NOT_FOUND",
+        message: "Session not found",
+        statusCode: ERROR_STATUS_MAP.NOT_FOUND,
+      });
+
+      await expect(handler(mockEvent)).rejects.toMatchObject({
+        statusCode: ERROR_STATUS_MAP.NOT_FOUND,
+      });
+    });
+  });
+
+  describe("Photo URL Validation", () => {
+    const createMockUser = () => ({
+      id: "user-123",
+      email: "test@example.com",
+    });
+
+    it("should reject session without photoUrl", async () => {
+      const mockUser = createMockUser();
+      const mockSession = {
+        id: "session-123",
+        eventId: "event-123",
+        photoUrl: null,
+        createdAt: new Date("2024-01-01T00:00:00Z"),
+        updatedAt: new Date("2024-01-01T00:00:00Z"),
+      };
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+
+      await expect(handler(mockEvent)).rejects.toThrow("No photo found");
+
+      expect(mockCreateError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          statusCode: ERROR_STATUS_MAP.NOT_FOUND,
+          statusMessage: "No photo found",
+        }),
+      );
+    });
+
+    it("should reject session with empty photoUrl", async () => {
+      const mockUser = createMockUser();
+      const mockSession = {
+        id: "session-123",
+        eventId: "event-123",
+        photoUrl: "",
+        createdAt: new Date("2024-01-01T00:00:00Z"),
+        updatedAt: new Date("2024-01-01T00:00:00Z"),
+      };
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+
+      await expect(handler(mockEvent)).rejects.toThrow();
+    });
+
+    it("should use NOT_FOUND status for missing photo", async () => {
+      const mockUser = createMockUser();
+      const mockSession = {
+        id: "session-123",
+        eventId: "event-123",
+        photoUrl: null,
+        createdAt: new Date("2024-01-01T00:00:00Z"),
+        updatedAt: new Date("2024-01-01T00:00:00Z"),
+      };
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+
+      mockHandleApiError.mockReturnValue({
+        type: "NOT_FOUND",
+        code: "PHOTO_NOT_FOUND",
+        message: "No photo found",
+        statusCode: ERROR_STATUS_MAP.NOT_FOUND,
+      });
+
+      await expect(handler(mockEvent)).rejects.toMatchObject({
+        statusCode: ERROR_STATUS_MAP.NOT_FOUND,
+      });
+    });
+  });
+
+  describe("Signed URL Mode", () => {
+    const createMockUser = () => ({
+      id: "user-123",
+      email: "test@example.com",
+    });
+
+    const createMockSession = () => ({
+      id: "session-123",
+      eventId: "event-123",
+      photoUrl: "photos/test.jpg",
+      createdAt: new Date("2024-01-01T00:00:00Z"),
+      updatedAt: new Date("2024-01-01T00:00:00Z"),
+    });
+
+    it("should create signed URL successfully", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123", mode: "signed" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockCreateSignedUrl.mockResolvedValue({
+        data: { signedUrl: "https://signed-url.com" },
+        error: null,
+      });
+
+      const result = await handler(mockEvent);
+
+      expect(mockCreateSignedUrl).toHaveBeenCalledWith("photos/test.jpg", 600);
+      expect(result).toBeDefined();
+    });
+
+    it("should return correct signed URL response structure", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123", mode: "signed" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockCreateSignedUrl.mockResolvedValue({
+        data: { signedUrl: "https://signed-url.com" },
+        error: null,
+      });
+
+      await handler(mockEvent);
+
+      expect(mockCreateSuccessResponse).toHaveBeenCalledWith(
+        {
+          url: "https://signed-url.com",
+          expiresIn: 600,
+        },
+        "Signed URL created successfully",
+      );
+    });
+
+    it("should use custom expires parameter", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({
+        sessionId: "session-123",
+        mode: "signed",
+        expires: "1800",
+      });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockCreateSignedUrl.mockResolvedValue({
+        data: { signedUrl: "https://signed-url.com" },
+        error: null,
+      });
+
+      await handler(mockEvent);
+
+      expect(mockCreateSignedUrl).toHaveBeenCalledWith("photos/test.jpg", 1800);
+    });
+
+    it("should enforce minimum expires value", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({
+        sessionId: "session-123",
+        mode: "signed",
+        expires: "5",
+      });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockCreateSignedUrl.mockResolvedValue({
+        data: { signedUrl: "https://signed-url.com" },
+        error: null,
+      });
+
+      await handler(mockEvent);
+
+      expect(mockCreateSignedUrl).toHaveBeenCalledWith("photos/test.jpg", 10);
+    });
+
+    it("should enforce maximum expires value", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({
+        sessionId: "session-123",
+        mode: "signed",
+        expires: "5000",
+      });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockCreateSignedUrl.mockResolvedValue({
+        data: { signedUrl: "https://signed-url.com" },
+        error: null,
+      });
+
+      await handler(mockEvent);
+
+      expect(mockCreateSignedUrl).toHaveBeenCalledWith("photos/test.jpg", 3600);
+    });
+
+    it("should handle signed URL creation errors", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123", mode: "signed" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockCreateSignedUrl.mockResolvedValue({
+        data: null,
+        error: { message: "Failed to sign" },
+      });
+
+      await expect(handler(mockEvent)).rejects.toThrow("Failed to sign URL");
+    });
+
+    it("should handle missing signedUrl in response", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123", mode: "signed" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockCreateSignedUrl.mockResolvedValue({
+        data: { signedUrl: null },
+        error: null,
+      });
+
+      await expect(handler(mockEvent)).rejects.toThrow();
+    });
+
+    it("should use error message when available", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123", mode: "signed" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockCreateSignedUrl.mockResolvedValue({
+        data: null,
+        error: { message: "Storage error" },
+      });
+
+      await expect(handler(mockEvent)).rejects.toThrow("Failed to sign URL");
+
+      expect(mockCreateError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            error: expect.objectContaining({
+              message: "Storage error",
+            }),
+          }),
+        }),
+      );
+    });
+
+    it("should use default error message when no error message provided", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123", mode: "signed" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockCreateSignedUrl.mockResolvedValue({
+        data: null,
+        error: null,
+      });
+
+      await expect(handler(mockEvent)).rejects.toThrow("Failed to sign URL");
+
+      expect(mockCreateError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            error: expect.objectContaining({
+              message: "Failed to create signed URL",
+            }),
+          }),
+        }),
+      );
+    });
+  });
+
+  describe("Blob Download Mode", () => {
+    const createMockUser = () => ({
+      id: "user-123",
+      email: "test@example.com",
+    });
+
+    const createMockSession = () => ({
+      id: "session-123",
+      eventId: "event-123",
+      photoUrl: "photos/test.jpg",
+      createdAt: new Date("2024-01-01T00:00:00Z"),
+      updatedAt: new Date("2024-01-01T00:00:00Z"),
+    });
+
+    it("should download photo blob successfully", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+      const mockBlob = new Blob(["test"], { type: "image/jpeg" });
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockDownload.mockResolvedValue({ data: mockBlob, error: null });
+      mockSend.mockResolvedValue(undefined);
+
+      await handler(mockEvent);
+
+      expect(mockDownload).toHaveBeenCalledWith("photos/test.jpg");
+    });
+
+    it("should set correct headers for blob download", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+      const mockBlob = new Blob(["test"], { type: "image/jpeg" });
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockDownload.mockResolvedValue({ data: mockBlob, error: null });
+      mockSend.mockResolvedValue(undefined);
+
+      await handler(mockEvent);
+
+      expect(mockSetHeader).toHaveBeenCalledWith(mockEvent, "Content-Type", "image/jpeg");
+      expect(mockSetHeader).toHaveBeenCalledWith(mockEvent, "Cache-Control", "private, max-age=60");
+      expect(mockSetHeader).toHaveBeenCalledWith(
+        mockEvent,
+        "Content-Disposition",
+        'inline; filename="photo"',
+      );
+    });
+
+    it("should use default content type when not provided", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+      const mockBlob = new Blob(["test"]);
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockDownload.mockResolvedValue({ data: mockBlob, error: null });
+      mockSend.mockResolvedValue(undefined);
+
+      await handler(mockEvent);
+
+      expect(mockSetHeader).toHaveBeenCalledWith(
+        mockEvent,
+        "Content-Type",
+        "application/octet-stream",
+      );
+    });
+
+    it("should handle download errors", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockDownload.mockResolvedValue({ data: null, error: { message: "Download failed" } });
+
+      await expect(handler(mockEvent)).rejects.toThrow("Failed to download photo");
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    it("should handle missing data in download response", async () => {
+      const mockUser = createMockUser();
+      const mockSession = createMockSession();
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockResolvedValue(mockSession);
+      mockDownload.mockResolvedValue({ data: null, error: null });
+
+      await expect(handler(mockEvent)).rejects.toThrow();
+
+      consoleErrorSpy.mockRestore();
+    });
+  });
+
+  describe("Error Handling", () => {
+    const createMockUser = () => ({
+      id: "user-123",
+      email: "test@example.com",
+    });
+
+    it("should handle getPhotoSessionById errors", async () => {
+      const mockUser = createMockUser();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockRejectedValue(new Error("Database error"));
+
+      mockHandleApiError.mockReturnValue({
+        type: "INTERNAL_ERROR",
+        code: "INTERNAL_ERROR",
+        message: "Database error",
+        statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
+      });
+
+      await expect(handler(mockEvent)).rejects.toThrow("Database error");
+    });
+
+    it("should use INTERNAL_ERROR as default statusCode", async () => {
+      const mockUser = createMockUser();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockRejectedValue(new Error("Test error"));
+
+      mockHandleApiError.mockReturnValue({
+        type: "ERROR",
+        code: "ERROR",
+        message: "Test error",
+      } as never);
+
+      await expect(handler(mockEvent)).rejects.toMatchObject({
+        statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
+      });
+    });
+
+    it("should call createErrorResponse for errors", async () => {
+      const mockUser = createMockUser();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+      mockGetPhotoSessionById.mockRejectedValue(new Error("Test error"));
+
+      mockHandleApiError.mockReturnValue({
+        type: "ERROR",
+        code: "ERROR",
+        message: "Test error",
+        statusCode: ERROR_STATUS_MAP.INTERNAL_ERROR,
+      });
+
+      await expect(handler(mockEvent)).rejects.toThrow();
+      expect(mockCreateErrorResponse).toHaveBeenCalled();
+    });
+
+    it("should use provided statusCode when available", async () => {
+      const mockUser = createMockUser();
+
+      mockRequireAuth.mockResolvedValue(mockUser as never);
+      mockGetQuery.mockReturnValue({ sessionId: "session-123" });
+
+      const errorWithStatus = new Error("Custom error") as Error & { statusCode: number };
+      errorWithStatus.statusCode = 403;
+      mockGetPhotoSessionById.mockRejectedValue(errorWithStatus);
+
+      mockHandleApiError.mockReturnValue({
+        type: "ERROR",
+        code: "ERROR",
+        message: "Custom error",
+        statusCode: 403,
+      });
+
+      await expect(handler(mockEvent)).rejects.toMatchObject({
+        statusCode: 403,
+      });
+    });
+  });
+});

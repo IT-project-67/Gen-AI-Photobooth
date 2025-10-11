@@ -3,7 +3,7 @@ import { createAdminClient } from "~~/server/clients";
 import { getPhotoSessionById } from "~~/server/model";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import { ERROR_STATUS_MAP, type ErrorType } from "~~/server/types/core";
-import { createErrorResponse } from "~~/server/utils/core";
+import { createErrorResponse, createSuccessResponse } from "~~/server/utils/core";
 import { getStorageBucket } from "~~/server/utils/storage/path.utils";
 
 export default defineEventHandler(async (event) => {
