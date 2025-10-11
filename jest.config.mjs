@@ -7,6 +7,7 @@ export default {
       extensionsToTreatAsEsm: [".ts"],
       roots: ["<rootDir>/tests/server"],
       testMatch: ["**/*.test.ts", "**/*.spec.ts"],
+      setupFilesAfterEnv: ["<rootDir>/tests/server/jest.setup.ts"],
       moduleFileExtensions: ["ts", "js", "json", "node"],
       moduleNameMapper: {
         "^~~/(.*)$": "<rootDir>/$1",

@@ -1,21 +1,21 @@
 import { jest } from "@jest/globals";
 
-// Mock Prisma client functions
 export const mockCreate = jest.fn();
 export const mockUpdate = jest.fn();
 export const mockFindUnique = jest.fn();
 export const mockFindFirst = jest.fn();
 export const mockFindMany = jest.fn();
 
-// Mock h3 functions
-export const mockGetQuery = jest.fn();
+export const mockGetQuery = jest.fn<() => Record<string, unknown>>();
 export const mockCreateError = jest.fn();
 export const mockSetHeader = jest.fn();
+export const mockGetHeader = jest.fn();
+export const mockSend = jest.fn();
+export const mockReadMultipartFormData = jest.fn<() => Promise<unknown>>();
 export const mockDefineEventHandler = jest.fn((handler) => handler);
 export const mockReadBody = jest.fn<() => Promise<unknown>>();
 export const mockGetRequestURL = jest.fn<() => { origin: string }>();
 
-// Mock auth functions
 export const mockRequireAuth = jest.fn();
 export const mockValidateForgotPasswordRequest = jest.fn();
 export const mockValidateLoginRequest = jest.fn();
@@ -24,18 +24,26 @@ export const mockValidateResetPasswordRequest = jest.fn();
 export const mockHandleAuthError = jest.fn();
 export const mockHandleApiError = jest.fn();
 
-// Mock model functions
 export const mockGetAIPhotoById = jest.fn();
-export const mockGetAllProfile =
-  jest.fn<() => Promise<{ id: string; isDeleted: boolean } | null>>();
+export const mockGetAllProfile = jest.fn<
+  () => Promise<{ id: string; isDeleted: boolean } | null>
+>();
 export const mockCreateProfile = jest.fn<() => Promise<unknown>>();
 export const mockRestoreProfile = jest.fn<() => Promise<unknown>>();
+export const mockCreateEvent = jest.fn<() => Promise<unknown>>();
+export const mockGetEventById = jest.fn<() => Promise<unknown>>();
+export const mockGetEventsByProfile = jest.fn<() => Promise<unknown[]>>();
+export const mockUpdateEventLogoUrl = jest.fn<() => Promise<unknown>>();
 
-// Mock supabase
-export const mockDownload = jest.fn();
-export const mockCreateSignedUrl = jest.fn();
-export const mockResetPasswordForEmail =
-  jest.fn<() => Promise<{ error: { message?: string; error_code?: string } | null }>>();
+export const mockDownload = jest.fn<
+  () => Promise<{ data: Blob | null; error: { message?: string } | null }>
+>();
+export const mockCreateSignedUrl = jest.fn<
+  () => Promise<{ data: { signedUrl: string } | null; error: { message?: string } | null }>
+>();
+export const mockResetPasswordForEmail = jest.fn<
+  () => Promise<{ error: { message?: string; error_code?: string } | null }>
+>();
 export const mockSignInWithPassword = jest.fn<
   () => Promise<{
     data: { session: unknown; user: unknown } | { session: null; user: null };
@@ -50,27 +58,28 @@ export const mockSignUp = jest.fn<
 >();
 export const mockListUsers = jest.fn<
   () => Promise<{
-    data: {
-      users: Array<{
-        id: string;
-        email: string;
-        email_confirmed_at?: string | null;
-        created_at?: string;
-        updated_at?: string;
-      }>;
-    };
+    data: { users: Array<{ id: string; email: string; email_confirmed_at?: string | null; created_at?: string; updated_at?: string }> };
     error: unknown;
   }>
 >();
-export const mockUpdateUserById = jest.fn<() => Promise<{ error: { message?: string } | null }>>();
+export const mockUpdateUserById = jest.fn<
+  () => Promise<{ error: { message?: string } | null }>
+>();
 export const mockSetSession = jest.fn<
   () => Promise<{
     data: { user: unknown; session: unknown } | { user: null; session: null };
     error: { message?: string; error_code?: string } | null;
   }>
 >();
-export const mockUpdateUser =
-  jest.fn<() => Promise<{ error: { message?: string; error_code?: string } | null }>>();
+export const mockUpdateUser = jest.fn<
+  () => Promise<{ error: { message?: string; error_code?: string } | null }>
+>();
+export const mockGetUser = jest.fn<
+  () => Promise<{
+    data: { user: unknown } | { user: null };
+    error: { message?: string; error_code?: string } | null;
+  }>
+>();
 export const mockFrom = jest.fn(() => ({
   download: mockDownload,
   createSignedUrl: mockCreateSignedUrl,
@@ -95,13 +104,30 @@ export const mockCreateAuthClient = jest.fn(() => ({
     signUp: mockSignUp,
     setSession: mockSetSession,
     updateUser: mockUpdateUser,
+    getUser: mockGetUser,
   },
 }));
 
-// Mock storage utils
 export const mockGetStorageBucket = jest.fn(() => "test-bucket");
+export const mockNormalizeFilePart = jest.fn();
+export const mockValidateFileOrThrow = jest.fn();
+export const mockUploadLogo = jest.fn<() => Promise<{ path: string }>>();
+export const mockUpload = jest.fn<() => Promise<{ data: { path: string } | null; error: { message?: string } | null }>>();
 
-// Mock response utils
+export const mockConfig = jest.fn(() => ({
+  STORAGE_BUCKET: "test-bucket",
+  LEONARDO_API_KEY: "test-key",
+  LEONARDO_MODEL_ID: "test-model",
+  LEONARDO_STYLE_ID: "test-style",
+  LEONARDO_DEFAULT_PROMPTS: ["", "", "", ""] as [string, string, string, string],
+}));
+
+export const mockUseRuntimeConfig = jest.fn(() => ({
+  public: {
+    supabaseUrl: "https://test.supabase.co",
+  },
+}));
+
 export const mockCreateSuccessResponse = jest.fn((data, message) => ({
   success: true,
   data,
