@@ -136,3 +136,79 @@ export async function mergeImages(
   merger.validateImageFile(logoImage);
   return await merger.mergeImages(mainImage, logoImage, options);
 }
+
+export async function addWhiteBorder(
+  mainImage: UploadFile,
+  options: MergeOptions = {},
+): Promise<ImageMergeResult> {
+  const opts = {
+    borderWidth: 7,
+    borderColor: "#FFFFFF",
+    quality: 90,
+    outputFormat: "jpeg" as const,
+    ...options,
+  };
+
+  try {
+    const mainSharp = sharp(mainImage.data);
+    const mainMetadata = await mainSharp.metadata();
+
+    const isLandscape = (mainMetadata.width || 0) >= (mainMetadata.height || 0);
+    const targetWidth = isLandscape ? 1248 : 832;
+    const targetHeight = isLandscape ? 832 : 1248;
+
+    console.log(
+      `Original image: ${mainMetadata.width}x${mainMetadata.height}, detected as ${isLandscape ? "landscape" : "portrait"}`,
+    );
+    console.log(`Target size: ${targetWidth}x${targetHeight}`);
+
+    if (mainMetadata.width !== targetWidth || mainMetadata.height !== targetHeight) {
+      console.log(
+        `Resizing main image from ${mainMetadata.width}x${mainMetadata.height} to ${targetWidth}x${targetHeight}`,
+      );
+      mainSharp.resize(targetWidth, targetHeight, { fit: "fill" });
+    }
+
+    const borderWidth = opts.borderWidth;
+    const canvasWidth = targetWidth + borderWidth * 2;
+    const canvasHeight = targetHeight + borderWidth * 2;
+    const canvas = sharp({
+      create: {
+        width: canvasWidth,
+        height: canvasHeight,
+        channels: 3,
+        background: { r: 255, g: 255, b: 255 },
+      },
+    });
+
+    const mainBuffer = await mainSharp.toBuffer();
+    const finalImage = await canvas
+      .composite([
+        {
+          input: mainBuffer,
+          left: borderWidth,
+          top: borderWidth,
+        },
+      ])
+      .jpeg({ quality: opts.quality })
+      .toBuffer();
+
+    const mimeType =
+      opts.outputFormat === "jpeg"
+        ? "image/jpeg"
+        : opts.outputFormat === "png"
+          ? "image/png"
+          : "image/webp";
+
+    return {
+      data: finalImage,
+      mimeType,
+      dimensions: { width: canvasWidth, height: canvasHeight },
+    };
+  } catch (error) {
+    console.error("Add white border error:", error);
+    throw new Error(
+      `Failed to add white border: ${error instanceof Error ? error.message : "Unknown error"}`,
+    );
+  }
+}

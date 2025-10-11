@@ -12,7 +12,12 @@ import {
 import { createAdminClient } from "~~/server/clients";
 import { uploadAIPhoto, type UploadFile } from "~~/server/utils/storage";
 import { requireAuth } from "~~/server/utils/auth";
-import { hasEventLogo, downloadEventLogo, mergeImages } from "~~/server/utils/image";
+import {
+  hasEventLogo,
+  downloadEventLogo,
+  mergeImages,
+  addWhiteBorder,
+} from "~~/server/utils/image";
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event);
@@ -179,6 +184,20 @@ export default defineEventHandler(async (event) => {
             console.log(`Successfully merged logo with ${style} photo`);
           } catch (mergeError) {
             console.warn(`Failed to merge logo with ${style} photo:`, mergeError);
+          }
+        } else {
+          try {
+            console.log(`Adding white border to ${style} photo...`);
+            const borderedResult = await addWhiteBorder(uploadFile);
+            uploadFile = {
+              data: Buffer.from(borderedResult.data),
+              name: `${style.toLowerCase()}-bordered.jpg`,
+              type: borderedResult.mimeType,
+              size: borderedResult.data.length,
+            };
+            console.log(`Successfully added border to ${style} photo`);
+          } catch (borderError) {
+            console.warn(`Failed to add border to ${style} photo:`, borderError);
           }
         }
 
