@@ -858,4 +858,3 @@ describe("API: POST /api/v1/auth/reset-password", () => {
     });
   });
 });
-

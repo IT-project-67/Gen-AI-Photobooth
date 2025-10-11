@@ -521,7 +521,10 @@ describe("API: POST /api/v1/auth/register", () => {
       });
 
       mockCreateError.mockImplementation((opts: ErrorOptions) => {
-        if (opts.statusCode === ERROR_STATUS_MAP.INTERNAL_ERROR && opts.statusMessage.includes("update password")) {
+        if (
+          opts.statusCode === ERROR_STATUS_MAP.INTERNAL_ERROR &&
+          opts.statusMessage.includes("update password")
+        ) {
           expect(opts.statusMessage).toBe(
             "Failed to update password for account recovery. Please try again.",
           );
@@ -550,7 +553,7 @@ describe("API: POST /api/v1/auth/register", () => {
       });
       mockGetAllProfile.mockResolvedValue({ id: "profile-123", isDeleted: true });
       mockUpdateUserById.mockResolvedValue({ error: null });
-      
+
       const restoreError = new Error("Restore failed");
       mockRestoreProfile.mockRejectedValue(restoreError);
 
@@ -561,7 +564,10 @@ describe("API: POST /api/v1/auth/register", () => {
       });
 
       mockCreateError.mockImplementation((opts: ErrorOptions) => {
-        if (opts.statusCode === ERROR_STATUS_MAP.INTERNAL_ERROR && opts.statusMessage.includes("restore")) {
+        if (
+          opts.statusCode === ERROR_STATUS_MAP.INTERNAL_ERROR &&
+          opts.statusMessage.includes("restore")
+        ) {
           expect(opts.statusMessage).toBe("Failed to restore account. Please try again.");
         }
         throw new Error(opts.statusMessage);
@@ -571,10 +577,7 @@ describe("API: POST /api/v1/auth/register", () => {
         "Failed to restore account. Please try again.",
       );
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Failed to restore profile:",
-        restoreError,
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Failed to restore profile:", restoreError);
     });
 
     it("should include user data in recovery response", async () => {
@@ -1445,4 +1448,3 @@ describe("API: POST /api/v1/auth/register", () => {
     });
   });
 });
-

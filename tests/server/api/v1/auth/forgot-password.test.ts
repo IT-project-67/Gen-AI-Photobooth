@@ -240,8 +240,7 @@ describe("API: POST /api/v1/auth/forgot-password", () => {
         success: true,
         message: "Password reset email sent",
         data: {
-          message:
-            "If an account with this email exists, you will receive a password reset link.",
+          message: "If an account with this email exists, you will receive a password reset link.",
         },
       });
     });
@@ -606,4 +605,3 @@ describe("API: POST /api/v1/auth/forgot-password", () => {
     });
   });
 });
-
