@@ -2,7 +2,7 @@ import { jest } from "@jest/globals";
 
 const mockDefineEventHandler = jest.fn((handler) => handler);
 const mockCreateError = jest.fn();
-const mockReadMultipartFormData = jest.fn<() => Promise<unknown>>();
+const mockReadMultipartFormData = jest.fn<(event: unknown) => Promise<unknown>>();
 const mockUseRuntimeConfig = jest.fn(() => ({
   public: {
     supabaseUrl: "https://test.supabase.co",
@@ -26,3 +26,4 @@ globalThis.defineEventHandler = mockDefineEventHandler;
 globalThis.createError = mockCreateError;
 globalThis.readMultipartFormData = mockReadMultipartFormData;
 globalThis.useRuntimeConfig = mockUseRuntimeConfig;
+
