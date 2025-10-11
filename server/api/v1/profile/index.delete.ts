@@ -1,3 +1,4 @@
+import { defineEventHandler, getHeader, createError } from "h3";
 import type { ProfileResponse } from "~~/server/types/profile/profile.types";
 import type { ApiResponse } from "~~/server/types/core/api-response.types";
 import { ERROR_STATUS_MAP } from "~~/server/types/core/error-match.types";

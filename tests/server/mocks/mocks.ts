@@ -26,9 +26,11 @@ export const mockHandleApiError = jest.fn();
 
 export const mockGetAIPhotoById = jest.fn();
 export const mockGetAllProfile =
-  jest.fn<() => Promise<{ id: string; isDeleted: boolean } | null>>();
+  jest.fn<() => Promise<{ id: string; isDeleted: boolean; userId?: string } | null>>();
+export const mockGetValidProfile = jest.fn<() => Promise<unknown>>();
 export const mockCreateProfile = jest.fn<() => Promise<unknown>>();
 export const mockRestoreProfile = jest.fn<() => Promise<unknown>>();
+export const mockSoftDeleteProfile = jest.fn<() => Promise<unknown>>();
 export const mockCreateEvent = jest.fn<() => Promise<unknown>>();
 export const mockGetEventById = jest.fn<() => Promise<unknown>>();
 export const mockGetEventsByProfile = jest.fn<() => Promise<unknown[]>>();

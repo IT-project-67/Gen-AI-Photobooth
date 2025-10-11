@@ -1,3 +1,4 @@
+import { defineEventHandler, getHeader, createError } from "h3";
 import { getAllProfile, createProfile, restoreProfile } from "~~/server/model";
 import type { OAuthError } from "~~/server/types/profile";
 import { ERROR_STATUS_MAP } from "~~/server/types/core";
