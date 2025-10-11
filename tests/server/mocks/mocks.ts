@@ -24,7 +24,6 @@ export const mockValidateResetPasswordRequest = jest.fn();
 export const mockHandleAuthError = jest.fn();
 export const mockHandleApiError = jest.fn();
 
-export const mockGetAIPhotoById = jest.fn();
 export const mockGetAllProfile =
   jest.fn<() => Promise<{ id: string; isDeleted: boolean; userId?: string } | null>>();
 export const mockGetValidProfile = jest.fn<() => Promise<unknown>>();
@@ -40,6 +39,14 @@ export const mockUpdateAIPhotoUrl = jest.fn<() => Promise<unknown>>();
 export const mockGetPhotoSessionById = jest.fn<() => Promise<unknown>>();
 export const mockCreatePhotoSession = jest.fn<() => Promise<unknown>>();
 export const mockUpdatePhotoSessionPhotoUrl = jest.fn<() => Promise<unknown>>();
+export const mockCreateSharedPhoto = jest.fn<() => Promise<unknown>>();
+export const mockGetSharedPhotoByAIPhoto = jest.fn<() => Promise<unknown>>();
+export const mockGetSharedPhotoById = jest.fn<() => Promise<unknown>>();
+export const mockGetSharedPhotosByEvent = jest.fn<() => Promise<unknown[]>>();
+export const mockGenerateAndUploadQRCode = jest.fn<() => Promise<string>>();
+export const mockCreateSignedUrlForAIPhoto = jest.fn<() => Promise<string>>();
+export const mockGetAIPhotoById = jest.fn<() => Promise<unknown>>();
+export const mockGetQRCodeFromStorage = jest.fn<() => Promise<Buffer | null>>();
 
 export const mockDownload =
   jest.fn<() => Promise<{ data: Blob | null; error: { message?: string } | null }>>();
