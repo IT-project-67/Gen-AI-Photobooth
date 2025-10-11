@@ -124,10 +124,7 @@ describe("AI Photo Model", () => {
 
       await expect(createAIPhoto("session1", Style.Anime)).rejects.toThrow("DB Error");
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error creating AI photo:",
-        expect.any(Error),
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Error creating AI photo:", expect.any(Error));
     });
   });
 
@@ -297,10 +294,7 @@ describe("AI Photo Model", () => {
 
       await expect(getAIPhotoById("photo1", "user1")).rejects.toThrow("DB Error");
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error fetching AI photos:",
-        expect.any(Error),
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Error fetching AI photos:", expect.any(Error));
     });
   });
 
@@ -504,10 +498,7 @@ describe("AI Photo Model", () => {
 
       await expect(getAIPhotosBySession("session1", "user1")).rejects.toThrow("DB Error");
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error fetching AI photos:",
-        expect.any(Error),
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Error fetching AI photos:", expect.any(Error));
     });
   });
 });

@@ -1,10 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, jest } from "@jest/globals";
 
-import {
-  mockCreate,
-  mockFindFirst,
-  mockFindMany,
-} from "~/tests/server/mocks/mocks";
+import { mockCreate, mockFindFirst, mockFindMany } from "~/tests/server/mocks/mocks";
 
 import {
   createSharedPhoto,
@@ -640,4 +636,3 @@ describe("Share Photo Model", () => {
     });
   });
 });
-

@@ -227,10 +227,7 @@ describe("Event Model", () => {
 
       await expect(createEvent(eventData)).rejects.toThrow("DB Error");
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error creating event:",
-        expect.any(Error),
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Error creating event:", expect.any(Error));
     });
   });
 

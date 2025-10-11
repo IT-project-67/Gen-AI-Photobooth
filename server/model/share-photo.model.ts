@@ -130,7 +130,7 @@ export async function getSharedPhotoByAIPhoto(aiphotoId: string): Promise<{
   event: { id: string; name: string };
   aiPhoto: { id: string; style: string; generatedUrl: string };
 } | null> {
-    try {
+  try {
     const sharedPhoto = await prismaClient.sharedPhoto.findFirst({
       where: { aiPhotoId: aiphotoId },
       include: {

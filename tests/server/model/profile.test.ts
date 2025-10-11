@@ -1,10 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, jest } from "@jest/globals";
 
-import {
-  mockCreate,
-  mockFindFirst,
-  mockUpdate,
-} from "~/tests/server/mocks/mocks";
+import { mockCreate, mockFindFirst, mockUpdate } from "~/tests/server/mocks/mocks";
 
 import {
   createProfile,
@@ -547,4 +543,3 @@ describe("Profile Model", () => {
     });
   });
 });
-
