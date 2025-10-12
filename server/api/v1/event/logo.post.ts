@@ -1,3 +1,4 @@
+import { defineEventHandler, readMultipartFormData, createError } from "h3";
 import { createAdminClient } from "~~/server/clients";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import type { LogoUploadResponse } from "~~/server/types/event";

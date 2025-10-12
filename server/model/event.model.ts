@@ -1,5 +1,5 @@
 import type { EventStruct } from "~~/server/types/event/model.types";
-import { prismaClient } from "~~/server/clients/prisma.client";
+import { prismaClient } from "~~/server/clients";
 
 export const createEvent = async ({ name, userId, logoUrl, startDate, endDate }: EventStruct) => {
   try {

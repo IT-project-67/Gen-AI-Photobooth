@@ -67,6 +67,14 @@ export const validateResetPasswordRequest = (
   refresh_token: string,
   password: string,
 ): Errors | null => {
+  if (!access_token && !refresh_token) {
+    return {
+      code: "TOKENS_REQUIRED",
+      message: "Reset tokens are required",
+      statusCode: ERROR_STATUS_MAP.TOKENS_REQUIRED,
+    };
+  }
+
   if (!access_token) {
     return {
       code: "ACCESS_TOKEN_REQUIRED",

@@ -1,3 +1,4 @@
+import { defineEventHandler, readBody, createError } from "h3";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import { createPhotoSession, getEventById } from "~~/server/model";
 import { ERROR_STATUS_MAP, type ErrorType, type ApiResponse } from "~~/server/types/core";

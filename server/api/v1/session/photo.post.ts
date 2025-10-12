@@ -1,3 +1,4 @@
+import { defineEventHandler, readMultipartFormData, createError } from "h3";
 import { createAdminClient } from "~~/server/clients";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import { getPhotoSessionById, getEventById, updatePhotoSessionPhotoUrl } from "~~/server/model";
@@ -6,6 +7,13 @@ import { createErrorResponse, createSuccessResponse } from "~~/server/utils/core
 import { normalizeFilePart, validateFileOrThrow } from "~~/server/utils/storage/validation.utils";
 import { uploadPhoto } from "~~/server/utils/storage";
 import type { PhotoUploadResponse } from "~~/server/types/session";
+
+type FilePart = {
+  name?: string;
+  filename?: string;
+  type?: string;
+  data: Buffer;
+};
 
 export default defineEventHandler(async (event): Promise<ApiResponse<PhotoUploadResponse>> => {
   try {
