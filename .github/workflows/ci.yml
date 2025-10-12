@@ -3,7 +3,7 @@ name: CI Test
 on: [push, pull_request]
 
 jobs:
-  lint-and-build:
+  tests:
     runs-on: ubuntu-latest
 
     steps:
