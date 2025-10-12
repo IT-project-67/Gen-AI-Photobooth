@@ -1,3 +1,4 @@
+import { defineEventHandler, readMultipartFormData, createError } from "h3";
 import { config } from "~~/server/config";
 import type { GenerationResponse, GenerationStatusResponse } from "~~/server/types/leonardo";
 import sharp from "sharp";

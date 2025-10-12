@@ -1,3 +1,4 @@
+import { defineEventHandler, getHeader, readBody, createError } from "h3";
 import { ERROR_STATUS_MAP, type ApiResponse } from "~~/server/types/core";
 import { handleApiError } from "~~/server/utils/auth";
 import { createAuthClient } from "~~/server/clients";
