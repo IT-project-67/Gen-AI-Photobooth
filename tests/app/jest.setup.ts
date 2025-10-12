@@ -8,7 +8,7 @@ const mockGetSession = jest.fn(() =>
         access_token: "default-test-token",
       },
     },
-  })
+  }),
 );
 
 const mockSetSession = jest.fn((..._args: unknown[]) => Promise.resolve({ error: null }));
@@ -51,16 +51,15 @@ globalThis.$fetch = mockFetch as never;
 globalThis.fetch = mockFetch as never;
 globalThis.navigateTo = mockNavigateTo as never;
 
-export { 
-  mockGetSession, 
-  mockSetSession, 
-  mockSignOut, 
+export {
+  mockGetSession,
+  mockSetSession,
+  mockSignOut,
   mockUpdateUser,
   mockSignInWithOAuth,
   mockUser,
   mockUseSupabaseClient,
-  mockUseSupabaseUser, 
+  mockUseSupabaseUser,
   mockFetch,
-  mockNavigateTo
+  mockNavigateTo,
 };
-
