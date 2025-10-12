@@ -1,4 +1,4 @@
-import { prismaClient } from "~~/server/clients/prisma.client";
+import { prismaClient } from "~~/server/clients";
 
 export const createProfile = async (userId: string, displayName?: string) => {
   try {
@@ -17,7 +17,7 @@ export const createProfile = async (userId: string, displayName?: string) => {
 
 export const getValidProfile = async (userId: string) => {
   try {
-    const profile = await prismaClient.profile.findUnique({
+    const profile = await prismaClient.profile.findFirst({
       where: {
         userId,
         isDeleted: false,
@@ -32,7 +32,7 @@ export const getValidProfile = async (userId: string) => {
 
 export const getAllProfile = async (userId: string) => {
   try {
-    const profile = await prismaClient.profile.findUnique({
+    const profile = await prismaClient.profile.findFirst({
       where: { userId },
     });
     return profile;

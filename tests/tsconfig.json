@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": "..",
+    "paths": {
+      "~~/*": ["./*"],
+      "~/*": ["./*"],
+      "@/*": ["./*"]
+    },
+    "types": ["jest", "node"],
+    "esModuleInterop": true
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts", "../types/**/*.d.ts", "../app/**/*.d.ts"]
+}

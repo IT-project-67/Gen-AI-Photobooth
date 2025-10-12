@@ -1,3 +1,4 @@
+import { defineEventHandler, getQuery, createError } from "h3";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import { getSharedPhotoById } from "~~/server/model";
 import { ERROR_STATUS_MAP, type ErrorType, type ApiResponse } from "~~/server/types/core";

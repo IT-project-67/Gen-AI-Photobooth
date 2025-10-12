@@ -1,5 +1,4 @@
 import type { ApiResponse } from "~~/server/types/core";
-import { useSupabaseClient } from "#imports";
 import type {
   EventResponse,
   LogoUploadResponse,

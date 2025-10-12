@@ -1,3 +1,4 @@
+import { defineEventHandler, readBody, createError } from "h3";
 import { handleApiError, requireAuth } from "~~/server/utils/auth";
 import {
   getEventById,

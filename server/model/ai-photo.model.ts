@@ -2,20 +2,32 @@ import { prismaClient } from "~~/server/clients";
 import { Style } from "@prisma/client";
 
 export async function createAIPhoto(photoSessionId: string, style: Style) {
-  return await prismaClient.aIPhoto.create({
-    data: {
-      photoSessionId,
-      style,
-      generatedUrl: "",
-    },
-  });
+  try {
+    const newAiPhoto = await prismaClient.aIPhoto.create({
+      data: {
+        photoSessionId,
+        style,
+        generatedUrl: "",
+      },
+    });
+    return newAiPhoto;
+  } catch (error) {
+    console.error("Error creating AI photo:", error);
+    throw error;
+  }
 }
 
 export async function updateAIPhotoUrl(id: string, generatedUrl: string) {
-  return await prismaClient.aIPhoto.update({
-    where: { id },
-    data: { generatedUrl },
-  });
+  try {
+    const updatedAiPhoto = await prismaClient.aIPhoto.update({
+      where: { id },
+      data: { generatedUrl },
+    });
+    return updatedAiPhoto;
+  } catch (error) {
+    console.error("Error updating AI photo URL:", error);
+    throw error;
+  }
 }
 
 export async function getAIPhotoById(aiPhotoId: string, userId: string) {

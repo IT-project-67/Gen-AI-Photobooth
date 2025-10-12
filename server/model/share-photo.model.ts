@@ -8,25 +8,30 @@ export async function createSharedPhoto(
   qrCodeUrl: string,
   qrExpiresAt: Date,
 ): Promise<SharedPhotoData> {
-  const sharedPhoto = await prismaClient.sharedPhoto.create({
-    data: {
-      aiPhotoId,
-      eventId,
-      selectedUrl,
-      qrCodeUrl,
-      qrExpiresAt,
-    },
-  });
+  try {
+    const sharedPhoto = await prismaClient.sharedPhoto.create({
+      data: {
+        aiPhotoId,
+        eventId,
+        selectedUrl,
+        qrCodeUrl,
+        qrExpiresAt,
+      },
+    });
 
-  return {
-    id: sharedPhoto.id,
-    aiPhotoId: sharedPhoto.aiPhotoId,
-    eventId: sharedPhoto.eventId,
-    selectedUrl: sharedPhoto.selectedUrl,
-    qrCodeUrl: sharedPhoto.qrCodeUrl,
-    qrExpiresAt: sharedPhoto.qrExpiresAt,
-    createdAt: sharedPhoto.createdAt,
-  };
+    return {
+      id: sharedPhoto.id,
+      aiPhotoId: sharedPhoto.aiPhotoId,
+      eventId: sharedPhoto.eventId,
+      selectedUrl: sharedPhoto.selectedUrl,
+      qrCodeUrl: sharedPhoto.qrCodeUrl,
+      qrExpiresAt: sharedPhoto.qrExpiresAt,
+      createdAt: sharedPhoto.createdAt,
+    };
+  } catch (error) {
+    console.error("Error creating shared photo:", error);
+    throw error;
+  }
 }
 
 export async function getSharedPhotoById(shareId: string): Promise<{
@@ -40,32 +45,37 @@ export async function getSharedPhotoById(shareId: string): Promise<{
   event: { id: string; name: string };
   aiPhoto: { id: string; style: string; generatedUrl: string };
 } | null> {
-  const sharedPhoto = await prismaClient.sharedPhoto.findFirst({
-    where: {
-      id: shareId,
-    },
-    include: {
-      event: {
-        select: {
-          id: true,
-          name: true,
+  try {
+    const sharedPhoto = await prismaClient.sharedPhoto.findFirst({
+      where: {
+        id: shareId,
+      },
+      include: {
+        event: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        aiPhoto: {
+          select: {
+            id: true,
+            style: true,
+            generatedUrl: true,
+          },
         },
       },
-      aiPhoto: {
-        select: {
-          id: true,
-          style: true,
-          generatedUrl: true,
-        },
-      },
-    },
-  });
+    });
 
-  if (!sharedPhoto) {
-    return null;
+    if (!sharedPhoto) {
+      return null;
+    }
+
+    return sharedPhoto;
+  } catch (error) {
+    console.error("Error fetching shared photo by ID:", error);
+    throw error;
   }
-
-  return sharedPhoto;
 }
 
 export async function getSharedPhotosByEvent(eventId: string): Promise<
@@ -81,27 +91,32 @@ export async function getSharedPhotosByEvent(eventId: string): Promise<
     aiPhoto: { id: string; style: string; generatedUrl: string };
   }[]
 > {
-  const sharedPhotos = await prismaClient.sharedPhoto.findMany({
-    where: { eventId },
-    include: {
-      event: {
-        select: {
-          id: true,
-          name: true,
+  try {
+    const sharedPhotos = await prismaClient.sharedPhoto.findMany({
+      where: { eventId },
+      include: {
+        event: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        aiPhoto: {
+          select: {
+            id: true,
+            style: true,
+            generatedUrl: true,
+          },
         },
       },
-      aiPhoto: {
-        select: {
-          id: true,
-          style: true,
-          generatedUrl: true,
-        },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+      orderBy: { createdAt: "desc" },
+    });
 
-  return sharedPhotos;
+    return sharedPhotos;
+  } catch (error) {
+    console.error("Error fetching shared photos by event:", error);
+    throw error;
+  }
 }
 
 export async function getSharedPhotoByAIPhoto(aiphotoId: string): Promise<{
@@ -115,34 +130,33 @@ export async function getSharedPhotoByAIPhoto(aiphotoId: string): Promise<{
   event: { id: string; name: string };
   aiPhoto: { id: string; style: string; generatedUrl: string };
 } | null> {
-  const sharedPhoto = await prismaClient.sharedPhoto.findFirst({
-    where: { aiPhotoId: aiphotoId },
-    include: {
-      event: {
-        select: {
-          id: true,
-          name: true,
+  try {
+    const sharedPhoto = await prismaClient.sharedPhoto.findFirst({
+      where: { aiPhotoId: aiphotoId },
+      include: {
+        event: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        aiPhoto: {
+          select: {
+            id: true,
+            style: true,
+            generatedUrl: true,
+          },
         },
       },
-      aiPhoto: {
-        select: {
-          id: true,
-          style: true,
-          generatedUrl: true,
-        },
-      },
-    },
-  });
+    });
 
-  if (!sharedPhoto) {
-    return null;
+    if (!sharedPhoto) {
+      return null;
+    }
+
+    return sharedPhoto;
+  } catch (error) {
+    console.error("Error fetching shared photo by AI photo ID:", error);
+    throw error;
   }
-
-  return sharedPhoto;
 }
-
-// export async function deleteSharedPhoto(shareId: string): Promise<void> {
-//   await prismaClient.sharedPhoto.delete({
-//     where: { id: shareId },
-//   });
-// }
