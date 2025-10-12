@@ -1,3 +1,7 @@
+import type { ApiResponse, Errors } from "~~/server/types/core";
+
+type PhotoApi<T> = ApiResponse<T, Errors>;
+
 export interface SessionData {
   id: string;
   eventId: string;
@@ -14,6 +18,12 @@ export interface PhotoUploadResponse {
     type: string;
     size: number;
   };
+}
+
+interface CreateSessionResponse {
+  sessionId: string;
+  eventId: string;
+  createdAt: string;
 }
 
 export const usePhoto = () => {
@@ -41,7 +51,7 @@ export const usePhoto = () => {
       console.log("Creating session with eventId:", eventId);
 
       const headers = await getAuthHeaders();
-      const response = await $fetch("/api/v1/session/create", {
+      const response = await $fetch<PhotoApi<CreateSessionResponse>>("/api/v1/session/create", {
         method: "POST",
         headers,
         body: {
@@ -78,9 +88,12 @@ export const usePhoto = () => {
       error.value = null;
 
       const headers = await getAuthHeaders();
-      const response = await $fetch(`/api/v1/session/get?sessionId=${sessionId}`, {
-        headers,
-      });
+      const response = await $fetch<PhotoApi<SessionData>>(
+        `/api/v1/session/get?sessionId=${sessionId}`,
+        {
+          headers,
+        },
+      );
 
       if (response.success && response.data) {
         return response.data;
@@ -110,7 +123,7 @@ export const usePhoto = () => {
       formData.append("sessionId", sessionId);
       formData.append("photoFile", photoFile);
 
-      const response = await $fetch("/api/v1/session/photo", {
+      const response = await $fetch<PhotoApi<PhotoUploadResponse>>("/api/v1/session/photo", {
         method: "POST",
         headers,
         body: formData,

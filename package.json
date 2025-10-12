@@ -23,6 +23,7 @@
     "test:coverage:server": "jest --selectProjects server --coverage",
     "test:coverage:app": "jest --selectProjects app --coverage",
     "test:all": "jest --selectProjects server --selectProjects app",
+    "test:coverage:all": "jest --selectProjects server --selectProjects app --coverage",
     "test:setup": "jest --selectProjects setup --runInBand",
     "test:server": "jest --selectProjects server --runInBand",
     "test:app": "jest --selectProjects app --runInBand",

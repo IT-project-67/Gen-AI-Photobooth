@@ -1,4 +1,5 @@
 export default {
+  silent: false,
   projects: [
     {
       displayName: "server",
@@ -39,6 +40,7 @@ export default {
       extensionsToTreatAsEsm: [".ts", ".vue"],
       roots: ["<rootDir>/tests/app"],
       testMatch: ["**/*.test.ts", "**/*.spec.ts"],
+      setupFilesAfterEnv: ["<rootDir>/tests/app/jest.setup.ts"],
       moduleFileExtensions: ["ts", "js", "json", "vue", "node"],
       moduleNameMapper: {
         "^~~/(.*)\\.css$": "identity-obj-proxy",
@@ -48,6 +50,12 @@ export default {
         "^~/(.*)$": "<rootDir>/$1",
         "^@/(.*)$": "<rootDir>/$1",
       },
+      collectCoverageFrom: [
+        "<rootDir>/app/**/*.ts",
+        "!<rootDir>/app/**/*.d.ts",
+        "!<rootDir>/app/**/*.test.ts",
+      ],
+      coveragePathIgnorePatterns: ["/node_modules/", "<rootDir>/app/assets/"],
       transform: {
         "^.+\\.tsx?$": ["ts-jest", { useESM: true, tsconfig: "./tests/tsconfig.json" }],
         ".*\\.(vue)$": "@vue/vue3-jest",

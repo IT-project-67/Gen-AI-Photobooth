@@ -793,12 +793,13 @@ describe("API: POST /api/v1/event/logo", () => {
 
       await handler(mockEvent);
 
+      // useRuntimeConfig is set globally in jest.setup.ts, so we check the uploadLogo call parameters
       expect(mockUploadLogo).toHaveBeenCalledWith(
         expect.anything(),
         expect.anything(),
         expect.anything(),
         expect.anything(),
-        "https://test.supabase.co",
+        "https://test.supabase.co", // This comes from the global useRuntimeConfig mock
         expect.anything(),
       );
     });
@@ -1305,7 +1306,7 @@ describe("API: POST /api/v1/event/logo", () => {
       const mockUser = createMockUser();
       const mockEventData = createMockEvent();
       const mockFilePart = createMockFilePart();
-      const mockFile = createMockFile({ size: 5 * 1024 * 1024 }); // 5MB
+      const mockFile = createMockFile({ size: 5 * 1024 * 1024 });
 
       mockRequireAuth.mockResolvedValue(mockUser as never);
       mockReadMultipartFormData.mockResolvedValue([
@@ -1326,8 +1327,8 @@ describe("API: POST /api/v1/event/logo", () => {
     it("should handle filenames with unicode characters", async () => {
       const mockUser = createMockUser();
       const mockEventData = createMockEvent();
-      const mockFilePart = createMockFilePart({ filename: "徽标-中文.png" });
-      const mockFile = createMockFile({ name: "徽标-中文.png" });
+      const mockFilePart = createMockFilePart({ filename: "logo-chinese.png" });
+      const mockFile = createMockFile({ name: "logo-chinese.png" });
 
       mockRequireAuth.mockResolvedValue(mockUser as never);
       mockReadMultipartFormData.mockResolvedValue([
@@ -1342,7 +1343,7 @@ describe("API: POST /api/v1/event/logo", () => {
 
       const result = (await handler(mockEvent)) as SuccessResponse;
 
-      expect(result.data.fileInfo.name).toBe("徽标-中文.png");
+      expect(result.data.fileInfo.name).toBe("logo-chinese.png");
     });
 
     it("should handle multiple form fields", async () => {

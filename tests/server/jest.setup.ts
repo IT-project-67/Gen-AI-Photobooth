@@ -1,5 +1,15 @@
 import { jest } from "@jest/globals";
 
+global.console = {
+  ...console,
+  log: jest.fn(),
+  debug: jest.fn(),
+  info: jest.fn(),
+  warn: jest.fn(),
+  // Keep error for debugging failed tests
+  // error: jest.fn(),
+};
+
 const mockDefineEventHandler = jest.fn((handler) => handler);
 const mockCreateError = jest.fn();
 const mockReadMultipartFormData = jest.fn<(event: unknown) => Promise<unknown>>();
