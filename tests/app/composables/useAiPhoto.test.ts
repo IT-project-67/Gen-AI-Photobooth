@@ -79,7 +79,7 @@ describe("useAiPhoto Composable", () => {
         headers: {
           Authorization: "Bearer test-token-123",
         },
-      })
+      }),
     );
     expect(result).toEqual(mockData);
   });
@@ -159,7 +159,7 @@ describe("useAiPhoto Composable", () => {
     mockGetSession.mockResolvedValue({
       data: {
         session: {
-            access_token: "test-token-123",
+          access_token: "test-token-123",
         },
       },
     } as never);
@@ -179,7 +179,7 @@ describe("useAiPhoto Composable", () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       "/api/v1/aiphoto/aiphoto?aiPhotoId=photo-123&mode=signed&expires=3600",
-      expect.any(Object)
+      expect.any(Object),
     );
     expect(result).toEqual(mockData);
   });
@@ -203,9 +203,7 @@ describe("useAiPhoto Composable", () => {
       .mockResolvedValueOnce({ ok: true, blob: mockBlobFn1 } as never)
       .mockResolvedValueOnce({ ok: true, blob: mockBlobFn2 } as never);
 
-    mockCreateObjectURL
-      .mockReturnValueOnce("blob:1")
-      .mockReturnValueOnce("blob:2");
+    mockCreateObjectURL.mockReturnValueOnce("blob:1").mockReturnValueOnce("blob:2");
 
     const composable = useAiPhoto();
     const result = await composable.getAiPhotosBlobs([
@@ -248,7 +246,7 @@ describe("useAiPhoto Composable", () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       "/api/v1/aiphoto/get-aiphoto-by-id?aiPhotoId=photo-123",
-      expect.any(Object)
+      expect.any(Object),
     );
     expect(result).toEqual(mockData);
   });
@@ -425,6 +423,3 @@ describe("useAiPhoto Composable", () => {
     consoleErrorSpy.mockRestore();
   });
 });
-
-
-
