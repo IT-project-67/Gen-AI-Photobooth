@@ -2,6 +2,10 @@ name: CI Test
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+  statuses: write
+
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -32,9 +36,12 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: "notify vercel"
-        if: always()
-        uses: "vercel/repository-dispatch/actions/status@v1"
+      - name: Notify Vercel (tests)
+        if: >
+          always() &&
+          (github.event_name != 'pull_request' ||
+           github.event.pull_request.head.repo.full_name == github.repository)
+        uses: vercel/repository-dispatch/actions/status@v1
         with:
           name: "Vercel - gen-ai-photobooth: tests"
-          details_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
