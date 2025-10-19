@@ -83,8 +83,6 @@ const clickShare = async () => {
       query: {
         shareId: shareData.shareId,
         qrCodeUrl: shareData.qrCodeUrl,
-        expiresAt: shareData.expiresAt,
-        shareUrl: shareData.shareUrl,
         eventId: eventId,
       },
     });

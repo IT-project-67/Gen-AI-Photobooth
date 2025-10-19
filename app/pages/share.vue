@@ -15,14 +15,15 @@
         <!-- heading -->
         <h1>Scan the QR Code for Your Photo!</h1>
         <img :src="qrSrc" />
-        <button class="retry-button" @click="navigateTo(`/cameraPage?eventId=${eventId}`)">Back to Camera</button>
+        <button class="retry-button" @click="navigateTo(`/cameraPage?eventId=${eventId}`)">
+          Back to Camera
+        </button>
       </div>
 
       <!-- QR code image -->
     </div>
   </div>
 </template>
-
 
 <script setup lang="ts">
 import { ref } from "vue";
@@ -33,7 +34,7 @@ const route = useRoute();
 const qrSrc = ref<string | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
-const eventId = ref("")
+const eventId = ref("");
 
 async function loadQr() {
   //   qrSrc.value =
@@ -45,6 +46,9 @@ async function loadQr() {
     eventId.value = route.query.eventId as string;
     if (!shareId) {
       throw new Error("Share ID is missing");
+    }
+    if (!eventId) {
+      throw new Error("Event ID is missing");
     }
     qrSrc.value = await getQRCodeBlob(shareId);
   } catch (e: unknown) {

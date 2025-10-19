@@ -56,7 +56,6 @@ const handleSocialLogin = async (provider: string) => {
   localStorage.setItem("lastActive", Date.now().toString());
   if (error) loginError.value = error;
 };
-
 </script>
 
 <style>
