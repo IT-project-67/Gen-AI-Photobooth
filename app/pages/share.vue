@@ -1,32 +1,3 @@
-<script setup lang="ts">
-import { ref } from "vue";
-import { useShare } from "~/composables/useShare";
-
-const { getQRCodeBlob } = useShare();
-const route = useRoute();
-const qrSrc = ref<string | null>(null);
-const loading = ref(true);
-const error = ref<string | null>(null);
-async function loadQr() {
-  //   qrSrc.value =
-  //     "https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=Hello%20World";
-  loading.value = true;
-  error.value = null;
-  try {
-    const shareId = route.query.shareId as string;
-    if (!shareId) {
-      throw new Error("Share ID is missing");
-    }
-    qrSrc.value = await getQRCodeBlob(shareId);
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : "Failed to load QR";
-  } finally {
-    loading.value = false;
-  }
-}
-onMounted(loadQr);
-</script>
-
 <template>
   <!-- when the QR code is being generated -->
   <div class="page">
@@ -44,13 +15,46 @@ onMounted(loadQr);
         <!-- heading -->
         <h1>Scan the QR Code for Your Photo!</h1>
         <img :src="qrSrc" />
-        <button class="retry-button" @click="navigateTo('/cameraPage')">Back to Camera</button>
+        <button class="retry-button" @click="navigateTo(`/cameraPage?eventId=${eventId}`)">Back to Camera</button>
       </div>
 
       <!-- QR code image -->
     </div>
   </div>
 </template>
+
+
+<script setup lang="ts">
+import { ref } from "vue";
+import { useShare } from "~/composables/useShare";
+
+const { getQRCodeBlob } = useShare();
+const route = useRoute();
+const qrSrc = ref<string | null>(null);
+const loading = ref(true);
+const error = ref<string | null>(null);
+const eventId = ref("")
+
+async function loadQr() {
+  //   qrSrc.value =
+  //     "https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=Hello%20World";
+  loading.value = true;
+  error.value = null;
+  try {
+    const shareId = route.query.shareId as string;
+    eventId.value = route.query.eventId as string;
+    if (!shareId) {
+      throw new Error("Share ID is missing");
+    }
+    qrSrc.value = await getQRCodeBlob(shareId);
+  } catch (e: unknown) {
+    error.value = e instanceof Error ? e.message : "Failed to load QR";
+  } finally {
+    loading.value = false;
+  }
+}
+onMounted(loadQr);
+</script>
 
 <style>
 .wrapper {

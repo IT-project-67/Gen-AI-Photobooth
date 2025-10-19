@@ -85,6 +85,7 @@ const clickShare = async () => {
         qrCodeUrl: shareData.qrCodeUrl,
         expiresAt: shareData.expiresAt,
         shareUrl: shareData.shareUrl,
+        eventId: eventId,
       },
     });
   } catch (err) {
