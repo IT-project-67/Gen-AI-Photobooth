@@ -47,7 +47,7 @@ async function loadQr() {
     if (!shareId) {
       throw new Error("Share ID is missing");
     }
-    if (!eventId) {
+    if (!eventId.value) {
       throw new Error("Event ID is missing");
     }
     qrSrc.value = await getQRCodeBlob(shareId);
