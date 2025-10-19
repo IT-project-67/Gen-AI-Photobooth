@@ -60,10 +60,10 @@ The GenAI photobooth is an augmented photobooth that creates memorable branded p
 
 #### 👥 Event Participant Features
 - **📷 Photo Capture**:
-  - Built-in camera with live preview
-  - Photo retake functionality with preview
-  - Secure upload to backend storage (PNG format, max 20MB)
-  - Real-time upload status and error handling
+  - Built-in camera with live preview
+  - Photo retake functionality with preview
+  - Secure upload to backend storage (PNG format, max 5MB)
+  - Real-time upload status and error handling
 - **🎨 AI Style Generation**:
   - Generate 4 different artistic styles simultaneously:
     - Anime Style
@@ -109,13 +109,10 @@ The GenAI photobooth is an augmented photobooth that creates memorable branded p
 - **[Nuxt 4](https://nuxt.com/)**: Vue.js meta-framework with Composition API
 - **[Vue 3](https://vuejs.org/)**: Progressive JavaScript framework
 - **[TypeScript](https://www.typescriptlang.org/)**: Type-safe development
-- **[@nuxt/ui](https://ui.nuxt.com/)**: Beautiful UI components
-- **[@nuxt/image](https://image.nuxt.com/)**: Optimized image loading
-- **[Iconify](https://iconify.design/)**: Icon framework
-- **[Font Awesome](https://fontawesome.com/)**: Icon library
 
 ### Backend
 - **[Nuxt Server](https://nuxt.com/docs/guide/directory-structure/server)**: Full-stack TypeScript framework
+- **[TypeScript](https://www.typescriptlang.org/)**: Type-safe development
 - **[Prisma](https://www.prisma.io/)**: Next-generation ORM
 - **[PostgreSQL](https://www.postgresql.org/)**: Relational database
 - **[Supabase](https://supabase.com/)**: Backend-as-a-Service (Auth + Storage)
@@ -135,7 +132,8 @@ The GenAI photobooth is an augmented photobooth that creates memorable branded p
 - **[GitHub](https://github.com/)**: Source control and CI/CD
 - **Serverless Compute**: Scalable backend infrastructure
 
-### Development Tools
+### Development & Testing Tools
+- **[Jest](https://jestjs.io/)**: Testing framework
 - **[ESLint](https://eslint.org/)**: Code linting
 - **[Prettier](https://prettier.io/)**: Code formatting
 - **[TypeScript](https://www.typescriptlang.org/)**: Static type checking
@@ -159,7 +157,9 @@ Before you begin, ensure you have the following installed:
 ## 🚀 Installation
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/genai-photobooth.git
+# Replace with your actual repository URL
+cd "<your-local-address>"
+git clone https://github.com/IT-project-67/Gen-AI-Photobooth.git
 cd genai-photobooth
 ```
 
@@ -180,7 +180,7 @@ bun install
 ```
   
 ### 3. Set Up Environment Variables
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory (or copy from `.env.example`):
 ```env
 # ==================================================================
 # Public Environment Variables
@@ -199,12 +199,14 @@ DIRECT_URL=postgresql://postgres:<your-password>@db.<your-project-id>.supabase.c
 LEONARDO_API_KEY=<your-leonardo-api-key>
 
 # ==================================================================
-# Business / Application Configuration
+# Business / Application Configuration (Optional - has defaults)
 # ==================================================================
-SUPABASE_BUCKET=<your-storage-bucket-name>
-LEONARDO_MODEL_ID=<model-id>
-LEONARDO_STYLE_ID=<select-id>
+SUPABASE_BUCKET=PhotoBooth                                    # Default: "PhotoBooth"
+LEONARDO_MODEL_ID=28aeddf8-bd19-4803-80fc-79602d1a9989        # Has default value
+LEONARDO_STYLE_ID=111dc692-d470-4eec-b791-3475abac4c46        # Has default value
 ```
+
+**Note:** The `SUPABASE_BUCKET`, `LEONARDO_MODEL_ID`, and `LEONARDO_STYLE_ID` variables have default values and are optional. If not specified, the application will use the defaults configured in `server/config.ts`.
 
 ### 4. Set Up Database
 ```bash
@@ -219,10 +221,25 @@ npm run db:studio
 ```
 
 ### 5. Configure Supabase
-1. Create a new project in [Supabase Dashboard](https://app.supabase.com)
-2. Create a storage bucket named `PhotoBooth` (or your custom name)
-3. Set bucket policies to allow authenticated users to upload/read
-4. Enable authentication providers (Email, Google, Discord) in Auth settings
+1. **Create a new project** in [Supabase Dashboard](https://app.supabase.com)
+2. **Set up Storage Bucket:**
+   - Create a storage bucket named `PhotoBooth` (or your custom name - needs to change the default value in `server/config.ts`)
+   - Set bucket policies to allow authenticated users to upload/read files
+3. **Enable Authentication Providers:**
+   - Go to Authentication → Providers in Supabase dashboard
+   - Enable **Email** provider (for email/password auth)
+   - Enable **Google** OAuth:
+     - Create OAuth credentials in [Google Cloud Console](https://console.cloud.google.com/)
+     - Add authorized redirect URI: `https://<your-project-id>.supabase.co/auth/v1/callback`
+     - Copy Client ID and Client Secret to Supabase
+   - Enable **Discord** OAuth:
+     - Create application in [Discord Developer Portal](https://discord.com/developers/applications)
+     - Add redirect URI: `https://<your-project-id>.supabase.co/auth/v1/callback`
+     - Copy Client ID and Client Secret to Supabase
+4. **Configure Site URL:**
+   - In Authentication → URL Configuration
+   - Set Site URL to your application URL (e.g., `http://localhost:3000` for development)
+   - Add redirect URLs as needed
 
 ---
 
@@ -282,10 +299,10 @@ genai-photobooth/
 │   │   ├── cameraPage.vue                 # Camera page
 │   │   └── ...
 │   └── app.vue                           # Root component
-├── server/                              # Backend code
-│   ├── api/v1/                           # API routes
-│   │   ├── aiphoto/                       # AI-generated images managenet
-│   │   ├── auth/                          # Authentication endpoints
+├── server/                              # Backend code
+│   ├── api/v1/                           # API routes
+│   │   ├── aiphoto/                       # AI-generated images management
+│   │   ├── auth/                          # Authentication endpoints
 │   │   │   ├── login.post.ts
 │   │   │   ├── register.post.ts
 │   │   │   └── ...
@@ -305,14 +322,31 @@ genai-photobooth/
 │   ├── model/                             # Data models
 │   ├── types/                             # Types
 │   └── utils/                             # Utility functions
-├── prisma/                              # Database schema & migrations
-│   ├── schema.prisma                     # Database schema
-│   └── migrations/                       # Migration files
-├── public/                              # Public static files
-├── nuxt.config.ts                       # Nuxt configuration
-├── tsconfig.json                        # TypeScript configuration
-├── package.json                         # Dependencies
-└── ...                                  # Configations
+├── prisma/                              # Database schema & migrations
+│   ├── schema.prisma                     # Database schema
+│   └── migrations/                       # Migration files
+├── public/                              # Public static files
+│   └── assets/                           # Static assets (images, icons)
+├── tests/                               # Test suites
+│   ├── server/                           # Server/backend tests
+│   │   ├── api/                          # API endpoint tests
+│   │   ├── model/                        # Model tests
+│   │   ├── utils/                        # Utility function tests
+│   │   └── jest.setup.ts                 # Server test setup
+│   ├── app/                              # App/frontend tests
+│   │   ├── composables/                  # Composable tests
+│   │   └── jest.setup.ts                 # App test setup
+│   └── tsconfig.json                     # Test TypeScript config
+├── coverage/                            # Test coverage reports (auto-generated)
+├── nuxt.config.ts                       # Nuxt configuration
+├── tsconfig.json                        # TypeScript configuration
+├── package.json                         # Dependencies
+├── jest.config.mjs                      # Jest test configuration
+├── babel.config.cjs                     # Babel configuration
+├── eslint.config.mjs                    # ESLint configuration
+├── vercel.json                          # Vercel deployment config
+├── .env.example                         # Environment variables template
+└── .gitignore                           # Git ignore rules
 ```
 
 ---
@@ -351,6 +385,14 @@ http://localhost:3000/api/v1
 | GET    | `/auth/me`              | Get current user       |
 | POST   | `/auth/forgot-password` | Request password reset |
 | POST   | `/auth/reset-password`  | Reset password         |
+
+### Profile Endpoints
+| Method | Endpoint          | Description               |
+| ------ | ----------------- | ------------------------- |
+| GET    | `/profile`        | Get user profile          |
+| PUT    | `/profile`        | Update user profile       |
+| DELETE | `/profile`        | Delete user account       |
+| POST   | `/profile/oauth`  | Link OAuth account        |
 
 ### Event Endpoints
 | Method | Endpoint                    | Description       |
@@ -423,20 +465,26 @@ The application supports 4 predefined artistic styles powered by Leonardo AI. Ea
 ### Vercel (Recommended)
 1. Push your code to GitHub
 2. Import project in [Vercel](https://vercel.com)
-3. Add environment variables in Vercel dashboard
+3. Add all environment variables from `.env.example` in Vercel dashboard
 4. Deploy!
-```bash
-# Or use Vercel CLI
-npm i -g vercel
-vercel
-```
 
-### Other Platforms
-The application can be deployed to any platform supporting Node.js:
-- **Netlify**: Use `nuxt generate` for static deployment
-- **Railway**: One-click deploy with PostgreSQL
-- **Render**: Deploy as web service
-- **Docker**: See [Nuxt deployment docs](https://nuxt.com/docs/getting-started/deployment)
+**Note:** The project is configured to deploy to the **Sydney (syd1)** region by default (see `vercel.json`). Change this if needed for your target audience.
+
+
+
+#### Environment Variables in Production
+Make sure to add these required environment variables in Vercel:
+- `NUXT_PUBLIC_SUPABASE_URL`
+- `NUXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `DATABASE_URL`
+- `DIRECT_URL`
+- `LEONARDO_API_KEY`
+- `SUPABASE_BUCKET`   (has default)
+- `LEONARDO_MODEL_ID` (has default)
+- `LEONARDO_STYLE_ID` (has default)
+
+
 
 ### Production Build
 ```bash
@@ -450,9 +498,32 @@ node .output/server/index.mjs
 ---
 
 ## 🧪 Testing
+The project uses **Jest** for testing with separate test suites for server and app code.
+
+### Test Commands
 ```bash
-# Run tests (if configured)
-npm run test
+# Run all tests
+npm run test:all
+
+# Run tests with coverage report
+npm run test:coverage
+
+# Run server tests only
+npm run test:server
+
+# Run app/frontend tests only
+npm run test:app
+
+# Run setup tests
+npm run test:setup
+
+# Generate coverage reports
+npm run test:coverage:server    # Server coverage
+npm run test:coverage:app       # App coverage
+npm run test:coverage:all       # Full coverage
+
+# Clear Jest cache
+npm run test:clearCache
 
 # Type checking
 npm run typecheck
@@ -460,6 +531,9 @@ npm run typecheck
 # Linting
 npm run lint
 ```
+
+### Coverage Reports
+After running tests with coverage, open `coverage/lcov-report/index.html` in your browser to view detailed coverage reports. (use `start coverage/lcov-report/index.html` in powershell if develop on windows)
 
 ---
 
@@ -484,6 +558,88 @@ npm run lint
 - **Time-Limited Access**: QR codes expire after 7 days for enhanced privacy
 - **Authentication Required**: Only authenticated users can upload photos and generate QR codes
 - **Session Management**: Automatic token refresh and secure session handling via Supabase
+
+---
+
+## 🔧 Troubleshooting
+
+### Common Issues and Solutions
+
+#### Database Connection Issues
+**Problem:** Cannot connect to PostgreSQL database
+**Solutions:**
+- Verify `DATABASE_URL` and `DIRECT_URL` in `.env` are correct
+- Check if your IP address is whitelisted in Supabase dashboard
+- Ensure PostgreSQL service is running
+- Try running `npm run db:generate` to regenerate Prisma client
+
+#### Supabase Storage Issues
+**Problem:** Cannot upload photos or images not displaying
+**Solutions:**
+- Verify `SUPABASE_BUCKET` name matches your bucket in Supabase (Default 'PhotoBooth')
+- Check bucket policies allow authenticated users to read/write
+- Ensure `SUPABASE_SERVICE_ROLE_KEY` is set correctly
+- Verify file size is under the limit (5MB for all uploads)
+
+#### Leonardo AI Generation Failures
+**Problem:** AI photo generation fails or times out
+**Solutions:**
+- Verify `LEONARDO_API_KEY` is valid and active
+- Check Leonardo AI account has sufficient credits
+- Ensure your API key has permission to use the specified model
+- Try using default `LEONARDO_MODEL_ID` and `LEONARDO_STYLE_ID`
+- Leonardo AI may have rate limits - wait a few minutes and retry
+
+#### OAuth Login Issues
+**Problem:** Google or Discord login not working
+**Solutions:**
+- Verify OAuth redirect URIs are configured correctly:
+  - Should be: `https://<your-project-id>.supabase.co/auth/v1/callback`
+- Check Client ID and Client Secret are correct in Supabase dashboard
+- Ensure the OAuth providers are enabled in Supabase Auth settings
+- Verify Site URL is set correctly in Supabase dashboard
+
+#### Image Upload Timeout
+**Problem:** Photo upload takes too long or fails
+**Solutions:**
+- Check your internet connection speed
+- Ensure image is under 5MB
+- Try compressing the image before upload
+- Check Supabase storage bucket exists and is accessible
+
+#### Build or Development Errors
+**Problem:** `npm run dev` fails or build errors
+**Solutions:**
+- Delete `node_modules` and `.nuxt` folders, then run `npm install` again
+- Clear Nuxt cache: `rm -rf .nuxt .output`
+- Verify Node.js version is 18 or higher: `node --version`
+- Run `npm run db:generate` to ensure Prisma client is up to date
+- Check for TypeScript errors: `npm run typecheck`
+
+#### Environment Variables Not Loading
+**Problem:** Application can't read environment variables
+**Solutions:**
+- Ensure `.env` file is in the project root directory
+- Restart the development server after changing `.env`
+- Check variable names match exactly (case-sensitive)
+- For public variables, ensure they start with `NUXT_PUBLIC_`
+- In production (Vercel), verify all variables are set in dashboard
+
+#### Test Failures
+**Problem:** Tests failing after changes
+**Solutions:**
+- Clear Jest cache: `npm run test:clearCache`
+- Ensure test database is properly configured
+- Check if environment variables are set for tests
+- Run tests individually to isolate issues: `npm run test:server` or `npm run test:app` or `npm run test:all`
+
+### Getting Help
+If you encounter issues not listed here:
+1. Check the [Nuxt.js documentation](https://nuxt.com/docs)
+2. Review [Supabase documentation](https://supabase.com/docs)
+3. Check [Leonardo AI documentation](https://docs.leonardo.ai/)
+4. Search existing GitHub issues
+5. Create a new GitHub issue with detailed error messages and steps to reproduce
 
 ---
 
