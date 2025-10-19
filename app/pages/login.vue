@@ -46,12 +46,14 @@ const handleSubmit = async ({ email, password }: { email: string; password: stri
     loginError.value = errorMessage;
   } finally {
     isSubmitting.value = false;
+    localStorage.setItem("lastActive", Date.now().toString());
   }
 };
 
 // provider login
 const handleSocialLogin = async (provider: string) => {
   const { error } = await loginWithProvider(provider);
+  localStorage.setItem("lastActive", Date.now().toString());
   if (error) loginError.value = error;
 };
 </script>

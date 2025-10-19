@@ -318,11 +318,11 @@ The application uses PostgreSQL with Prisma ORM. Key entities:
 
 ### Relationships
 ```
-Profile (1) ──→ (N) Event
-Event (1) ──→ (N) PhotoSession
-Event (1) ──→ (N) SharedPhoto
-PhotoSession (1) ──→ (N) AIPhoto
-AIPhoto (1) ──→ (N) SharedPhoto
+Profile (1) ---→ (N) Event
+Event (1) ---→ (N) PhotoSession
+Event (1) ---→ (N) SharedPhoto
+PhotoSession (1) ---→ (4) AIPhoto
+PhotoSession (1) ---→ (1) SharedPhoto
 ```
 
 ---
