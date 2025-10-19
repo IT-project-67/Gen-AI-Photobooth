@@ -10,11 +10,13 @@ export default defineNuxtConfig({
       wasm: true,
     },
     routeRules: {
+      "/": { prerender: true, isr: 60 },
       "/api/**": {
         cors: true,
         headers: { "Access-Control-Allow-Origin": "*" },
       },
     },
+    compressPublicAssets: true,
   },
 
   vite: {
