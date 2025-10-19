@@ -262,47 +262,57 @@ npm run db:reset        # Reset database (destructive)
 ## 📁 Project Structure
 ```
 genai-photobooth/
-├── app/                          # Application code
-│   ├── assets/                   # Static assets (CSS, images)
-│   ├── components/               # Vue components
+├── app/                                 # Frontend code
+│   ├── assets/                           # Static assets (CSS, images)
+│   ├── components/                       # Vue components
 │   │   ├── AppButton.vue
 │   │   ├── AppCamera.vue
 │   │   ├── AuthForm.vue
 │   │   └── ...
-│   ├── composables/              # Vue composables (business logic)
+│   ├── composables/                      # Vue composables (business logic)
 │   │   ├── useAuth.ts
 │   │   ├── useAiPhoto.ts
 │   │   ├── useLeonardo.ts
 │   │   └── ...
-│   ├── layouts/                  # Layout templates
-│   ├── middleware/               # Route middleware
-│   ├── pages/                    # Application routes
-│   │   ├── index.vue            # Home page
-│   │   ├── login.vue            # Login page
-│   │   ├── cameraPage.vue       # Camera page
+│   ├── layouts/                          # Layout templates
+│   ├── middleware/                       # Route middleware
+│   ├── pages/                            # Application routes
+│   │   ├── index.vue                      # Home page
+│   │   ├── login.vue                      # Login page
+│   │   ├── cameraPage.vue                 # Camera page
 │   │   └── ...
-│   └── app.vue                   # Root component
-├── server/                       # Backend code
-│   ├── api/v1/                  # API routes
-│   │   ├── auth/                # Authentication endpoints
-│   │   ├── event/               # Event management
-│   │   ├── leonardo/            # AI generation
-│   │   ├── session/             # Photo sessions
-│   │   └── share/               # Photo sharing
-│   ├── clients/                 # External service clients
-│   │   ├── leonardo.client.ts   # Leonardo AI client
-│   │   ├── prisma.client.ts     # Database client
-│   │   └── supabase.client.ts   # Supabase client
-│   ├── model/                   # Data models
-│   ├── types/                   # TypeScript types
-│   └── utils/                   # Utility functions
-├── prisma/                      # Database schema & migrations
-│   ├── schema.prisma            # Database schema
-│   └── migrations/              # Migration files
-├── public/                      # Public static files
-├── nuxt.config.ts              # Nuxt configuration
-├── tsconfig.json               # TypeScript configuration
-└── package.json                # Dependencies
+│   └── app.vue                           # Root component
+├── server/                              # Backend code
+│   ├── api/v1/                           # API routes
+│   │   ├── aiphoto/                       # AI-generated images managenet
+│   │   ├── auth/                          # Authentication endpoints
+│   │   │   ├── login.post.ts
+│   │   │   ├── register.post.ts
+│   │   │   └── ...
+│   │   ├── event/                         # Event management
+│   │   │   ├── create.post.ts
+│   │   │   ├── get-event-by-id.get.ts
+│   │   │   ├── logo.get.ts
+│   │   │   └── ...
+│   │   ├── leonardo/                      # AI generation
+│   │   ├── profile/                       # Profile management
+│   │   ├── session/                       # Photo sessions management
+│   │   └── share/                         # Photo sharing management
+│   ├── clients/                          # External service clients
+│   │   ├── leonardo.client.ts             # Leonardo AI client
+│   │   ├── prisma.client.ts               # Database client
+│   │   └── supabase.client.ts             # Supabase client
+│   ├── model/                             # Data models
+│   ├── types/                             # Types
+│   └── utils/                             # Utility functions
+├── prisma/                              # Database schema & migrations
+│   ├── schema.prisma                     # Database schema
+│   └── migrations/                       # Migration files
+├── public/                              # Public static files
+├── nuxt.config.ts                       # Nuxt configuration
+├── tsconfig.json                        # TypeScript configuration
+├── package.json                         # Dependencies
+└── ...                                  # Configations
 ```
 
 ---
