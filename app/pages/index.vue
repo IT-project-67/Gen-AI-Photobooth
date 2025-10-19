@@ -28,6 +28,7 @@ const slides = ref([
   { img: "/assets/images/banner1.jpg" },
   { img: "/assets/images/banner2.jpg" },
   { img: "/assets/images/banner3.jpg" },
+  { img: "/assets/images/banner4.jpg" },
 ]);
 
 const introParagraphs = ref([
