@@ -25,10 +25,10 @@ const router = useRouter();
 
 // state
 const slides = ref([
-  { img: "/assets/images/banner1.jpg" },
-  { img: "/assets/images/banner2.jpg" },
-  { img: "/assets/images/banner3.jpg" },
-  { img: "/assets/images/banner4.jpg" },
+  { img: "/assets/images/optimized/banner1.webp" },
+  { img: "/assets/images/optimized/banner2.webp" },
+  { img: "/assets/images/optimized/banner3.webp" },
+  { img: "/assets/images/optimized/banner4.webp" },
 ]);
 
 const introParagraphs = ref([

@@ -3,7 +3,15 @@
     <div class="carousel-track" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
       <div v-for="(slide, index) in slides" :key="index" class="carousel-slide">
         <div class="carousel-content">
-          <img v-if="slide.img" :src="slide.img" alt="Banner Image" class="carousel-image" />
+          <!-- <img v-if="slide.img" :src="slide.img" alt="Banner Image" class="carousel-image" /> -->
+          <OptimizedImage
+            v-if="slide.img"
+            :src="slide.img"
+            alt="Banner Image"
+            class="carousel-image"
+            :loading="index === 0 ? 'eager' : 'lazy'"
+            :fetchpriority="index === 0 ? 'high' : 'auto'"
+          />
           <div v-else>{{ slide.content || "" }}</div>
         </div>
       </div>
@@ -25,6 +33,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
+import OptimizedImage from "~/components/OptimizedImage.vue";
 
 type Slide = { img?: string; content?: string };
 
