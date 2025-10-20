@@ -11,16 +11,15 @@
         <button class="retry-button" @click="loadQr">Retry</button>
       </div>
 
+      <!-- QR code image -->
       <div v-else-if="qrSrc">
         <!-- heading -->
         <h1>Scan the QR Code for Your Photo!</h1>
-        <img :src="qrSrc" />
+        <img :src="qrSrc" class="qrcode" />
         <button class="retry-button" @click="navigateTo(`/cameraPage?eventId=${eventId}`)">
           Back to Camera
         </button>
       </div>
-
-      <!-- QR code image -->
     </div>
   </div>
 </template>
@@ -97,5 +96,9 @@ onMounted(loadQr);
 
 h1 {
   margin-bottom: 15px;
+}
+
+.qrcode {
+  max-width: 100%;
 }
 </style>
