@@ -144,7 +144,6 @@ The GenAI photobooth is an augmented photobooth that creates memorable branded p
 Before you begin, ensure you have the following installed:
 - **Node.js** (v20 or higher - Developed in 22.18.0) - [Download](https://nodejs.org/)
 - **npm** / **pnpm** / **yarn** / **bun** - Package manager
-- **PostgreSQL** (v14 or higher) - [Download](https://www.postgresql.org/download/)
 - **Git** - [Download](https://git-scm.com/)
 
 ### Required API Keys & Services
