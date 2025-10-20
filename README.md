@@ -83,7 +83,7 @@ The GenAI photobooth is an augmented photobooth that creates memorable branded p
 ### Technical Features
 #### 🚀 Performance & Scalability
 - **Server-Side Rendering (SSR)**: Optimized performance with Nuxt.js
-- **Mobile-First Responsive Design**: Fast loading (< 2.5s) and smooth interactions (< 200ms)
+- **Mobile-First Responsive Design**: Fast loading (< 3.5s) and smooth interactions (< 100ms)
 - **Scalable Architecture**: Modular design for easy feature additions
 - **Efficient API**: Well-structured endpoints with TypeScript for reliability
 
@@ -142,9 +142,8 @@ The GenAI photobooth is an augmented photobooth that creates memorable branded p
 
 ## 📋 Prerequisites
 Before you begin, ensure you have the following installed:
-- **Node.js** (v18 or higher) - [Download](https://nodejs.org/)
+- **Node.js** (v20 or higher - Developed in 22.18.0) - [Download](https://nodejs.org/)
 - **npm** / **pnpm** / **yarn** / **bun** - Package manager
-- **PostgreSQL** (v14 or higher) - [Download](https://www.postgresql.org/download/)
 - **Git** - [Download](https://git-scm.com/)
 
 ### Required API Keys & Services
@@ -612,7 +611,7 @@ After running tests with coverage, open `coverage/lcov-report/index.html` in you
 **Solutions:**
 - Delete `node_modules` and `.nuxt` folders, then run `npm install` again
 - Clear Nuxt cache: `rm -rf .nuxt .output`
-- Verify Node.js version is 18 or higher: `node --version`
+- Verify Node.js version is 20 or higher: `node --version`
 - Run `npm run db:generate` to ensure Prisma client is up to date
 - Check for TypeScript errors: `npm run typecheck`
 
